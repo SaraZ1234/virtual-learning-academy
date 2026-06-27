@@ -153,9 +153,8 @@ function SectionLabel({ children, light = false }: { children: React.ReactNode; 
       whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, ease: EASE }}
-      className={`inline-flex items-center gap-2 text-xs font-bold tracking-[0.22em] uppercase mb-3 ${
-        light ? 'text-white/60' : 'text-[#8C1B2E]'
-      }`}
+      className={`inline-flex items-center gap-2 text-xs font-bold tracking-[0.22em] uppercase mb-3 ${light ? 'text-white/60' : 'text-[#8C1B2E]'
+        }`}
     >
       <span className={`block w-5 h-[2px] rounded-full ${light ? 'bg-white/40' : 'bg-[#8C1B2E]'}`} />
       {children}
@@ -660,7 +659,7 @@ export default function Page() {
   return (
     <>
       <ScrollProgress />
-      <main className="min-h-screen bg-white overflow-x-hidden">
+      <main className="min-h-screen bg-white">
         <Navbar />
 
         {/* ╔══════════════════════════════════════════════════╗
@@ -890,7 +889,10 @@ export default function Page() {
         {/* ╔══════════════════════════════════════════════════╗
             ║  PROGRAMS                                       ║
             ╚══════════════════════════════════════════════════╝ */}
-        <section className="py-24 bg-[#F5F7FA]">
+        <section
+          id="programs"
+          className="py-24 bg-[#F5F7FA]"
+        >
           <div className="max-w-6xl mx-auto px-4 sm:px-6">
             <SectionHeading
               label="What We Offer"
@@ -914,7 +916,10 @@ export default function Page() {
         {/* ╔══════════════════════════════════════════════════╗
             ║  SOFT SKILLS / TRAINING                         ║
             ╚══════════════════════════════════════════════════╝ */}
-        <section className="py-24 bg-white">
+        <section
+          id="research-services"
+          className="py-24 bg-white"
+        >
           <div className="max-w-6xl mx-auto px-4 sm:px-6">
             <SectionHeading
               label="Professional Training"

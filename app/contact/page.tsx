@@ -149,8 +149,8 @@ function SectionLabel({ children, light = false }: { children: React.ReactNode; 
    DATA
 ═══════════════════════════════════════════════════════════════ */
 const contactInfo = [
-  { icon: Phone, label: 'Phone', value: '+92 XXX XXXXXXX', link: 'tel:+92XXXXXXX' },
-  { icon: Mail, label: 'Email', value: 'admissions@yourdomain.com', link: 'mailto:admissions@yourdomain.com' },
+  { icon: Phone, label: 'Phone', value: '+92 3252467463', link: 'tel:+92 3252467463' },
+  { icon: Mail, label: 'Email', value: 'hafsaakbar071@gmail.com ', link: 'mailto:hafsaakbar071@gmail.com ' },
   { icon: MapPin, label: 'Address', value: 'Your Office Address', link: '#' },
 ];
 

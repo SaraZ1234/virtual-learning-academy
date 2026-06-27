@@ -23,11 +23,9 @@ export default function Footer() {
   ];
 
   const admissionsLinks = [
-    { label: 'Admissions Policy & Criteria', href: '#' },
-    { label: 'Admissions Online Process', href: '#' },
-    { label: 'Admissions Fee', href: '#' },
-    { label: 'Admissions Timeline', href: '#' },
-    { label: 'Scholarships', href: '#' },
+    { label: 'Subject Tuitions', href: '/#programs' },
+    { label: 'Online School Classes', href: '/#programs' },
+    { label: 'Core Research Services', href: '/#research-services' },
   ];
 
   const socialLinks = [
@@ -102,7 +100,7 @@ export default function Footer() {
           {/* Admissions */}
           <div>
             <div className="mb-5">
-              <h4 className="text-xl font-bold text-white mb-2">Admissions</h4>
+              <h4 className="text-xl font-bold text-white mb-2">Our Services</h4>
               <div className="w-20 h-1 bg-[#B43A4E]"></div>
             </div>
             <ul className="space-y-2">
@@ -145,7 +143,7 @@ export default function Footer() {
               </div>
               <div className="flex items-start gap-3">
                 <Phone size={20} className="text-[#B43A4E] mt-0.5 flex-shrink-0" />
-                <span className="text-gray-300 text-sm">+92 XXX XXXXXXX</span>
+                <span className="text-gray-300 text-sm">+92 3252467463</span>
               </div>
             </div>
           </div>

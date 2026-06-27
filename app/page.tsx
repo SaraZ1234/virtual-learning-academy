@@ -185,9 +185,8 @@ export default function Page() {
   ];
 
   return (
-    <>
-      <Navbar />
-      <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-white">
+      <Navbar/>
         {/* HERO SECTION */}
         <motion.section className="relative overflow-hidden bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E] py-16 md:py-24 text-white">
           {/* Background Elements */}
@@ -395,6 +394,236 @@ export default function Page() {
           </div>
         </section>
 
+        {/* SOFT SKILLS SOLUTIONS - TRAINING PROGRAMS */}
+        <section className="py-12 md:py-16 bg-gradient-to-br from-[#F5F7FA] to-white">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-12"
+            >
+              <h2 className="text-3xl md:text-4xl font-black text-[#1A1A1A] mb-3">Soft Skills Solutions</h2>
+              <p className="text-base text-[#1A1A1A] mb-4">Build Your Digital Future With Professional Training</p>
+              <div className="flex items-center justify-center gap-2">
+                <div className="h-1 w-10 bg-[#8C1B2E]"></div>
+                <p className="text-sm text-[#1A1A1A] font-semibold">Hands-on Skills + AI Knowledge</p>
+                <div className="h-1 w-10 bg-[#B43A4E]"></div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-10"
+            >
+              {[
+                {
+                  title: 'Cloud Computing',
+                  description: 'AWS, Azure & GCP expertise',
+                  image: '/training/cloud-computing.png',
+                  icon: Globe,
+                  color: 'from-blue-500 to-blue-600',
+                },
+                {
+                  title: 'AI & Machine Learning',
+                  description: 'ML Engineering & AI Research',
+                  image: '/training/ai-machine-learning.png',
+                  icon: Sparkles,
+                  color: 'from-purple-500 to-purple-600',
+                },
+                {
+                  title: 'Cybersecurity',
+                  description: 'Network & Information Security',
+                  image: '/training/cybersecurity.png',
+                  icon: Award,
+                  color: 'from-red-500 to-red-600',
+                },
+                {
+                  title: 'Graphic Design',
+                  description: 'UI/UX & Visual Design',
+                  image: '/training/graphic-design.png',
+                  icon: Sparkles,
+                  color: 'from-pink-500 to-pink-600',
+                },
+                {
+                  title: 'Full Stack Development',
+                  description: 'React, Node.js, Express & More',
+                  image: '/training/full-stack-development.png',
+                  icon: BookOpen,
+                  color: 'from-green-500 to-green-600',
+                },
+                {
+                  title: 'Data Science',
+                  description: 'Analytics & Big Data',
+                  image: '/training/data-science.png',
+                  icon: BarChart3,
+                  color: 'from-orange-500 to-orange-600',
+                },
+                {
+                  title: 'DevOps & Automation',
+                  description: 'Docker, Kubernetes & CI/CD',
+                  image: '/training/devops.png',
+                  icon: Zap,
+                  color: 'from-cyan-500 to-cyan-600',
+                },
+                {
+                  title: 'Blockchain',
+                  description: 'Cryptocurrency & Smart Contracts',
+                  image: '/training/blockchain.png',
+                  icon: Target,
+                  color: 'from-amber-500 to-amber-600',
+                },
+              ].map((program, index) => {
+                const Icon = program.icon;
+                return (
+                  <motion.div
+                    key={index}
+                    variants={itemVariants}
+                    whileHover={{ y: -10, boxShadow: '0 20px 40px rgba(140, 27, 46, 0.15)' }}
+                    className="bg-white rounded-lg border-2 border-[#C0C5CE] hover:border-[#8C1B2E] overflow-hidden transition-all flex flex-col"
+                  >
+                    <motion.img 
+                      src={program.image}
+                      alt={program.title}
+                      className="w-full h-32 object-cover"
+                      whileHover={{ scale: 1.05 }}
+                    />
+                    <div className="p-4 flex-1 flex flex-col">
+                      <motion.div 
+                        className={`w-10 h-10 bg-gradient-to-br ${program.color} rounded-lg flex items-center justify-center mb-2`}
+                        whileHover={{ rotate: 10, scale: 1.1 }}
+                      >
+                        <Icon className="w-5 h-5 text-white" />
+                      </motion.div>
+                      <h3 className="text-base font-bold text-[#1A1A1A] mb-1">{program.title}</h3>
+                      <p className="text-xs text-[#1A1A1A] leading-relaxed flex-1">{program.description}</p>
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="mt-3 w-full bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E] text-white py-2 rounded-lg font-bold text-xs hover:shadow-lg transition-all"
+                      >
+                        Enroll Now
+                      </motion.button>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </motion.div>
+
+            {/* PRICING & ZOOM CONSULTATION */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10"
+            >
+              {/* Pricing Card */}
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                className="bg-white rounded-lg border-2 border-[#8C1B2E] p-8"
+              >
+                <h3 className="text-2xl font-black text-[#1A1A1A] mb-4">Flexible Pricing</h3>
+                <div className="space-y-4 mb-6">
+                  <div className="flex justify-between items-center pb-3 border-b border-[#C0C5CE]">
+                    <span className="text-[#1A1A1A] font-semibold">Enrollment Fee</span>
+                    <span className="text-2xl font-black text-[#8C1B2E]">$1,000</span>
+                  </div>
+                  <div className="flex justify-between items-center pb-3 border-b border-[#C0C5CE]">
+                    <span className="text-[#1A1A1A] font-semibold">Per Course Fee</span>
+                    <span className="text-2xl font-black text-[#8C1B2E]">$14,000</span>
+                  </div>
+                </div>
+                <p className="text-sm text-[#1A1A1A] leading-relaxed mb-6">Learn, build skills, and shine in the global market with our comprehensive training programs designed for professionals.</p>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="w-full bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E] text-white py-3 rounded-lg font-bold hover:shadow-lg transition-all"
+                >
+                  Get Started Today
+                </motion.button>
+              </motion.div>
+
+              {/* Zoom Consultation */}
+              <motion.div
+                className="bg-gradient-to-br from-[#8C1B2E] to-[#B43A4E] rounded-lg p-8 text-white relative overflow-hidden"
+              >
+                <motion.div
+                  className="absolute -top-20 -right-20 w-40 h-40 bg-white rounded-full opacity-10"
+                  animate={{ y: [0, 20, 0] }}
+                  transition={{ duration: 5, repeat: Infinity }}
+                />
+                
+                <h3 className="text-2xl font-black mb-4 relative z-10">Live Zoom Consultations</h3>
+                <div className="space-y-3 mb-6 relative z-10">
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-white flex-shrink-0 mt-1" />
+                    <div>
+                      <p className="font-bold">Expert Guidance</p>
+                      <p className="text-sm text-white/85">Get personalized course recommendations</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-white flex-shrink-0 mt-1" />
+                    <div>
+                      <p className="font-bold">Career Planning</p>
+                      <p className="text-sm text-white/85">Build your professional roadmap</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-white flex-shrink-0 mt-1" />
+                    <div>
+                      <p className="font-bold">Direct Access</p>
+                      <p className="text-sm text-white/85">Connect with our training experts</p>
+                    </div>
+                  </div>
+                </div>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="w-full bg-white text-[#8C1B2E] py-3 rounded-lg font-bold hover:bg-gray-100 transition-all relative z-10"
+                >
+                  Schedule a Zoom Session
+                </motion.button>
+              </motion.div>
+            </motion.div>
+
+            {/* Video Showcase */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="bg-white rounded-lg border-2 border-[#C0C5CE] overflow-hidden"
+            >
+              <div className="relative bg-black/90 aspect-video flex items-center justify-center">
+                <motion.div
+                  animate={{ scale: [1, 1.1, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="absolute"
+                >
+                  <Play className="w-16 h-16 text-white drop-shadow-lg" />
+                </motion.div>
+                <iframe
+                  width="100%"
+                  height="100%"
+                  src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                  title="Soft Skills Solutions Training Overview"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="absolute inset-0"
+                />
+              </div>
+              <div className="p-6 bg-gradient-to-r from-[#F5F7FA] to-white">
+                <h3 className="text-xl font-bold text-[#1A1A1A] mb-2">Watch Our Training Overview</h3>
+                <p className="text-sm text-[#1A1A1A]">Discover how our comprehensive training programs can transform your career and help you excel in the competitive global market.</p>
+              </div>
+            </motion.div>
+          </div>
+        </section>
+
         {/* WHY CHOOSE US */}
         <section className="py-12 md:py-16 bg-white">
           <div className="max-w-6xl mx-auto px-4 sm:px-6">
@@ -449,6 +678,261 @@ export default function Page() {
                   </motion.div>
                 );
               })}
+            </motion.div>
+          </div>
+        </section>
+
+        {/* RESEARCH SERVICES SECTION */}
+        <section className="py-12 md:py-16 bg-white">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-10"
+            >
+              <h2 className="text-3xl md:text-4xl font-black text-[#1A1A1A] mb-3">Research & Academic Support Services</h2>
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <div className="h-1 w-10 bg-[#8C1B2E]"></div>
+                <p className="text-base text-[#1A1A1A]">Professional Research Assistance</p>
+                <div className="h-1 w-10 bg-[#B43A4E]"></div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8"
+            >
+              {[
+                {
+                  title: 'Research Paper Writing',
+                  description: 'Full paper writing service with expert research and analysis',
+                  image: '/services/research-paper-writing.png',
+                  icon: BookOpen,
+                  color: 'from-blue-500 to-blue-600',
+                },
+                {
+                  title: 'Literature Review',
+                  description: 'Systematic, Scoping, and Meta-analysis literature reviews',
+                  image: '/services/literature-review.png',
+                  icon: CheckCircle,
+                  color: 'from-green-500 to-green-600',
+                },
+                {
+                  title: 'Graphical Abstract',
+                  description: 'Professional BioRender and Illustrator designs',
+                  image: '/services/graphical-abstract.png',
+                  icon: Sparkles,
+                  color: 'from-purple-500 to-purple-600',
+                },
+                {
+                  title: 'Assignment & Coursework Help',
+                  description: 'STEM and Business subject expertise',
+                  image: '/services/assignment-coursework.png',
+                  icon: Target,
+                  color: 'from-orange-500 to-orange-600',
+                },
+                {
+                  title: 'Thesis & Dissertation Chapters',
+                  description: 'High-ticket service with comprehensive support',
+                  image: '/services/thesis-dissertation.png',
+                  icon: Award,
+                  color: 'from-pink-500 to-pink-600',
+                },
+                {
+                  title: 'Journal Paper Editing',
+                  description: 'Native English polishing and professional proofreading',
+                  image: '/services/journal-editing.png',
+                  icon: BarChart3,
+                  color: 'from-red-500 to-red-600',
+                },
+                {
+                  title: 'Data Analysis',
+                  description: 'SPSS, R, Python, and Origin expertise',
+                  image: '/services/data-analysis.png',
+                  icon: Zap,
+                  color: 'from-indigo-500 to-indigo-600',
+                },
+                {
+                  title: 'Graphs & Plotting',
+                  description: 'Professional visualization with Origin, Excel, MATLAB',
+                  image: '/services/graphs-plotting.png',
+                  icon: BarChart3,
+                  color: 'from-cyan-500 to-cyan-600',
+                },
+                {
+                  title: 'Characterization Graphs',
+                  description: 'XRD, SEM, UV, FTIR, TEM, BET, TGA, NMR, XPS, and more',
+                  image: '/services/characterization-graphs.png',
+                  icon: Sparkles,
+                  color: 'from-violet-500 to-violet-600',
+                },
+                {
+                  title: 'Research Proposal',
+                  description: 'CSC, HEC, PhD, and MS proposals',
+                  image: '/services/research-proposal.png',
+                  icon: Target,
+                  color: 'from-amber-500 to-amber-600',
+                },
+                {
+                  title: 'PPT Presentation',
+                  description: 'Defense, Viva, and Conference presentations',
+                  image: '/services/ppt-presentation.png',
+                  icon: Play,
+                  color: 'from-lime-500 to-lime-600',
+                },
+                {
+                  title: 'Plagiarism Removal',
+                  description: 'Professional paraphrasing with Turnitin <5%',
+                  image: '/services/plagiarism-removal.png',
+                  icon: CheckCircle,
+                  color: 'from-teal-500 to-teal-600',
+                },
+              ].map((service, index) => {
+                const Icon = service.icon;
+                return (
+                  <motion.div
+                    key={index}
+                    variants={itemVariants}
+                    whileHover={{ y: -8, boxShadow: '0 15px 35px rgba(140, 27, 46, 0.15)' }}
+                    className="bg-white rounded-lg border-2 border-[#C0C5CE] hover:border-[#8C1B2E] transition-all overflow-hidden flex flex-col"
+                  >
+                    <motion.img 
+                      src={service.image}
+                      alt={service.title}
+                      className="w-full h-48 object-cover"
+                      whileHover={{ scale: 1.05 }}
+                    />
+                    <div className="p-6 flex-1 flex flex-col">
+                      <motion.div 
+                        className={`w-12 h-12 bg-gradient-to-br ${service.color} rounded-lg flex items-center justify-center mb-3`}
+                        whileHover={{ rotate: 10, scale: 1.1 }}
+                      >
+                        <Icon className="w-6 h-6 text-white" />
+                      </motion.div>
+                      <h3 className="text-lg font-bold text-[#1A1A1A] mb-2">{service.title}</h3>
+                      <p className="text-sm text-[#1A1A1A] leading-relaxed flex-1">{service.description}</p>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="bg-gradient-to-r from-[#F5F7FA] to-[#E8EBEF] border-2 border-[#C0C5CE] rounded-lg p-6 md:p-8 mb-8"
+            >
+              <h3 className="text-xl md:text-2xl font-bold text-[#1A1A1A] mb-4">Premium Services Bundle</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div className="flex items-start gap-3">
+                  <CheckCircle className="w-5 h-5 text-[#8C1B2E] flex-shrink-0 mt-1" />
+                  <div>
+                    <p className="font-bold text-[#1A1A1A]">Characterization Graphs</p>
+                    <p className="text-sm text-[#1A1A1A]">Advanced visualization expertise</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <CheckCircle className="w-5 h-5 text-[#8C1B2E] flex-shrink-0 mt-1" />
+                  <div>
+                    <p className="font-bold text-[#1A1A1A]">Graphic Abstract</p>
+                    <p className="text-sm text-[#1A1A1A]">Professional visual design</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <CheckCircle className="w-5 h-5 text-[#8C1B2E] flex-shrink-0 mt-1" />
+                  <div>
+                    <p className="font-bold text-[#1A1A1A]">Paper Writing</p>
+                    <p className="text-sm text-[#1A1A1A]">Complete research support</p>
+                  </div>
+                </div>
+              </div>
+              <motion.div 
+                className="inline-flex items-center gap-2 bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E] text-white px-4 py-2 rounded-lg font-bold"
+                whileHover={{ scale: 1.05 }}
+              >
+                <Star className="w-4 h-4" />
+                <span>Bundle Price: $200+ per client</span>
+              </motion.div>
+            </motion.div>
+
+            {/* ZOOM MEETINGS VIDEO SECTION */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="bg-gradient-to-br from-[#8C1B2E] to-[#B43A4E] rounded-lg p-8 md:p-12 text-white"
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div>
+                  <h3 className="text-3xl md:text-4xl font-black mb-4">Live Zoom Consultations</h3>
+                  <p className="text-lg text-white/90 mb-6">
+                    Get personalized guidance through our live Zoom meetings. Our expert researchers will discuss your project, address concerns, and provide detailed guidance tailored to your needs.
+                  </p>
+                  <div className="space-y-3">
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-white flex-shrink-0 mt-1" />
+                      <div>
+                        <p className="font-bold">One-on-One Sessions</p>
+                        <p className="text-sm text-white/85">Personalized consultations for your specific requirements</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-white flex-shrink-0 mt-1" />
+                      <div>
+                        <p className="font-bold">Screen Share & Demo</p>
+                        <p className="text-sm text-white/85">Visual walkthroughs of your work and improvements</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-white flex-shrink-0 mt-1" />
+                      <div>
+                        <p className="font-bold">Flexible Scheduling</p>
+                        <p className="text-sm text-white/85">Available across different time zones</p>
+                      </div>
+                    </div>
+                  </div>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="mt-6 bg-white text-[#8C1B2E] px-6 py-3 rounded-lg font-bold hover:bg-gray-100 transition-all"
+                  >
+                    Book a Zoom Session
+                  </motion.button>
+                </div>
+                
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  className="relative bg-black/20 rounded-lg overflow-hidden border-2 border-white/30"
+                >
+                  <div className="aspect-video bg-black/50 flex items-center justify-center relative">
+                    <motion.div
+                      animate={{ scale: [1, 1.1, 1] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                      className="absolute"
+                    >
+                      <Play className="w-16 h-16 text-white drop-shadow-lg" />
+                    </motion.div>
+                    <iframe
+                      width="100%"
+                      height="100%"
+                      src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                      title="Live Zoom Consultation Demo"
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="absolute inset-0"
+                    />
+                  </div>
+                  <div className="p-4 bg-white/10 backdrop-blur">
+                    <p className="text-sm font-bold">Watch our consultation overview</p>
+                  </div>
+                </motion.div>
+              </div>
             </motion.div>
           </div>
         </section>
@@ -626,9 +1110,10 @@ export default function Page() {
               </Link>
             </motion.div>
           </div>
+          
         </section>
+        <Footer/>
       </main>
-      <Footer />
-    </>
+      
   );
 }

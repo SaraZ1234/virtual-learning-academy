@@ -1,107 +1,165 @@
 'use client';
 
 import Link from 'next/link';
-import { Mail, Phone, MapPin } from 'lucide-react';
-import { motion } from 'framer-motion';
+import Image from 'next/image';
+import { Mail, Phone, MapPin } from "lucide-react";
+import {
+  FaFacebookF,
+  FaInstagram,
+  FaLinkedinIn,
+  FaPinterestP,
+} from "react-icons/fa";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  };
+  const quickLinks = [
+    { label: 'Home', href: '/' },
+    { label: 'About Us', href: '/about' },
+    { label: 'Programs', href: '/programs' },
+    { label: 'Why Us', href: '/features' },
+    { label: 'Testimonials', href: '/testimonials' },
+    { label: 'Contact Us', href: '/contact' },
+  ];
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 },
-  };
+  const admissionsLinks = [
+    { label: 'Admissions Policy & Criteria', href: '#' },
+    { label: 'Admissions Online Process', href: '#' },
+    { label: 'Admissions Fee', href: '#' },
+    { label: 'Admissions Timeline', href: '#' },
+    { label: 'Scholarships', href: '#' },
+  ];
+
+  const socialLinks = [
+    { icon: FaFacebookF, href: "#", label: "Facebook" },
+    { icon: FaInstagram, href: "#", label: "Instagram" },
+    { icon: FaPinterestP, href: "#", label: "Pinterest" },
+    { icon: FaLinkedinIn, href: "#", label: "LinkedIn" },
+  ];
 
   return (
     <footer className="bg-[#5A0F1C] text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Main Footer Content */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="py-12 grid grid-cols-1 md:grid-cols-4 gap-8"
-        >
-          {/* Company Info */}
-          <motion.div variants={itemVariants}>
-            <h3 className="text-xl font-bold mb-4">Virtual Learning Academy</h3>
-            <p className="text-gray-300 text-sm leading-relaxed">
-              Transforming education through innovative online learning solutions for students worldwide.
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 py-12">
+          {/* Brand Section */}
+          <div>
+            <Link href="/" className="inline-block mb-4">
+              <div className="flex items-center gap-4">
+                <Image
+                  src="/images/logo1.jpg"
+                  alt="Virtual Learning Academy Logo"
+                  width={71}
+                  height={71}
+                  className="h-17 w-17 rounded-full object-cover border-2 border-[#B43A4E]/40"
+                />
+                <div>
+                  {/* <h3 className="text-base font-bold leading-tight">Virtual Learning</h3>
+                  <p className="text-sm text-[#B43A4E] font-semibold">Academy</p> */}
+                </div>
+              </div>
+            </Link>
+            <p className="text-gray-300 text-sm leading-relaxed mb-5">
+              Our goal is to establish ourselves as a leading education institution, distinguished nationally and internationally for high-quality teaching, innovation, and academic excellence.
             </p>
-          </motion.div>
+            <div className="flex gap-3">
+              {socialLinks.map((social) => {
+                const Icon = social.icon;
+                return (
+                  <a
+                    key={social.label}
+                    href={social.href}
+                    aria-label={social.label}
+                    className="h-10 w-10 rounded-full border-2 border-gray-400 flex items-center justify-center text-gray-300 hover:border-[#B43A4E] hover:bg-[#B43A4E] hover:text-white transition-all duration-300"
+                  >
+                    <Icon size={18} />
+                  </a>
+                );
+              })}
+            </div>
+          </div>
 
           {/* Quick Links */}
-          <motion.div variants={itemVariants}>
-            <h4 className="font-semibold mb-4">Quick Links</h4>
+          <div>
+            <div className="mb-5">
+              <h4 className="text-xl font-bold text-white mb-2">Quick Links</h4>
+              <div className="w-20 h-1 bg-[#B43A4E]"></div>
+            </div>
             <ul className="space-y-2">
-              {['Home', 'About', 'Programs', 'Contact'].map((link) => (
-                <li key={link}>
+              {quickLinks.map((link) => (
+                <li key={link.href}>
                   <Link
-                    href={`/${link.toLowerCase()}`}
-                    className="text-gray-300 hover:text-[#B43A4E] transition-colors text-sm"
+                    href={link.href}
+                    className="text-gray-300 hover:text-[#B43A4E] transition-colors duration-300 text-sm"
                   >
-                    {link}
+                    {link.label}
                   </Link>
                 </li>
               ))}
             </ul>
-          </motion.div>
+          </div>
 
-          {/* Programs */}
-          <motion.div variants={itemVariants}>
-            <h4 className="font-semibold mb-4">Programs</h4>
+          {/* Admissions */}
+          <div>
+            <div className="mb-5">
+              <h4 className="text-xl font-bold text-white mb-2">Admissions</h4>
+              <div className="w-20 h-1 bg-[#B43A4E]"></div>
+            </div>
             <ul className="space-y-2">
-              {['Online School', 'IGCSE Prep', 'A Level', 'Tutoring'].map((prog) => (
-                <li key={prog}>
-                  <span className="text-gray-300 text-sm">{prog}</span>
+              {admissionsLinks.map((link) => (
+                <li key={link.label}>
+                  <Link
+                    href={link.href}
+                    className="text-gray-300 hover:text-[#B43A4E] transition-colors duration-300 text-sm"
+                  >
+                    {link.label}
+                  </Link>
                 </li>
               ))}
             </ul>
-          </motion.div>
+          </div>
 
-          {/* Contact Info */}
-          <motion.div variants={itemVariants}>
-            <h4 className="font-semibold mb-4">Get In Touch</h4>
+          {/* Contact Information */}
+          <div>
+            <div className="mb-5">
+              <h4 className="text-xl font-bold text-white mb-2">Contact Information</h4>
+              <div className="w-20 h-1 bg-[#B43A4E]"></div>
+            </div>
             <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <Phone size={16} className="text-[#B43A4E]" />
-                <span className="text-sm">+92 XXX XXXXXXX</span>
+              <div className="flex items-start gap-3">
+                <MapPin size={20} className="text-[#B43A4E] mt-0.5 flex-shrink-0" />
+                <p className="text-gray-300 text-sm leading-relaxed">
+                  Your Office Address
+                </p>
               </div>
-              <div className="flex items-center gap-2">
-                <Mail size={16} className="text-[#B43A4E]" />
-                <span className="text-sm">admissions@yourdomain.com</span>
+              <div className="flex items-start gap-3">
+                <Mail size={20} className="text-[#B43A4E] mt-0.5 flex-shrink-0" />
+                <div>
+                  <a
+                    href="mailto:hafsaakbar071@gmail.com"
+                    className="text-gray-300 hover:text-[#B43A4E] transition-colors duration-300 text-sm break-all"
+                  >
+                    hafsaakbar071@gmail.com
+                  </a>
+                </div>
               </div>
-              <div className="flex items-start gap-2">
-                <MapPin size={16} className="text-[#B43A4E] mt-1" />
-                <span className="text-sm">Your Office Address</span>
+              <div className="flex items-start gap-3">
+                <Phone size={20} className="text-[#B43A4E] mt-0.5 flex-shrink-0" />
+                <span className="text-gray-300 text-sm">+92 XXX XXXXXXX</span>
               </div>
             </div>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
 
         {/* Divider */}
-        <div className="border-t border-[#8C1B2E]"></div>
+        <div className="border-t border-gray-700"></div>
 
         {/* Bottom Footer */}
-        <div className="py-6 flex flex-col md:flex-row justify-between items-center text-sm text-gray-300">
+        <div className="py-5 flex flex-col md:flex-row justify-between items-center text-sm text-gray-400 gap-3">
           <p>&copy; {currentYear} Virtual Learning Academy. All rights reserved.</p>
-          <div className="flex gap-6 mt-4 md:mt-0">
-            <Link href="#" className="hover:text-[#B43A4E] transition-colors">
+          <div className="flex gap-6">
+            <Link href="#" className="hover:text-[#B43A4E] transition-colors duration-300">
               Privacy Policy
-            </Link>
-            <Link href="#" className="hover:text-[#B43A4E] transition-colors">
-              Terms of Service
             </Link>
           </div>
         </div>

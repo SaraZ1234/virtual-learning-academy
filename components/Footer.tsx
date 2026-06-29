@@ -41,41 +41,43 @@ export default function Footer() {
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 py-12">
           {/* Brand Section */}
-          <div>
-            <Link href="/" className="inline-block mb-4">
-              <div className="flex items-center gap-4">
-                <Image
-                  src="/images/logo1.jpg"
-                  alt="Virtual Learning Academy Logo"
-                  width={71}
-                  height={71}
-                  className="h-17 w-17 rounded-full object-cover border-2 border-[#B43A4E]/40"
-                />
-                <div>
-                  {/* <h3 className="text-base font-bold leading-tight">Virtual Learning</h3>
-                  <p className="text-sm text-[#B43A4E] font-semibold">Academy</p> */}
-                </div>
-              </div>
-            </Link>
-            <p className="text-gray-300 text-sm leading-relaxed mb-5">
-              Our goal is to establish ourselves as a leading education institution, distinguished nationally and internationally for high-quality teaching, innovation, and academic excellence.
-            </p>
-            <div className="flex gap-3">
-              {socialLinks.map((social) => {
-                const Icon = social.icon;
-                return (
-                  <a
-                    key={social.label}
-                    href={social.href}
-                    aria-label={social.label}
-                    className="h-10 w-10 rounded-full border-2 border-gray-400 flex items-center justify-center text-gray-300 hover:border-[#B43A4E] hover:bg-[#B43A4E] hover:text-white transition-all duration-300"
-                  >
-                    <Icon size={18} />
-                  </a>
-                );
-              })}
-            </div>
-          </div>
+<div>
+  <Link href="/" className="inline-block mb-4 w-full">
+    <div className="flex md:justify-start">
+  <div className="w-full flex justify-center md:justify-start">
+      <Image
+        src="/images/logo1.jpg"
+        alt="Hafsa Institute of International Learning and Research Logo"
+        width={71}
+        height={71}
+        className="h-17 w-17 rounded-full object-cover border-2 border-[#B43A4E]/40"
+      />
+    </div>
+    </div>
+  </Link>
+
+  <p className="text-gray-300 text-sm leading-relaxed mb-5">
+    Our goal is to establish ourselves as a leading education institution,
+    distinguished nationally and internationally for high-quality teaching,
+    innovation, and academic excellence.
+  </p>
+
+  <div className="flex gap-3">
+    {socialLinks.map((social) => {
+      const Icon = social.icon;
+      return (
+        <a
+          key={social.label}
+          href={social.href}
+          aria-label={social.label}
+          className="h-10 w-10 rounded-full border-2 border-gray-400 flex items-center justify-center text-gray-300 hover:border-[#B43A4E] hover:bg-[#B43A4E] hover:text-white transition-all duration-300"
+        >
+          <Icon size={18} />
+        </a>
+      );
+    })}
+  </div>
+</div>
 
           {/* Quick Links */}
           <div>
@@ -143,8 +145,10 @@ export default function Footer() {
               </div>
               <div className="flex items-start gap-3">
                 <Phone size={20} className="text-[#B43A4E] mt-0.5 flex-shrink-0" />
-                <span className="text-gray-300 text-sm">+92 3252467463</span>
-              </div>
+<div className="flex flex-col gap-1">
+  <span className="text-gray-300 text-sm">+92 3252467463</span>
+  <span className="text-gray-300 text-sm">+1 (604) 239-6141</span>
+</div>              </div>
             </div>
           </div>
         </div>
@@ -154,8 +158,9 @@ export default function Footer() {
 
         {/* Bottom Footer */}
         <div className="py-5 flex flex-col md:flex-row justify-between items-center text-sm text-gray-400 gap-3">
-          <p>&copy; {currentYear} Virtual Learning Academy. All rights reserved.</p>
-          <div className="flex gap-6">
+<p className="text-sm text-gray-400">
+  &copy; {currentYear} Hafsa Institute of International Learning and Research.   All rights reserved.
+</p>          <div className="flex gap-6">
             <Link href="#" className="hover:text-[#B43A4E] transition-colors duration-300">
               Privacy Policy
             </Link>

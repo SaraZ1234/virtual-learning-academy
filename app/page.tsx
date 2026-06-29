@@ -5,6 +5,7 @@ import {
   useScroll,
   useTransform,
   useSpring,
+  AnimatePresence,
 } from 'framer-motion';
 import {
   CheckCircle,
@@ -21,11 +22,22 @@ import {
   Star,
   Heart,
   BarChart3,
+  X,
+  User,
+  Mail,
+  Phone,
+  GraduationCap,
+  ChevronDown,
+  Send,
+  Loader2,
 } from 'lucide-react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { useRef, useState, useCallback } from 'react';
+
+const MotionLink = motion(Link);
+
 
 /* ═══════════════════════════════════════════════════════════════
    ANIMATION CONSTANTS
@@ -188,6 +200,338 @@ function SectionHeading({ label, title, subtitle, light = false }: { label: stri
         </p>
       )}
     </motion.div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ENROLLMENT MODAL
+═══════════════════════════════════════════════════════════════ */
+
+interface EnrollmentModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  courseName: string;
+}
+
+type FormStatus = 'idle' | 'submitting' | 'success' | 'error';
+
+function EnrollmentModal({ isOpen, onClose, courseName }: EnrollmentModalProps) {
+  const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    phone: '',
+    qualification: '',
+    experience: '',
+    message: '',
+  });
+  const [status, setStatus] = useState<FormStatus>('idle');
+  const [errorMsg, setErrorMsg] = useState('');
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus('submitting');
+    setErrorMsg('');
+
+    try {
+      // Using Formspree — replace YOUR_FORM_ID with your actual Formspree form ID
+      // Formspree is free, works client-side, and forwards submissions to any email.
+      // Setup: go to https://formspree.io, create a free form, set email to hafsaakbar071@gmail.com
+      // Then replace 'YOUR_FORM_ID' below with your form ID (e.g. 'xpwzgkqb')
+      const FORMSPREE_FORM_ID = 'YOUR_FORM_ID';
+
+      const response = await fetch("http://localhost:5000/api/enroll", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          full_name: formData.fullName,
+          email: formData.email,
+          phone: formData.phone,
+          country: "",
+          course: courseName,
+          education: formData.qualification,
+          message: formData.message,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setStatus("success");
+
+        setFormData({
+          fullName: "",
+          email: "",
+          phone: "",
+          qualification: "",
+          experience: "",
+          message: "",
+        });
+      } else {
+        throw new Error(data.message || "Submission failed");
+      }
+    } catch (err: unknown) {
+      setStatus('error');
+      setErrorMsg(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
+    }
+  };
+
+  const handleClose = () => {
+    if (status === 'submitting') return;
+    setStatus('idle');
+    setErrorMsg('');
+    setFormData({ fullName: '', email: '', phone: '', qualification: '', experience: '', message: '' });
+    onClose();
+  };
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          {/* Backdrop */}
+          <motion.div
+            key="backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[1000]"
+            onClick={handleClose}
+          />
+
+          {/* Modal */}
+          <motion.div
+            key="modal"
+            initial={{ opacity: 0, scale: 0.92, y: 30 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.92, y: 30 }}
+            transition={{ duration: 0.4, ease: EASE }}
+            className="fixed inset-0 z-[1001] flex items-center justify-center p-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+              {/* Top accent bar */}
+              <div className="absolute top-0 left-0 right-0 h-[4px] bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E] rounded-t-2xl" />
+
+              {/* Header */}
+              <div className="flex items-start justify-between p-6 pb-4 pt-7">
+                <div>
+                  <div className="inline-flex items-center gap-2 text-xs font-bold tracking-[0.18em] uppercase text-[#8C1B2E] mb-1">
+                    <span className="block w-4 h-[2px] rounded-full bg-[#8C1B2E]" />
+                    Course Enrollment
+                  </div>
+                  <h3 className="text-xl font-extrabold text-[#1A1A1A]">Enroll in {courseName}</h3>
+                  <p className="text-sm text-[#1A1A1A]/60 mt-1">Fill in your details and we'll get back to you shortly.</p>
+                </div>
+                <button
+                  onClick={handleClose}
+                  disabled={status === 'submitting'}
+                  className="ml-4 mt-1 w-8 h-8 rounded-full bg-[#F5F7FA] hover:bg-[#8C1B2E]/10 flex items-center justify-center transition-colors duration-200 shrink-0"
+                >
+                  <X className="w-4 h-4 text-[#1A1A1A]/60" />
+                </button>
+              </div>
+
+              {/* Success State */}
+              {status === 'success' ? (
+                <motion.div
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="px-6 pb-8 flex flex-col items-center text-center"
+                >
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: 'spring', stiffness: 200, damping: 14, delay: 0.1 }}
+                    className="w-20 h-20 bg-gradient-to-br from-[#8C1B2E] to-[#B43A4E] rounded-full flex items-center justify-center mb-5 shadow-lg"
+                  >
+                    <CheckCircle className="w-10 h-10 text-white" />
+                  </motion.div>
+                  <h4 className="text-xl font-extrabold text-[#1A1A1A] mb-2">Enrollment Submitted!</h4>
+                  <p className="text-[#1A1A1A]/65 text-sm leading-relaxed mb-6">
+                    Thank you for enrolling in <span className="font-bold text-[#8C1B2E]">{courseName}</span>. Our team will review your application and contact you within 24 hours.
+                  </p>
+                  <motion.button
+                    whileHover={{ scale: 1.04 }}
+                    whileTap={{ scale: 0.96 }}
+                    onClick={handleClose}
+                    className="bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E] text-white px-8 py-3 rounded-xl font-bold text-sm hover:shadow-lg transition-all"
+                  >
+                    Close
+                  </motion.button>
+                </motion.div>
+              ) : (
+                /* Form */
+                <form onSubmit={handleSubmit} className="px-6 pb-6 space-y-4">
+                  {/* Full Name */}
+                  <div>
+                    <label className="block text-xs font-bold text-[#1A1A1A]/70 uppercase tracking-wide mb-1.5">
+                      Full Name <span className="text-[#8C1B2E]">*</span>
+                    </label>
+                    <div className="relative">
+                      <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1A1A1A]/40" />
+                      <input
+                        type="text"
+                        name="fullName"
+                        required
+                        value={formData.fullName}
+                        onChange={handleChange}
+                        placeholder="Enter your full name"
+                        className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-[#C0C5CE]/70 focus:border-[#8C1B2E] focus:outline-none text-sm text-[#1A1A1A] placeholder:text-[#1A1A1A]/35 transition-colors duration-200"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Email */}
+                  <div>
+                    <label className="block text-xs font-bold text-[#1A1A1A]/70 uppercase tracking-wide mb-1.5">
+                      Email Address <span className="text-[#8C1B2E]">*</span>
+                    </label>
+                    <div className="relative">
+                      <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1A1A1A]/40" />
+                      <input
+                        type="email"
+                        name="email"
+                        required
+                        value={formData.email}
+                        onChange={handleChange}
+                        placeholder="Enter your email"
+                        className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-[#C0C5CE]/70 focus:border-[#8C1B2E] focus:outline-none text-sm text-[#1A1A1A] placeholder:text-[#1A1A1A]/35 transition-colors duration-200"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Phone */}
+                  <div>
+                    <label className="block text-xs font-bold text-[#1A1A1A]/70 uppercase tracking-wide mb-1.5">
+                      Phone Number <span className="text-[#8C1B2E]">*</span>
+                    </label>
+                    <div className="relative">
+                      <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1A1A1A]/40" />
+                      <input
+                        type="tel"
+                        name="phone"
+                        required
+                        value={formData.phone}
+                        onChange={handleChange}
+                        placeholder="Enter your phone number"
+                        className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-[#C0C5CE]/70 focus:border-[#8C1B2E] focus:outline-none text-sm text-[#1A1A1A] placeholder:text-[#1A1A1A]/35 transition-colors duration-200"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Qualification */}
+                  <div>
+                    <label className="block text-xs font-bold text-[#1A1A1A]/70 uppercase tracking-wide mb-1.5">
+                      Highest Qualification <span className="text-[#8C1B2E]">*</span>
+                    </label>
+                    <div className="relative">
+                      <GraduationCap className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1A1A1A]/40 pointer-events-none" />
+                      <select
+                        name="qualification"
+                        required
+                        value={formData.qualification}
+                        onChange={handleChange}
+                        className="w-full pl-10 pr-10 py-3 rounded-xl border-2 border-[#C0C5CE]/70 focus:border-[#8C1B2E] focus:outline-none text-sm text-[#1A1A1A] appearance-none transition-colors duration-200 bg-white"
+                      >
+                        <option value="" disabled>Select your qualification</option>
+                        <option value="High School">High School</option>
+                        <option value="Intermediate / A-Level">Intermediate / A-Level</option>
+                        <option value="Bachelor's Degree">Bachelor's Degree</option>
+                        <option value="Master's Degree">Master's Degree</option>
+                        <option value="PhD">PhD</option>
+                        <option value="Other">Other</option>
+                      </select>
+                      <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1A1A1A]/40 pointer-events-none" />
+                    </div>
+                  </div>
+
+                  {/* Experience */}
+                  <div>
+                    <label className="block text-xs font-bold text-[#1A1A1A]/70 uppercase tracking-wide mb-1.5">
+                      Relevant Experience
+                    </label>
+                    <div className="relative">
+                      <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1A1A1A]/40 pointer-events-none" />
+                      <select
+                        name="experience"
+                        value={formData.experience}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 rounded-xl border-2 border-[#C0C5CE]/70 focus:border-[#8C1B2E] focus:outline-none text-sm text-[#1A1A1A] appearance-none transition-colors duration-200 bg-white"
+                      >
+                        <option value="">Select experience level</option>
+                        <option value="No Experience (Beginner)">No Experience (Beginner)</option>
+                        <option value="Less than 1 year">Less than 1 year</option>
+                        <option value="1–2 years">1–2 years</option>
+                        <option value="3–5 years">3–5 years</option>
+                        <option value="5+ years">5+ years</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Message */}
+                  <div>
+                    <label className="block text-xs font-bold text-[#1A1A1A]/70 uppercase tracking-wide mb-1.5">
+                      Why do you want to join this course?
+                    </label>
+                    <textarea
+                      name="message"
+                      rows={3}
+                      value={formData.message}
+                      onChange={handleChange}
+                      placeholder="Tell us briefly about your goals..."
+                      className="w-full px-4 py-3 rounded-xl border-2 border-[#C0C5CE]/70 focus:border-[#8C1B2E] focus:outline-none text-sm text-[#1A1A1A] placeholder:text-[#1A1A1A]/35 transition-colors duration-200 resize-none"
+                    />
+                  </div>
+
+                  {/* Error */}
+                  {status === 'error' && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="flex items-center gap-2 bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700"
+                    >
+                      <X className="w-4 h-4 shrink-0" />
+                      {errorMsg || 'Something went wrong. Please try again.'}
+                    </motion.div>
+                  )}
+
+                  {/* Submit */}
+                  <motion.button
+                    type="submit"
+                    disabled={status === 'submitting'}
+                    whileHover={status !== 'submitting' ? { scale: 1.03 } : {}}
+                    whileTap={status !== 'submitting' ? { scale: 0.97 } : {}}
+                    className="w-full bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E] text-white py-3.5 rounded-xl font-bold text-sm hover:shadow-lg transition-all disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  >
+                    {status === 'submitting' ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Submitting...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-4 h-4" />
+                        Submit Enrollment
+                      </>
+                    )}
+                  </motion.button>
+
+                  <p className="text-xs text-center text-[#1A1A1A]/40 pb-1">
+                    By submitting, you agree to be contacted by our team regarding your enrollment.
+                  </p>
+                </form>
+              )}
+            </div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
   );
 }
 
@@ -501,7 +845,16 @@ function TestimonialCard({ testimonial, index }: { testimonial: typeof testimoni
   );
 }
 
-function TrainingCard({ program, index }: { program: typeof trainingPrograms[0]; index: number }) {
+/* ── TrainingCard now accepts onEnroll callback ── */
+function TrainingCard({
+  program,
+  index,
+  onEnroll,
+}: {
+  program: typeof trainingPrograms[0];
+  index: number;
+  onEnroll: (title: string) => void;
+}) {
   const Icon = program.icon;
   const [hovered, setHovered] = useState(false);
   return (
@@ -541,6 +894,7 @@ function TrainingCard({ program, index }: { program: typeof trainingPrograms[0];
         <h3 className="text-base font-bold text-[#1A1A1A] mb-1">{program.title}</h3>
         <p className="text-xs text-[#1A1A1A]/70 leading-relaxed flex-1">{program.description}</p>
         <motion.button
+          onClick={() => onEnroll(program.title)}
           whileHover={{ scale: 1.04 }}
           whileTap={{ scale: 0.96 }}
           className="mt-4 w-full bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E] text-white py-2 rounded-xl font-bold text-xs hover:shadow-lg transition-all"
@@ -656,9 +1010,26 @@ export default function Page() {
   const heroOpacity = useTransform(heroProgress, [0, 0.75], [1, 0]);
   const heroScale = useTransform(heroProgress, [0, 1], [1, 1.04]);
 
+  /* Enrollment modal state */
+  const [enrollModalOpen, setEnrollModalOpen] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState('');
+
+  const handleEnroll = useCallback((courseTitle: string) => {
+    setSelectedCourse(courseTitle);
+    setEnrollModalOpen(true);
+  }, []);
+
   return (
     <>
       <ScrollProgress />
+
+      {/* Global Enrollment Modal */}
+      <EnrollmentModal
+        isOpen={enrollModalOpen}
+        onClose={() => setEnrollModalOpen(false)}
+        courseName={selectedCourse}
+      />
+
       <main className="min-h-screen bg-white">
         <Navbar />
 
@@ -934,7 +1305,7 @@ export default function Page() {
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-12"
             >
               {trainingPrograms.map((program, index) => (
-                <TrainingCard key={index} program={program} index={index} />
+                <TrainingCard key={index} program={program} index={index} onEnroll={handleEnroll} />
               ))}
             </motion.div>
 
@@ -961,21 +1332,22 @@ export default function Page() {
                 <div className="space-y-4 mb-6">
                   <div className="flex justify-between items-center pb-4 border-b border-[#C0C5CE]/70">
                     <span className="text-[#1A1A1A] font-semibold">Enrollment Fee</span>
-                    <span className="text-2xl font-extrabold text-[#8C1B2E]">$1,000</span>
+                    <span className="text-2xl font-extrabold text-[#8C1B2E]">Rs. 1,000</span>
                   </div>
                   <div className="flex justify-between items-center pb-4 border-b border-[#C0C5CE]/70">
                     <span className="text-[#1A1A1A] font-semibold">Per Course Fee</span>
-                    <span className="text-2xl font-extrabold text-[#8C1B2E]">$14,000</span>
+                    <span className="text-2xl font-extrabold text-[#8C1B2E]">Rs. 14,000</span>
                   </div>
                 </div>
                 <p className="text-sm text-[#1A1A1A]/70 leading-relaxed mb-6">Learn, build skills, and shine in the global market with our comprehensive training programs designed for professionals.</p>
-                <motion.button
+                <MotionLink
+                  href="/programs"
                   whileHover={{ scale: 1.04 }}
                   whileTap={{ scale: 0.96 }}
-                  className="w-full bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E] text-white py-3 rounded-xl font-bold hover:shadow-lg transition-all"
+                  className="block w-full bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E] text-white py-3 rounded-xl font-bold hover:shadow-lg transition-all text-center"
                 >
                   Get Started Today
-                </motion.button>
+                </MotionLink>
               </motion.div>
 
               {/* Zoom Consultation */}
@@ -1012,14 +1384,15 @@ export default function Page() {
                     </div>
                   ))}
                 </div>
-                <motion.button
-                  whileHover={{ scale: 1.04 }}
-                  whileTap={{ scale: 0.96 }}
-                  className="w-full bg-white text-[#8C1B2E] py-3 rounded-xl font-bold hover:bg-gray-100 transition-all relative z-10"
-                >
-                  Schedule a Zoom Session
-                </motion.button>
-              </motion.div>
+                <Link href="/contact">
+                  <motion.button
+                    whileHover={{ scale: 1.04 }}
+                    whileTap={{ scale: 0.96 }}
+                    className="w-full bg-white text-[#8C1B2E] py-3 rounded-xl font-bold hover:bg-gray-100 transition-all relative z-10"
+                  >
+                    Schedule a Zoom Session
+                  </motion.button>
+                </Link>              </motion.div>
             </div>
 
             {/* Video */}
@@ -1046,16 +1419,12 @@ export default function Page() {
                 >
                   <Play className="w-16 h-16 text-white drop-shadow-lg" />
                 </motion.div>
-                <iframe
-                  width="100%"
-                  height="100%"
-                  src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-                  title="Soft Skills Solutions Training Overview"
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  className="absolute inset-0"
-                />
+                <video
+                  className="w-full h-full object-cover" controls
+                  poster="/images/thumbnail.jpg"
+                >
+                  <source src="/videos/Video.mp4" type="video/mp4" />
+                </video>
               </div>
               <div className="p-6">
                 <h3 className="text-lg font-bold text-[#1A1A1A] mb-2">Watch Our Training Overview</h3>
@@ -1194,13 +1563,14 @@ export default function Page() {
                       </div>
                     ))}
                   </div>
-                  <motion.button
+                  <MotionLink
+                    href="/contact"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.96 }}
-                    className="bg-white text-[#8C1B2E] px-7 py-3 rounded-full font-bold hover:bg-gray-100 transition-all shadow-xl"
+                    className="inline-block bg-white text-[#8C1B2E] px-7 py-3 rounded-full font-bold hover:bg-gray-100 transition-all shadow-xl text-center"
                   >
                     Book a Zoom Session
-                  </motion.button>
+                  </MotionLink>
                 </div>
                 <motion.div
                   whileHover={{ scale: 1.02 }}
@@ -1214,16 +1584,15 @@ export default function Page() {
                     >
                       <Play className="w-14 h-14 text-white drop-shadow-lg" />
                     </motion.div>
-                    <iframe
-                      width="100%"
-                      height="100%"
-                      src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-                      title="Live Zoom Consultation Demo"
-                      frameBorder="0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                      className="absolute inset-0"
-                    />
+                    <video
+                      className="w-full h-full object-cover"
+                      controls
+                      preload="metadata"
+                      poster="/images/thumbnail.jpg"
+                    >
+                      <source src="/videos/Video.mp4" type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>
                   </div>
                   <div className="p-4 bg-white/10 backdrop-blur">
                     <p className="text-sm font-bold">Watch our consultation overview</p>

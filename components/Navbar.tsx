@@ -2,12 +2,15 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, User } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+
+  // TEMP: replace with real auth later (JWT / NextAuth)
+  const isLoggedIn = false;
 
   const navItems = [
     { label: 'Home', href: '/' },
@@ -22,6 +25,7 @@ export default function Navbar() {
     <nav className="sticky top-0 z-50 bg-white border-b border-[#C0C5CE] shadow-sm">
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
         <div className="flex justify-between items-center h-14 sm:h-16">
+
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
             <motion.div
@@ -30,15 +34,6 @@ export default function Navbar() {
               transition={{ duration: 0.5 }}
               className="flex items-center gap-2 sm:gap-3"
             >
-              {/* <Image
-                src="/images/logo.jpg"
-                alt="Virtual Learning Academy Logo"
-                width={50}
-                height={50}
-                className="h-10 sm:h-12 w-auto"
-                priority
-              /> */}
-
               <Image
                 src="/images/logo.jpg"
                 alt="Virtual Learning Academy Logo"
@@ -63,14 +58,37 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* CTA Button & Mobile Menu */}
-          <div className="flex items-center gap-2 sm:gap-4">
+          {/* CTA Buttons */}
+          <div className="flex items-center gap-2 sm:gap-3">
+
+            {/* Free Trial */}
             <Link
               href="/contact"
               className="hidden sm:block btn-primary text-xs sm:text-sm py-2 px-3 sm:px-4"
             >
               Free Trial
             </Link>
+
+            {/* LOGIN / DASHBOARD */}
+            {!isLoggedIn ? (
+              <Link
+                href="/login"
+                className="hidden sm:flex items-center gap-2 text-sm font-medium text-[#8C1B2E] border border-[#8C1B2E] px-4 py-2 rounded-lg hover:bg-[#8C1B2E] hover:text-white transition"
+              >
+                <User size={16} />
+                Login
+              </Link>
+            ) : (
+              <Link
+                href="/dashboard"
+                className="hidden sm:flex items-center gap-2 text-sm font-medium text-white bg-[#8C1B2E] px-4 py-2 rounded-lg hover:bg-[#6f1424] transition"
+              >
+                <User size={16} />
+                Dashboard
+              </Link>
+            )}
+
+            {/* Mobile Menu Button */}
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="md:hidden p-2 hover:bg-[#F5F7FA] rounded-lg transition-colors flex-shrink-0"
@@ -93,6 +111,7 @@ export default function Navbar() {
           className="md:hidden overflow-hidden"
         >
           <div className="px-2 py-3 space-y-1 border-t border-[#C0C5CE]">
+
             {navItems.map((item) => (
               <Link
                 key={item.href}
@@ -103,6 +122,7 @@ export default function Navbar() {
                 {item.label}
               </Link>
             ))}
+
             <Link
               href="/contact"
               className="block btn-primary w-full text-xs text-center py-2 mt-2"
@@ -110,6 +130,25 @@ export default function Navbar() {
             >
               Free Trial
             </Link>
+
+            {/* Mobile Login / Dashboard */}
+            {!isLoggedIn ? (
+              <Link
+                href="/login"
+                className="block w-full text-center border border-[#8C1B2E] text-[#8C1B2E] py-2 rounded-lg mt-2 font-medium"
+                onClick={() => setIsOpen(false)}
+              >
+                Login
+              </Link>
+            ) : (
+              <Link
+                href="/dashboard"
+                className="block w-full text-center bg-[#8C1B2E] text-white py-2 rounded-lg mt-2 font-medium"
+                onClick={() => setIsOpen(false)}
+              >
+                Dashboard
+              </Link>
+            )}
           </div>
         </motion.div>
       </div>

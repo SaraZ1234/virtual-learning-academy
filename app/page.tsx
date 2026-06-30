@@ -1041,7 +1041,7 @@ function ProgramCard({ program, index }: { program: typeof programs[0]; index: n
             </motion.div>
           ))}
         </div>
-        <Link href="/contact" className="block w-full">
+        <Link href="/programs" className="block w-full">
           <motion.button
             whileHover={{ scale: 1.04 }}
             whileTap={{ scale: 0.96 }}

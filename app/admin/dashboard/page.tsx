@@ -151,14 +151,11 @@ interface ResearchOrder {
   email: string;
   phone: string;
   service: string;
-  subject_topic: string;
+  subject: string;
   deadline?: string;
   requirements?: string;
   created_at?: string;
-  /* New: track whether admin has already responded */
-  responded?: boolean;
-  last_response?: string;
-  responded_at?: string;
+  status: string;
 }
 
 /* Top-level dashboard view */
@@ -200,12 +197,11 @@ function StatusBadge({ status }: { status: EnrollmentStatus }) {
 }
 
 /* New: small badge showing whether a research order has been responded to */
-function ResponseBadge({ responded }: { responded?: boolean }) {
-  return responded ? (
-    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border capitalize bg-emerald-50 text-emerald-700 border-emerald-200">
-      <CheckCircle2 className="w-3.5 h-3.5" />
-      Responded
-    </span>
+function ResponseBadge({ status }: { status: string }) {
+  return status === "Responded" ? (<span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border capitalize bg-emerald-50 text-emerald-700 border-emerald-200">
+    <CheckCircle2 className="w-3.5 h-3.5" />
+    Responded
+  </span>
   ) : (
     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border capitalize bg-amber-50 text-amber-700 border-amber-200">
       <Clock className="w-3.5 h-3.5" />
@@ -954,7 +950,7 @@ function ResearchOrderRow({
 
       {/* Response status (new) */}
       <td className="py-4 px-4 hidden sm:table-cell">
-        <ResponseBadge responded={order.responded} />
+        <ResponseBadge status={order.status} />
       </td>
 
       {/* Created date */}
@@ -1039,7 +1035,7 @@ function ResearchOrderDrawer({
                 </button>
               </div>
               <div className="mt-3">
-                <ResponseBadge responded={order.responded} />
+                <ResponseBadge status={order.status} />
               </div>
             </div>
 
@@ -1102,7 +1098,8 @@ function ResearchOrderDrawer({
               )}
 
               {/* Last response sent (new) */}
-              {order.responded && order.last_response && (
+              {order.status === 'Responded' && order.last_response && (
+
                 <div className="mb-6">
                   <p className="text-[10px] font-extrabold tracking-[0.2em] uppercase text-[#1A1A1A]/35 mb-3">
                     Your Last Response
@@ -1161,7 +1158,7 @@ function ResearchOrderDrawer({
 
               {/* Respond action (new) */}
               <div className="space-y-3">
-                {!order.responded && (
+                {order.status !== 'Responded' && (
                   <div className="flex items-center gap-2 bg-amber-50 border border-amber-100 rounded-xl px-3 py-2.5 text-xs text-amber-700 font-medium">
                     <Clock className="w-3.5 h-3.5 shrink-0" />
                     This order is awaiting your response.
@@ -1172,7 +1169,7 @@ function ResearchOrderDrawer({
                   className="w-full py-3 rounded-xl bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E] text-white font-bold text-sm hover:shadow-lg transition-all flex items-center justify-center gap-2"
                 >
                   <Reply className="w-4 h-4" />
-                  {order.responded ? 'Send Another Response' : 'Respond & Notify'}
+                  {order.status === 'Responded' ? 'Send Another Response' : 'Respond & Notify'}
                 </button>
               </div>
             </div>
@@ -1318,10 +1315,9 @@ export default function AdminDashboard() {
   /* New: research order response counts */
   const roCounts = useMemo(() => ({
     total: researchOrders.length,
-    responded: researchOrders.filter((o) => o.responded).length,
-    awaiting: researchOrders.filter((o) => !o.responded).length,
+    responded: researchOrders.filter((o) => o.status === 'Responded').length,
+    awaiting: researchOrders.filter((o) => o.status !== 'Responded').length,
   }), [researchOrders]);
-
   /**
    * Send approval email via backend, then update UI.
    * Falls back gracefully if the email endpoint doesn't exist yet.
@@ -1374,9 +1370,9 @@ export default function AdminDashboard() {
         }
 
         const newStatus: EnrollmentStatus =
-  action === "approve"
-    ? "approved"
-    : "rejected";
+          action === "approve"
+            ? "approved"
+            : "rejected";
 
         setEnrollments((prev) =>
           prev.map((e) =>
@@ -1420,15 +1416,15 @@ export default function AdminDashboard() {
 
       try {
         const res = await fetch(`${API_BASE}/research-order/${order.id}/reply`, {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({
-    subject: 'Regarding Your Research Order',
-    message: message,
-  }),
-});
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            subject: 'Regarding Your Research Order',
+            message: message,
+          }),
+        });
 
         let data: any = {};
         try {
@@ -1446,7 +1442,7 @@ export default function AdminDashboard() {
         setResearchOrders((prev) =>
           prev.map((o) =>
             o.id === order.id
-              ? { ...o, responded: true, last_response: message, responded_at: respondedAt }
+              ? { ...o, status: 'Responded', responded: true, last_response: message, responded_at: respondedAt }
               : o
           )
         );
@@ -1454,12 +1450,12 @@ export default function AdminDashboard() {
         if (selectedOrder?.id === order.id) {
           setSelectedOrder({
             ...selectedOrder,
+            status: 'Responded',
             responded: true,
             last_response: message,
             responded_at: respondedAt,
           });
         }
-
         setToastCopy({
           title: 'Response email sent',
           subtitle: `${order.full_name} has been notified`,
@@ -1920,7 +1916,7 @@ export default function AdminDashboard() {
                   icon={ClipboardList}
                   index={0}
                   active={true}
-                  onClick={() => {}}
+                  onClick={() => { }}
                 />
                 <StatCard
                   label="Awaiting Reply"
@@ -1928,7 +1924,7 @@ export default function AdminDashboard() {
                   icon={Clock}
                   index={1}
                   active={false}
-                  onClick={() => {}}
+                  onClick={() => { }}
                   color="bg-gradient-to-br from-amber-500 to-amber-400"
                 />
                 <StatCard
@@ -1937,7 +1933,7 @@ export default function AdminDashboard() {
                   icon={CheckCircle2}
                   index={2}
                   active={false}
-                  onClick={() => {}}
+                  onClick={() => { }}
                   color="bg-gradient-to-br from-emerald-600 to-emerald-500"
                 />
               </motion.div>

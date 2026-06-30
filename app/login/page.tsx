@@ -196,7 +196,7 @@ export default function StudentLogin() {
 
           <div className="perspective-[800px] mb-3">
             <AnimatedTitle
-              text="Student Login"
+              text="Login"
               className="text-4xl md:text-5xl font-extrabold leading-[1.02] tracking-tight block"
             />
           </div>

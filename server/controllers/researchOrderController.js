@@ -114,20 +114,37 @@ const replyResearchOrder = (req, res) => {
     const order = results[0];
 
     try {
-      await sendResearchReplyMail({
-        to: order.email,
-        full_name: order.full_name,
-        subject,
-        message,
+  await sendResearchReplyMail({
+    to: order.email,
+    full_name: order.full_name,
+    subject,
+    message,
+  });
+
+  // Update order status in database
+  const updateSql = `
+    UPDATE research_orders
+    SET status = ?
+    WHERE id = ?
+  `;
+
+  db.query(updateSql, ["Responded", id], (updateErr) => {
+    if (updateErr) {
+      console.error("Status Update Error:", updateErr);
+
+      return res.status(500).json({
+        success: false,
+        message: "Reply sent but failed to update status.",
       });
+    }
 
-      res.json({
-        success: true,
-        message: "Reply sent successfully.",
-      });
+    res.json({
+      success: true,
+      message: "Reply sent successfully.",
+    });
+  });
 
-    } catch (error) {
-
+} catch (error) {
       res.status(500).json({
         success: false,
         message: "Failed to send email.",

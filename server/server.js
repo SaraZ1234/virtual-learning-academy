@@ -6,6 +6,7 @@ const enrollmentRoutes = require("./routes/enrollmentRoutes");
 const authRoutes = require("./routes/authRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const contactRoutes = require("./routes/contactRoutes");
+const researchOrderRoutes = require("./routes/researchOrderRoutes");
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use("/api", enrollmentRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api", contactRoutes);
+app.use("/api", researchOrderRoutes);
 
 // Test Route
 app.get("/", (req, res) => {

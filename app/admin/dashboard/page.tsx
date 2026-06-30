@@ -24,6 +24,9 @@ import {
   User,
   Send,
   FileText,
+  ClipboardList,
+  CalendarClock,
+  Reply,
 } from 'lucide-react';
 import { useEffect, useMemo, useState, useCallback, useRef } from 'react';
 import Header from "@/components/Navbar";
@@ -141,6 +144,26 @@ interface Enrollment {
 
 type FilterTab = 'all' | EnrollmentStatus;
 
+/* New: Research Order type */
+interface ResearchOrder {
+  id: string | number;
+  full_name: string;
+  email: string;
+  phone: string;
+  service: string;
+  subject_topic: string;
+  deadline?: string;
+  requirements?: string;
+  created_at?: string;
+  /* New: track whether admin has already responded */
+  responded?: boolean;
+  last_response?: string;
+  responded_at?: string;
+}
+
+/* Top-level dashboard view */
+type DashboardView = 'enrollments' | 'research-orders';
+
 const API_BASE = 'http://localhost:5000/api';
 
 /* ═══════════════════════════════════════════════════════════════
@@ -172,6 +195,21 @@ function StatusBadge({ status }: { status: EnrollmentStatus }) {
     >
       {icons[status]}
       {status}
+    </span>
+  );
+}
+
+/* New: small badge showing whether a research order has been responded to */
+function ResponseBadge({ responded }: { responded?: boolean }) {
+  return responded ? (
+    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border capitalize bg-emerald-50 text-emerald-700 border-emerald-200">
+      <CheckCircle2 className="w-3.5 h-3.5" />
+      Responded
+    </span>
+  ) : (
+    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border capitalize bg-amber-50 text-amber-700 border-amber-200">
+      <Clock className="w-3.5 h-3.5" />
+      Awaiting Reply
     </span>
   );
 }
@@ -227,9 +265,19 @@ function StatCard({
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   EMAIL SENT TOAST
+   EMAIL SENT TOAST  (generalized to support multiple messages)
 ═══════════════════════════════════════════════════════════════ */
-function EmailToast({ show, onHide }: { show: boolean; onHide: () => void }) {
+function EmailToast({
+  show,
+  onHide,
+  title = 'Approval email sent',
+  subtitle = 'Student has been notified',
+}: {
+  show: boolean;
+  onHide: () => void;
+  title?: string;
+  subtitle?: string;
+}) {
   useEffect(() => {
     if (show) {
       const t = setTimeout(onHide, 4000);
@@ -251,8 +299,8 @@ function EmailToast({ show, onHide }: { show: boolean; onHide: () => void }) {
             <Send className="w-4 h-4" />
           </div>
           <div>
-            <p className="font-bold text-sm">Approval email sent</p>
-            <p className="text-xs text-white/80">Student has been notified</p>
+            <p className="font-bold text-sm">{title}</p>
+            <p className="text-xs text-white/80">{subtitle}</p>
           </div>
           <button onClick={onHide} className="ml-2 opacity-70 hover:opacity-100 transition-opacity">
             <X className="w-4 h-4" />
@@ -357,6 +405,128 @@ function ConfirmModal({
                     'Reject'
                   )}
                 </button>
+              </div>
+            </div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RESPOND TO RESEARCH ORDER MODAL  (new)
+═══════════════════════════════════════════════════════════════ */
+function RespondModal({
+  order,
+  onClose,
+  onSend,
+  sending,
+}: {
+  order: ResearchOrder | null;
+  onClose: () => void;
+  onSend: (message: string) => void;
+  sending: boolean;
+}) {
+  const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    if (order) {
+      setMessage('');
+    }
+  }, [order]);
+
+  return (
+    <AnimatePresence>
+      {order && (
+        <>
+          <motion.div
+            key="respond-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[1000]"
+            onClick={!sending ? onClose : undefined}
+          />
+          <motion.div
+            key="respond-modal"
+            initial={{ opacity: 0, scale: 0.92, y: 24 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.92, y: 24 }}
+            transition={{ duration: 0.3, ease: EASE }}
+            className="fixed inset-0 z-[1001] flex items-center justify-center p-4"
+          >
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden">
+              {/* Top accent bar */}
+              <div className="h-[4px] bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E]" />
+
+              <div className="p-6">
+                <div className="flex items-start gap-4 mb-5">
+                  <div className="w-12 h-12 rounded-full bg-[#8C1B2E]/10 flex items-center justify-center shrink-0">
+                    <Reply className="w-6 h-6 text-[#8C1B2E]" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-lg font-extrabold text-[#1A1A1A] leading-tight">
+                      Respond to {order.full_name}
+                    </h3>
+                    <p className="text-sm text-[#1A1A1A]/50 mt-0.5 break-all">{order.email}</p>
+                  </div>
+                  <button
+                    onClick={!sending ? onClose : undefined}
+                    className="w-8 h-8 rounded-full bg-[#F5F7FA] hover:bg-[#8C1B2E]/10 flex items-center justify-center transition-colors shrink-0"
+                  >
+                    <X className="w-4 h-4 text-[#1A1A1A]/60" />
+                  </button>
+                </div>
+
+                {/* Context recap */}
+                <div className="bg-[#F5F7FA] rounded-2xl p-4 mb-5 space-y-2">
+                  <div className="flex items-center gap-2 text-xs font-bold text-[#1A1A1A]/45 uppercase tracking-wide">
+                    <ClipboardList className="w-3.5 h-3.5" />
+                    {order.service}
+                  </div>
+                  <p className="text-sm text-[#1A1A1A]/75 line-clamp-2">{order.subject_topic}</p>
+                </div>
+
+                <label className="block text-[10px] font-extrabold tracking-[0.2em] uppercase text-[#1A1A1A]/35 mb-2">
+                  Your Response
+                </label>
+                <textarea
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  rows={6}
+                  placeholder="Write your reply to the student... this will be emailed directly to them."
+                  disabled={sending}
+                  className="w-full rounded-2xl border-2 border-[#C0C5CE]/70 focus:border-[#8C1B2E] focus:outline-none p-4 text-sm text-[#1A1A1A] placeholder:text-[#1A1A1A]/35 bg-white transition-colors duration-200 resize-none disabled:opacity-60"
+                />
+
+                <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-100 rounded-xl px-3 py-2.5 mt-4 text-xs text-emerald-700 font-medium">
+                  <Send className="w-3.5 h-3.5 shrink-0" />
+                  This message will be emailed directly to {order.email}.
+                </div>
+
+                <div className="flex gap-3 mt-6">
+                  <button
+                    onClick={onClose}
+                    disabled={sending}
+                    className="flex-1 py-2.5 rounded-xl border-2 border-[#C0C5CE]/70 text-sm font-bold text-[#1A1A1A]/70 hover:bg-[#F5F7FA] transition-colors disabled:opacity-50"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => onSend(message)}
+                    disabled={sending || !message.trim()}
+                    className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white transition-all disabled:opacity-50 flex items-center justify-center gap-2 bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E] hover:shadow-lg"
+                  >
+                    {sending ? (
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <>
+                        <Send className="w-4 h-4" /> Send Response
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
           </motion.div>
@@ -707,9 +877,320 @@ function EnrollmentRow({
 }
 
 /* ═══════════════════════════════════════════════════════════════
+   RESEARCH ORDER ROW  (now with Respond action + status)
+═══════════════════════════════════════════════════════════════ */
+function ResearchOrderRow({
+  order,
+  index,
+  onView,
+  onRespond,
+}: {
+  order: ResearchOrder;
+  index: number;
+  onView: () => void;
+  onRespond: () => void;
+}) {
+  const formattedCreated = order.created_at
+    ? new Date(order.created_at).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    })
+    : '—';
+
+  const formattedDeadline = order.deadline
+    ? new Date(order.deadline).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    })
+    : '—';
+
+  return (
+    <motion.tr
+      variants={fadeUp}
+      custom={index}
+      className="border-b border-[#C0C5CE]/40 hover:bg-[#F5F7FA]/60 transition-colors duration-150 group"
+    >
+      {/* ID */}
+      <td className="py-4 px-4 text-xs font-bold text-[#1A1A1A]/45 whitespace-nowrap">
+        #{order.id}
+      </td>
+
+      {/* Full Name / Email */}
+      <td className="py-4 px-4">
+        <button onClick={onView} className="text-left">
+          <p className="font-bold text-[#1A1A1A] text-sm group-hover:text-[#8C1B2E] transition-colors">
+            {order.full_name}
+          </p>
+          <p className="text-xs text-[#1A1A1A]/50 mt-0.5">{order.email}</p>
+        </button>
+      </td>
+
+      {/* Phone */}
+      <td className="py-4 px-4 text-sm text-[#1A1A1A]/60 hidden lg:table-cell">
+        {order.phone}
+      </td>
+
+      {/* Service */}
+      <td className="py-4 px-4 text-sm text-[#1A1A1A]/75 max-w-[160px] hidden xl:table-cell">
+        <span className="line-clamp-1">{order.service}</span>
+      </td>
+
+      {/* Subject */}
+      <td className="py-4 px-4 text-sm text-[#1A1A1A]/60 hidden xl:table-cell max-w-[180px]">
+        <span className="line-clamp-1">{order.subject_topic}</span>
+      </td>
+
+      {/* Deadline */}
+      <td className="py-4 px-4 text-xs text-[#1A1A1A]/60 hidden md:table-cell whitespace-nowrap">
+        {formattedDeadline}
+      </td>
+
+      {/* Requirements */}
+      <td className="py-4 px-4 text-sm text-[#1A1A1A]/60 hidden 2xl:table-cell max-w-[180px]">
+        <span className="line-clamp-1">{order.requirements || '—'}</span>
+      </td>
+
+      {/* Response status (new) */}
+      <td className="py-4 px-4 hidden sm:table-cell">
+        <ResponseBadge responded={order.responded} />
+      </td>
+
+      {/* Created date */}
+      <td className="py-4 px-4 text-xs text-[#1A1A1A]/50 hidden sm:table-cell whitespace-nowrap">
+        {formattedCreated}
+      </td>
+
+      {/* Actions */}
+      <td className="py-4 px-4">
+        <div className="flex items-center gap-2 justify-end">
+          <button
+            onClick={onView}
+            className="text-xs font-bold text-[#8C1B2E] hover:underline"
+          >
+            View
+          </button>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={onRespond}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-br from-[#8C1B2E] to-[#B43A4E] text-white text-xs font-bold shadow-sm hover:shadow-md transition-all whitespace-nowrap"
+            title="Respond via email"
+          >
+            <Reply className="w-3.5 h-3.5" />
+            Respond
+          </motion.button>
+        </div>
+      </td>
+    </motion.tr>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RESEARCH ORDER DETAIL DRAWER  (now with Respond action)
+═══════════════════════════════════════════════════════════════ */
+function ResearchOrderDrawer({
+  order,
+  onClose,
+  onRespond,
+}: {
+  order: ResearchOrder | null;
+  onClose: () => void;
+  onRespond: (order: ResearchOrder) => void;
+}) {
+  return (
+    <AnimatePresence>
+      {order && (
+        <>
+          <motion.div
+            key="ro-drawer-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[900]"
+            onClick={onClose}
+          />
+          <motion.div
+            key="ro-drawer"
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
+            transition={{ duration: 0.35, ease: EASE }}
+            className="fixed top-0 right-0 h-full w-full max-w-lg bg-white z-[901] shadow-2xl overflow-y-auto"
+          >
+            <div className="absolute top-0 left-0 right-0 h-[4px] bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E]" />
+
+            {/* Header */}
+            <div className="sticky top-0 bg-white/95 backdrop-blur-sm z-10 px-6 pt-6 pb-4 border-b border-[#C0C5CE]/30">
+              <div className="flex items-start justify-between">
+                <div>
+                  <SectionLabel>Research Order Details</SectionLabel>
+                  <h3 className="text-xl font-extrabold text-[#1A1A1A] leading-tight">
+                    {order.full_name}
+                  </h3>
+                  <p className="text-sm text-[#1A1A1A]/50 mt-0.5">{order.email}</p>
+                </div>
+                <button
+                  onClick={onClose}
+                  className="w-9 h-9 rounded-full bg-[#F5F7FA] hover:bg-[#8C1B2E]/10 flex items-center justify-center transition-colors shrink-0 mt-1"
+                >
+                  <X className="w-4 h-4 text-[#1A1A1A]/60" />
+                </button>
+              </div>
+              <div className="mt-3">
+                <ResponseBadge responded={order.responded} />
+              </div>
+            </div>
+
+            <div className="p-6">
+              {/* Contact section */}
+              <div className="mb-6">
+                <p className="text-[10px] font-extrabold tracking-[0.2em] uppercase text-[#1A1A1A]/35 mb-3">
+                  Contact Information
+                </p>
+                <div className="bg-[#F5F7FA] rounded-2xl p-4 space-y-3">
+                  <InfoRow icon={Mail} label="Email Address" value={order.email} />
+                  <div className="h-px bg-[#C0C5CE]/30" />
+                  <InfoRow icon={Phone} label="Phone Number" value={order.phone} />
+                </div>
+              </div>
+
+              {/* Order details */}
+              <div className="mb-6">
+                <p className="text-[10px] font-extrabold tracking-[0.2em] uppercase text-[#1A1A1A]/35 mb-3">
+                  Order Details
+                </p>
+                <div className="bg-[#F5F7FA] rounded-2xl p-4 space-y-3">
+                  <InfoRow icon={ClipboardList} label="Research Service" value={order.service} />
+                  <div className="h-px bg-[#C0C5CE]/30" />
+                  <InfoRow icon={BookOpen} label="Subject / Topic" value={order.subject_topic} />
+                  {order.deadline && (
+                    <>
+                      <div className="h-px bg-[#C0C5CE]/30" />
+                      <InfoRow
+                        icon={CalendarClock}
+                        label="Deadline"
+                        value={new Date(order.deadline).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                        })}
+                      />
+                    </>
+                  )}
+                </div>
+              </div>
+
+              {/* Requirements */}
+              {order.requirements && (
+                <div className="mb-6">
+                  <p className="text-[10px] font-extrabold tracking-[0.2em] uppercase text-[#1A1A1A]/35 mb-3">
+                    Additional Requirements
+                  </p>
+                  <div className="bg-[#F5F7FA] rounded-2xl p-4">
+                    <div className="flex items-start gap-3">
+                      <div className="w-9 h-9 rounded-lg bg-white border border-[#C0C5CE]/40 flex items-center justify-center shrink-0 mt-0.5">
+                        <MessageSquare className="w-4 h-4 text-[#8C1B2E]" />
+                      </div>
+                      <p className="text-sm text-[#1A1A1A]/80 leading-relaxed pt-1">
+                        {order.requirements}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Last response sent (new) */}
+              {order.responded && order.last_response && (
+                <div className="mb-6">
+                  <p className="text-[10px] font-extrabold tracking-[0.2em] uppercase text-[#1A1A1A]/35 mb-3">
+                    Your Last Response
+                  </p>
+                  <div className="bg-emerald-50/60 border border-emerald-100 rounded-2xl p-4">
+                    <div className="flex items-start gap-3">
+                      <div className="w-9 h-9 rounded-lg bg-white border border-emerald-200 flex items-center justify-center shrink-0 mt-0.5">
+                        <Reply className="w-4 h-4 text-emerald-600" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm text-[#1A1A1A]/80 leading-relaxed">
+                          {order.last_response}
+                        </p>
+                        {order.responded_at && (
+                          <p className="text-[11px] text-[#1A1A1A]/40 font-medium mt-2">
+                            Sent {new Date(order.responded_at).toLocaleString('en-US', {
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Meta */}
+              <div className="mb-6">
+                <p className="text-[10px] font-extrabold tracking-[0.2em] uppercase text-[#1A1A1A]/35 mb-3">
+                  Submission Info
+                </p>
+                <div className="bg-[#F5F7FA] rounded-2xl p-4 space-y-3">
+                  <InfoRow icon={FileText} label="Order ID" value={`#${order.id}`} />
+                  {order.created_at && (
+                    <>
+                      <div className="h-px bg-[#C0C5CE]/30" />
+                      <InfoRow
+                        icon={Calendar}
+                        label="Submission Date"
+                        value={new Date(order.created_at).toLocaleString('en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
+                      />
+                    </>
+                  )}
+                </div>
+              </div>
+
+              {/* Respond action (new) */}
+              <div className="space-y-3">
+                {!order.responded && (
+                  <div className="flex items-center gap-2 bg-amber-50 border border-amber-100 rounded-xl px-3 py-2.5 text-xs text-amber-700 font-medium">
+                    <Clock className="w-3.5 h-3.5 shrink-0" />
+                    This order is awaiting your response.
+                  </div>
+                )}
+                <button
+                  onClick={() => onRespond(order)}
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E] text-white font-bold text-sm hover:shadow-lg transition-all flex items-center justify-center gap-2"
+                >
+                  <Reply className="w-4 h-4" />
+                  {order.responded ? 'Send Another Response' : 'Respond & Notify'}
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
    PAGE
 ═══════════════════════════════════════════════════════════════ */
 export default function AdminDashboard() {
+  /* ── Top-level view toggle (new) ──────────────────────────── */
+  const [view, setView] = useState<DashboardView>('enrollments');
+
+  /* ── Enrollment state (unchanged) ─────────────────────────── */
   const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -724,7 +1205,25 @@ export default function AdminDashboard() {
     action: 'approve' | 'reject';
   } | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+
+  /* ── Toast state (generalized for both flows) ─────────────── */
   const [emailToast, setEmailToast] = useState(false);
+  const [toastCopy, setToastCopy] = useState<{ title: string; subtitle: string }>({
+    title: 'Approval email sent',
+    subtitle: 'Student has been notified',
+  });
+
+  /* ── Research Orders state (new) ──────────────────────────── */
+  const [researchOrders, setResearchOrders] = useState<ResearchOrder[]>([]);
+  const [roLoading, setRoLoading] = useState(true);
+  const [roError, setRoError] = useState('');
+  const [roSearch, setRoSearch] = useState('');
+  const [roRefreshing, setRoRefreshing] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState<ResearchOrder | null>(null);
+
+  /* ── Respond-to-order state (new) ─────────────────────────── */
+  const [respondTarget, setRespondTarget] = useState<ResearchOrder | null>(null);
+  const [sendingResponse, setSendingResponse] = useState(false);
 
   const fetchEnrollments = useCallback(async (silent = false) => {
     if (!silent) setLoading(true);
@@ -749,9 +1248,35 @@ export default function AdminDashboard() {
     }
   }, []);
 
+  /* New: fetch research orders */
+  const fetchResearchOrders = useCallback(async (silent = false) => {
+    if (!silent) setRoLoading(true);
+    setRoRefreshing(true);
+    setRoError('');
+    try {
+      const res = await fetch(`${API_BASE}/research-orders`);
+      if (!res.ok) throw new Error('Failed to load research orders');
+      const data = await res.json();
+      const list: ResearchOrder[] = Array.isArray(data) ? data : data.researchOrders || data.orders || [];
+      setResearchOrders(list);
+    } catch (err: unknown) {
+      setRoError(err instanceof Error ? err.message : 'Something went wrong while loading research orders.');
+    } finally {
+      setRoLoading(false);
+      setRoRefreshing(false);
+    }
+  }, []);
+
   useEffect(() => {
     fetchEnrollments();
   }, [fetchEnrollments]);
+
+  /* Lazily fetch research orders the first time that tab is opened */
+  useEffect(() => {
+    if (view === 'research-orders' && researchOrders.length === 0 && roLoading) {
+      fetchResearchOrders();
+    }
+  }, [view, researchOrders.length, roLoading, fetchResearchOrders]);
 
   const counts = useMemo(() => ({
     all: enrollments.length,
@@ -776,6 +1301,27 @@ export default function AdminDashboard() {
     });
   }, [enrollments, filter, search]);
 
+  /* New: filtered research orders */
+  const filteredOrders = useMemo(() => {
+    const q = roSearch.trim().toLowerCase();
+    if (!q) return researchOrders;
+    return researchOrders.filter((o) =>
+      o.full_name?.toLowerCase().includes(q) ||
+      o.email?.toLowerCase().includes(q) ||
+      o.phone?.toLowerCase().includes(q) ||
+      o.service?.toLowerCase().includes(q) ||
+      o.subject_topic?.toLowerCase().includes(q) ||
+      o.requirements?.toLowerCase().includes(q)
+    );
+  }, [researchOrders, roSearch]);
+
+  /* New: research order response counts */
+  const roCounts = useMemo(() => ({
+    total: researchOrders.length,
+    responded: researchOrders.filter((o) => o.responded).length,
+    awaiting: researchOrders.filter((o) => !o.responded).length,
+  }), [researchOrders]);
+
   /**
    * Send approval email via backend, then update UI.
    * Falls back gracefully if the email endpoint doesn't exist yet.
@@ -791,9 +1337,11 @@ export default function AdminDashboard() {
           course: enrollment.course,
         }),
       });
+      setToastCopy({ title: 'Approval email sent', subtitle: 'Student has been notified' });
       setEmailToast(true);
     } catch {
       // Email sending is best-effort; don't block the UI
+      setToastCopy({ title: 'Approval email sent', subtitle: 'Student has been notified' });
       setEmailToast(true);
     }
   }, []);
@@ -841,6 +1389,7 @@ export default function AdminDashboard() {
         }
 
         if (action === "approve") {
+          setToastCopy({ title: 'Approval email sent', subtitle: 'Student has been notified' });
           setEmailToast(true);
 
           alert(
@@ -856,6 +1405,74 @@ export default function AdminDashboard() {
       }
     },
     [selected]
+  );
+
+  /**
+   * New: send the admin's reply to a research order via email.
+   * Hits the backend so the student is notified at their submitted email address,
+   * then marks the order as responded in the UI.
+   */
+  const sendResearchOrderResponse = useCallback(
+    async (message: string) => {
+      if (!respondTarget) return;
+      const order = respondTarget;
+      setSendingResponse(true);
+
+      try {
+        const res = await fetch(`${API_BASE}/research-order/${order.id}/reply`, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    subject: 'Regarding Your Research Order',
+    message: message,
+  }),
+});
+
+        let data: any = {};
+        try {
+          data = await res.json();
+        } catch {
+          // some backends may return no body — that's fine
+        }
+
+        if (!res.ok) {
+          throw new Error(data?.message || 'Failed to send response email');
+        }
+
+        const respondedAt = new Date().toISOString();
+
+        setResearchOrders((prev) =>
+          prev.map((o) =>
+            o.id === order.id
+              ? { ...o, responded: true, last_response: message, responded_at: respondedAt }
+              : o
+          )
+        );
+
+        if (selectedOrder?.id === order.id) {
+          setSelectedOrder({
+            ...selectedOrder,
+            responded: true,
+            last_response: message,
+            responded_at: respondedAt,
+          });
+        }
+
+        setToastCopy({
+          title: 'Response email sent',
+          subtitle: `${order.full_name} has been notified`,
+        });
+        setEmailToast(true);
+        setRespondTarget(null);
+      } catch (err) {
+        setRoError(err instanceof Error ? err.message : 'Failed to send response. Please try again.');
+      } finally {
+        setSendingResponse(false);
+      }
+    },
+    [respondTarget, selectedOrder]
   );
 
   const tabs: { key: FilterTab; label: string }[] = [
@@ -944,7 +1561,7 @@ export default function AdminDashboard() {
               transition={{ duration: 0.7, delay: 0.55, ease: EASE }}
               className="text-lg md:text-xl text-white/80 max-w-xl font-light mb-2"
             >
-              Review, approve, and manage every enrollment request in one place
+              Review, approve, and manage every enrollment and research request in one place
             </motion.p>
 
             {/* Animated divider dots */}
@@ -966,10 +1583,10 @@ export default function AdminDashboard() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => fetchEnrollments()}
+              onClick={() => (view === 'enrollments' ? fetchEnrollments() : fetchResearchOrders())}
               className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-2 text-xs font-bold text-white hover:bg-white/20 transition-colors"
             >
-              <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
+              <RefreshCw className={`w-3.5 h-3.5 ${(view === 'enrollments' ? refreshing : roRefreshing) ? 'animate-spin' : ''}`} />
               Refresh
             </motion.button>
             <button className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-2 text-xs font-bold text-white hover:bg-white/20 transition-colors">
@@ -980,227 +1597,465 @@ export default function AdminDashboard() {
         </motion.section>
 
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 bg-white">
-          {/* ── Heading ─────────────────────────────────────────── */}
+          {/* ── Top-level view toggle (new) ─────────────────────── */}
           <motion.div
             variants={fadeUp}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="mb-10"
+            className="flex items-center gap-2 bg-[#F5F7FA] rounded-2xl border border-[#C0C5CE]/60 p-1.5 w-fit mb-10"
           >
-            <SectionLabel>Enrollment Management</SectionLabel>
-            <h2 className="text-3xl md:text-4xl font-extrabold text-[#1A1A1A] mb-2">
-              Course Enrollments
-            </h2>
-            <motion.div
-              className="h-[3px] bg-[#8C1B2E] rounded-full"
-              initial={{ width: 0 }}
-              whileInView={{ width: 64 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7, delay: 0.3, ease: EASE }}
-            />
+            <button
+              onClick={() => setView('enrollments')}
+              className={`relative flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-colors duration-200 ${view === 'enrollments' ? 'text-white' : 'text-[#1A1A1A]/60 hover:text-[#8C1B2E]'
+                }`}
+            >
+              {view === 'enrollments' && (
+                <motion.span
+                  layoutId="view-pill"
+                  className="absolute inset-0 bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E] rounded-xl -z-10"
+                  transition={{ duration: 0.3, ease: EASE }}
+                />
+              )}
+              <GraduationCap className="w-4 h-4" />
+              Enrollments
+            </button>
+            <button
+              onClick={() => setView('research-orders')}
+              className={`relative flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-colors duration-200 ${view === 'research-orders' ? 'text-white' : 'text-[#1A1A1A]/60 hover:text-[#8C1B2E]'
+                }`}
+            >
+              {view === 'research-orders' && (
+                <motion.span
+                  layoutId="view-pill"
+                  className="absolute inset-0 bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E] rounded-xl -z-10"
+                  transition={{ duration: 0.3, ease: EASE }}
+                />
+              )}
+              <ClipboardList className="w-4 h-4" />
+              Research Orders
+            </button>
           </motion.div>
 
-          {/* ── Error banner ────────────────────────────────────── */}
-          <AnimatePresence>
-            {error && (
+          {/* ════════════════════════════════════════════════════
+              ENROLLMENTS VIEW (unchanged)
+          ════════════════════════════════════════════════════ */}
+          {view === 'enrollments' && (
+            <>
+              {/* ── Heading ─────────────────────────────────────────── */}
               <motion.div
-                initial={{ opacity: 0, y: -8, height: 0 }}
-                animate={{ opacity: 1, y: 0, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="mb-6 flex items-center gap-2 bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700"
+                variants={fadeUp}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                className="mb-10"
               >
-                <AlertTriangle className="w-4 h-4 shrink-0" />
-                {error}
-                <button onClick={() => setError('')} className="ml-auto">
-                  <X className="w-4 h-4" />
-                </button>
+                <SectionLabel>Enrollment Management</SectionLabel>
+                <h2 className="text-3xl md:text-4xl font-extrabold text-[#1A1A1A] mb-2">
+                  Course Enrollments
+                </h2>
+                <motion.div
+                  className="h-[3px] bg-[#8C1B2E] rounded-full"
+                  initial={{ width: 0 }}
+                  whileInView={{ width: 64 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.7, delay: 0.3, ease: EASE }}
+                />
               </motion.div>
-            )}
-          </AnimatePresence>
 
-          {/* ── Stat cards ──────────────────────────────────────── */}
-          <motion.div
-            variants={stagger}
-            initial="hidden"
-            animate="visible"
-            className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8"
-          >
-            <StatCard
-              label="Total"
-              value={counts.all}
-              icon={Inbox}
-              index={0}
-              active={filter === 'all'}
-              onClick={() => setFilter('all')}
-            />
-            <StatCard
-              label="Pending"
-              value={counts.pending}
-              icon={Clock}
-              index={1}
-              active={filter === 'pending'}
-              onClick={() => setFilter('pending')}
-              color="bg-gradient-to-br from-amber-500 to-amber-400"
-            />
-            <StatCard
-              label="Approved"
-              value={counts.approved}
-              icon={CheckCircle2}
-              index={2}
-              active={filter === 'approved'}
-              onClick={() => setFilter('approved')}
-              color="bg-gradient-to-br from-emerald-600 to-emerald-500"
-            />
-            <StatCard
-              label="Rejected"
-              value={counts.rejected}
-              icon={XCircle}
-              index={3}
-              active={filter === 'rejected'}
-              onClick={() => setFilter('rejected')}
-              color="bg-gradient-to-br from-red-600 to-red-500"
-            />
-          </motion.div>
-
-          {/* ── Filters / Search ────────────────────────────────── */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-            <div className="flex items-center gap-2 bg-white rounded-xl border border-[#C0C5CE]/70 p-1 w-fit overflow-x-auto">
-              {tabs.map((tab) => (
-                <button
-                  key={tab.key}
-                  onClick={() => setFilter(tab.key)}
-                  className={`relative px-4 py-2 rounded-lg text-sm font-bold whitespace-nowrap transition-colors duration-200 ${filter === tab.key ? 'text-white' : 'text-[#1A1A1A]/60 hover:text-[#8C1B2E]'
-                    }`}
-                >
-                  {filter === tab.key && (
-                    <motion.span
-                      layoutId="tab-pill"
-                      className="absolute inset-0 bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E] rounded-lg -z-10"
-                      transition={{ duration: 0.3, ease: EASE }}
-                    />
-                  )}
-                  {tab.label}
-                  <span className="ml-1.5 opacity-70">({counts[tab.key]})</span>
-                </button>
-              ))}
-            </div>
-
-            <div className="relative w-full sm:w-80">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1A1A1A]/40" />
-              <input
-                type="text"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search name, email, course, country..."
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl border-2 border-[#C0C5CE]/70 focus:border-[#8C1B2E] focus:outline-none text-sm text-[#1A1A1A] placeholder:text-[#1A1A1A]/35 bg-white transition-colors duration-200"
-              />
-            </div>
-          </div>
-
-          {/* ── Summary line ────────────────────────────────────── */}
-          {!loading && (
-            <p className="text-xs text-[#1A1A1A]/40 font-medium mb-4">
-              Showing {filtered.length} of {enrollments.length} enrollment{enrollments.length !== 1 ? 's' : ''}
-              {search ? ` for "${search}"` : ''}
-            </p>
-          )}
-
-          {/* ── Table ───────────────────────────────────────────── */}
-          <div className="bg-white rounded-2xl border border-[#C0C5CE]/60 shadow-sm overflow-hidden">
-            {loading ? (
-              <div className="py-24 flex flex-col items-center justify-center text-[#1A1A1A]/40">
-                <div className="w-12 h-12 rounded-full border-4 border-[#8C1B2E]/20 border-t-[#8C1B2E] animate-spin mb-4" />
-                <p className="text-sm font-semibold">Loading enrollments...</p>
-                <p className="text-xs mt-1">Fetching the latest data</p>
-              </div>
-            ) : filtered.length === 0 ? (
-              <div className="py-24 flex flex-col items-center justify-center text-[#1A1A1A]/40">
-                <div className="w-16 h-16 rounded-2xl bg-[#F5F7FA] flex items-center justify-center mb-4">
-                  <Inbox className="w-8 h-8" />
-                </div>
-                <p className="text-sm font-bold text-[#1A1A1A]/60">No enrollments found</p>
-                <p className="text-xs mt-1.5 max-w-xs text-center">
-                  {search
-                    ? `No results match "${search}". Try a different keyword.`
-                    : 'There are no enrollments in this category yet.'}
-                </p>
-                {(search || filter !== 'all') && (
-                  <button
-                    onClick={() => { setSearch(''); setFilter('all'); }}
-                    className="mt-4 text-xs font-bold text-[#8C1B2E] hover:underline"
+              {/* ── Error banner ────────────────────────────────────── */}
+              <AnimatePresence>
+                {error && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -8, height: 0 }}
+                    animate={{ opacity: 1, y: 0, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="mb-6 flex items-center gap-2 bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700"
                   >
-                    Clear filters
-                  </button>
+                    <AlertTriangle className="w-4 h-4 shrink-0" />
+                    {error}
+                    <button onClick={() => setError('')} className="ml-auto">
+                      <X className="w-4 h-4" />
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* ── Stat cards ──────────────────────────────────────── */}
+              <motion.div
+                variants={stagger}
+                initial="hidden"
+                animate="visible"
+                className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8"
+              >
+                <StatCard
+                  label="Total"
+                  value={counts.all}
+                  icon={Inbox}
+                  index={0}
+                  active={filter === 'all'}
+                  onClick={() => setFilter('all')}
+                />
+                <StatCard
+                  label="Pending"
+                  value={counts.pending}
+                  icon={Clock}
+                  index={1}
+                  active={filter === 'pending'}
+                  onClick={() => setFilter('pending')}
+                  color="bg-gradient-to-br from-amber-500 to-amber-400"
+                />
+                <StatCard
+                  label="Approved"
+                  value={counts.approved}
+                  icon={CheckCircle2}
+                  index={2}
+                  active={filter === 'approved'}
+                  onClick={() => setFilter('approved')}
+                  color="bg-gradient-to-br from-emerald-600 to-emerald-500"
+                />
+                <StatCard
+                  label="Rejected"
+                  value={counts.rejected}
+                  icon={XCircle}
+                  index={3}
+                  active={filter === 'rejected'}
+                  onClick={() => setFilter('rejected')}
+                  color="bg-gradient-to-br from-red-600 to-red-500"
+                />
+              </motion.div>
+
+              {/* ── Filters / Search ────────────────────────────────── */}
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+                <div className="flex items-center gap-2 bg-white rounded-xl border border-[#C0C5CE]/70 p-1 w-fit overflow-x-auto">
+                  {tabs.map((tab) => (
+                    <button
+                      key={tab.key}
+                      onClick={() => setFilter(tab.key)}
+                      className={`relative px-4 py-2 rounded-lg text-sm font-bold whitespace-nowrap transition-colors duration-200 ${filter === tab.key ? 'text-white' : 'text-[#1A1A1A]/60 hover:text-[#8C1B2E]'
+                        }`}
+                    >
+                      {filter === tab.key && (
+                        <motion.span
+                          layoutId="tab-pill"
+                          className="absolute inset-0 bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E] rounded-lg -z-10"
+                          transition={{ duration: 0.3, ease: EASE }}
+                        />
+                      )}
+                      {tab.label}
+                      <span className="ml-1.5 opacity-70">({counts[tab.key]})</span>
+                    </button>
+                  ))}
+                </div>
+
+                <div className="relative w-full sm:w-80">
+                  <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1A1A1A]/40" />
+                  <input
+                    type="text"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    placeholder="Search name, email, course, country..."
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border-2 border-[#C0C5CE]/70 focus:border-[#8C1B2E] focus:outline-none text-sm text-[#1A1A1A] placeholder:text-[#1A1A1A]/35 bg-white transition-colors duration-200"
+                  />
+                </div>
+              </div>
+
+              {/* ── Summary line ────────────────────────────────────── */}
+              {!loading && (
+                <p className="text-xs text-[#1A1A1A]/40 font-medium mb-4">
+                  Showing {filtered.length} of {enrollments.length} enrollment{enrollments.length !== 1 ? 's' : ''}
+                  {search ? ` for "${search}"` : ''}
+                </p>
+              )}
+
+              {/* ── Table ───────────────────────────────────────────── */}
+              <div className="bg-white rounded-2xl border border-[#C0C5CE]/60 shadow-sm overflow-hidden">
+                {loading ? (
+                  <div className="py-24 flex flex-col items-center justify-center text-[#1A1A1A]/40">
+                    <div className="w-12 h-12 rounded-full border-4 border-[#8C1B2E]/20 border-t-[#8C1B2E] animate-spin mb-4" />
+                    <p className="text-sm font-semibold">Loading enrollments...</p>
+                    <p className="text-xs mt-1">Fetching the latest data</p>
+                  </div>
+                ) : filtered.length === 0 ? (
+                  <div className="py-24 flex flex-col items-center justify-center text-[#1A1A1A]/40">
+                    <div className="w-16 h-16 rounded-2xl bg-[#F5F7FA] flex items-center justify-center mb-4">
+                      <Inbox className="w-8 h-8" />
+                    </div>
+                    <p className="text-sm font-bold text-[#1A1A1A]/60">No enrollments found</p>
+                    <p className="text-xs mt-1.5 max-w-xs text-center">
+                      {search
+                        ? `No results match "${search}". Try a different keyword.`
+                        : 'There are no enrollments in this category yet.'}
+                    </p>
+                    {(search || filter !== 'all') && (
+                      <button
+                        onClick={() => { setSearch(''); setFilter('all'); }}
+                        className="mt-4 text-xs font-bold text-[#8C1B2E] hover:underline"
+                      >
+                        Clear filters
+                      </button>
+                    )}
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full min-w-[640px]">
+                      <thead>
+                        <tr className="border-b border-[#C0C5CE]/60 bg-[#F5F7FA]/60">
+                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide">
+                            Applicant
+                          </th>
+                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden lg:table-cell">
+                            Course
+                          </th>
+                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden xl:table-cell">
+                            Phone
+                          </th>
+                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden xl:table-cell">
+                            Country
+                          </th>
+                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden 2xl:table-cell">
+                            Education
+                          </th>
+                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden md:table-cell">
+                            Submitted
+                          </th>
+                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden sm:table-cell">
+                            Status
+                          </th>
+                          <th className="text-right py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide">
+                            Actions
+                          </th>
+                        </tr>
+                      </thead>
+                      <motion.tbody variants={stagger} initial="hidden" animate="visible">
+                        {filtered.map((enrollment, index) => (
+                          <EnrollmentRow
+                            key={enrollment.id}
+                            enrollment={enrollment}
+                            index={index}
+                            onView={() => setSelected(enrollment)}
+                            pendingAction={
+                              rowAction?.id === enrollment.id ? rowAction.action : null
+                            }
+                            onAct={(action) =>
+                              setConfirm({
+                                id: enrollment.id,
+                                name: enrollment.full_name,
+                                email: enrollment.email,
+                                action,
+                              })
+                            }
+                          />
+                        ))}
+                      </motion.tbody>
+                    </table>
+                  </div>
                 )}
               </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full min-w-[640px]">
-                  <thead>
-                    <tr className="border-b border-[#C0C5CE]/60 bg-[#F5F7FA]/60">
-                      <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide">
-                        Applicant
-                      </th>
-                      <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden lg:table-cell">
-                        Course
-                      </th>
-                      <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden xl:table-cell">
-                        Phone
-                      </th>
-                      <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden xl:table-cell">
-                        Country
-                      </th>
-                      <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden 2xl:table-cell">
-                        Education
-                      </th>
-                      <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden md:table-cell">
-                        Submitted
-                      </th>
-                      <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden sm:table-cell">
-                        Status
-                      </th>
-                      <th className="text-right py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide">
-                        Actions
-                      </th>
-                    </tr>
-                  </thead>
-                  <motion.tbody variants={stagger} initial="hidden" animate="visible">
-                    {filtered.map((enrollment, index) => (
-                      <EnrollmentRow
-                        key={enrollment.id}
-                        enrollment={enrollment}
-                        index={index}
-                        onView={() => setSelected(enrollment)}
-                        pendingAction={
-                          rowAction?.id === enrollment.id ? rowAction.action : null
-                        }
-                        onAct={(action) =>
-                          setConfirm({
-                            id: enrollment.id,
-                            name: enrollment.full_name,
-                            email: enrollment.email,
-                            action,
-                          })
-                        }
-                      />
-                    ))}
-                  </motion.tbody>
-                </table>
-              </div>
-            )}
-          </div>
 
-          {/* Table footer */}
-          {!loading && filtered.length > 0 && (
-            <p className="text-xs text-[#1A1A1A]/35 text-center mt-4 font-medium">
-              {filtered.length} record{filtered.length !== 1 ? 's' : ''} displayed
-              {filter !== 'all' ? ` · filtered by "${filter}"` : ''}
-            </p>
+              {/* Table footer */}
+              {!loading && filtered.length > 0 && (
+                <p className="text-xs text-[#1A1A1A]/35 text-center mt-4 font-medium">
+                  {filtered.length} record{filtered.length !== 1 ? 's' : ''} displayed
+                  {filter !== 'all' ? ` · filtered by "${filter}"` : ''}
+                </p>
+              )}
+            </>
+          )}
+
+          {/* ════════════════════════════════════════════════════
+              RESEARCH ORDERS VIEW (now with Respond capability)
+          ════════════════════════════════════════════════════ */}
+          {view === 'research-orders' && (
+            <>
+              {/* ── Heading ─────────────────────────────────────────── */}
+              <motion.div
+                variants={fadeUp}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                className="mb-10"
+              >
+                <SectionLabel>Research Order Management</SectionLabel>
+                <h2 className="text-3xl md:text-4xl font-extrabold text-[#1A1A1A] mb-2">
+                  Research Orders
+                </h2>
+                <motion.div
+                  className="h-[3px] bg-[#8C1B2E] rounded-full"
+                  initial={{ width: 0 }}
+                  whileInView={{ width: 64 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.7, delay: 0.3, ease: EASE }}
+                />
+              </motion.div>
+
+              {/* ── Error banner ────────────────────────────────────── */}
+              <AnimatePresence>
+                {roError && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -8, height: 0 }}
+                    animate={{ opacity: 1, y: 0, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="mb-6 flex items-center gap-2 bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700"
+                  >
+                    <AlertTriangle className="w-4 h-4 shrink-0" />
+                    {roError}
+                    <button onClick={() => setRoError('')} className="ml-auto">
+                      <X className="w-4 h-4" />
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* ── Stat cards (now includes response status) ──────── */}
+              <motion.div
+                variants={stagger}
+                initial="hidden"
+                animate="visible"
+                className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8"
+              >
+                <StatCard
+                  label="Total Orders"
+                  value={roCounts.total}
+                  icon={ClipboardList}
+                  index={0}
+                  active={true}
+                  onClick={() => {}}
+                />
+                <StatCard
+                  label="Awaiting Reply"
+                  value={roCounts.awaiting}
+                  icon={Clock}
+                  index={1}
+                  active={false}
+                  onClick={() => {}}
+                  color="bg-gradient-to-br from-amber-500 to-amber-400"
+                />
+                <StatCard
+                  label="Responded"
+                  value={roCounts.responded}
+                  icon={CheckCircle2}
+                  index={2}
+                  active={false}
+                  onClick={() => {}}
+                  color="bg-gradient-to-br from-emerald-600 to-emerald-500"
+                />
+              </motion.div>
+
+              {/* ── Search ──────────────────────────────────────────── */}
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-end gap-4 mb-6">
+                <div className="relative w-full sm:w-80">
+                  <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1A1A1A]/40" />
+                  <input
+                    type="text"
+                    value={roSearch}
+                    onChange={(e) => setRoSearch(e.target.value)}
+                    placeholder="Search name, email, service, subject..."
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border-2 border-[#C0C5CE]/70 focus:border-[#8C1B2E] focus:outline-none text-sm text-[#1A1A1A] placeholder:text-[#1A1A1A]/35 bg-white transition-colors duration-200"
+                  />
+                </div>
+              </div>
+
+              {/* ── Summary line ────────────────────────────────────── */}
+              {!roLoading && (
+                <p className="text-xs text-[#1A1A1A]/40 font-medium mb-4">
+                  Showing {filteredOrders.length} of {researchOrders.length} order{researchOrders.length !== 1 ? 's' : ''}
+                  {roSearch ? ` for "${roSearch}"` : ''}
+                </p>
+              )}
+
+              {/* ── Table ───────────────────────────────────────────── */}
+              <div className="bg-white rounded-2xl border border-[#C0C5CE]/60 shadow-sm overflow-hidden">
+                {roLoading ? (
+                  <div className="py-24 flex flex-col items-center justify-center text-[#1A1A1A]/40">
+                    <div className="w-12 h-12 rounded-full border-4 border-[#8C1B2E]/20 border-t-[#8C1B2E] animate-spin mb-4" />
+                    <p className="text-sm font-semibold">Loading research orders...</p>
+                    <p className="text-xs mt-1">Fetching the latest data</p>
+                  </div>
+                ) : filteredOrders.length === 0 ? (
+                  <div className="py-24 flex flex-col items-center justify-center text-[#1A1A1A]/40">
+                    <div className="w-16 h-16 rounded-2xl bg-[#F5F7FA] flex items-center justify-center mb-4">
+                      <Inbox className="w-8 h-8" />
+                    </div>
+                    <p className="text-sm font-bold text-[#1A1A1A]/60">No research orders found</p>
+                    <p className="text-xs mt-1.5 max-w-xs text-center">
+                      {roSearch
+                        ? `No results match "${roSearch}". Try a different keyword.`
+                        : 'There are no research orders yet.'}
+                    </p>
+                    {roSearch && (
+                      <button
+                        onClick={() => setRoSearch('')}
+                        className="mt-4 text-xs font-bold text-[#8C1B2E] hover:underline"
+                      >
+                        Clear search
+                      </button>
+                    )}
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full min-w-[860px]">
+                      <thead>
+                        <tr className="border-b border-[#C0C5CE]/60 bg-[#F5F7FA]/60">
+                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide">
+                            ID
+                          </th>
+                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide">
+                            Full Name / Email
+                          </th>
+                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden lg:table-cell">
+                            Phone
+                          </th>
+                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden xl:table-cell">
+                            Service
+                          </th>
+                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden xl:table-cell">
+                            Subject
+                          </th>
+                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden md:table-cell">
+                            Deadline
+                          </th>
+                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden 2xl:table-cell">
+                            Requirements
+                          </th>
+                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden sm:table-cell">
+                            Response
+                          </th>
+                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden sm:table-cell">
+                            Created
+                          </th>
+                          <th className="text-right py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide">
+                            Actions
+                          </th>
+                        </tr>
+                      </thead>
+                      <motion.tbody variants={stagger} initial="hidden" animate="visible">
+                        {filteredOrders.map((order, index) => (
+                          <ResearchOrderRow
+                            key={order.id}
+                            order={order}
+                            index={index}
+                            onView={() => setSelectedOrder(order)}
+                            onRespond={() => setRespondTarget(order)}
+                          />
+                        ))}
+                      </motion.tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+
+              {/* Table footer */}
+              {!roLoading && filteredOrders.length > 0 && (
+                <p className="text-xs text-[#1A1A1A]/35 text-center mt-4 font-medium">
+                  {filteredOrders.length} record{filteredOrders.length !== 1 ? 's' : ''} displayed
+                </p>
+              )}
+            </>
           )}
         </main>
 
-        {/* ── Detail drawer ─────────────────────────────────────── */}
+        {/* ── Detail drawer (enrollments) ───────────────────────── */}
         <DetailDrawer
           enrollment={selected}
           onClose={() => setSelected(null)}
@@ -1212,6 +2067,13 @@ export default function AdminDashboard() {
               action,
             })
           }
+        />
+
+        {/* ── Detail drawer (research orders, now with Respond) ─── */}
+        <ResearchOrderDrawer
+          order={selectedOrder}
+          onClose={() => setSelectedOrder(null)}
+          onRespond={(order) => setRespondTarget(order)}
         />
 
         {/* ── Confirm modal ──────────────────────────────────────── */}
@@ -1226,8 +2088,21 @@ export default function AdminDashboard() {
           }
         />
 
+        {/* ── Respond to research order modal (new) ─────────────── */}
+        <RespondModal
+          order={respondTarget}
+          onClose={() => (!sendingResponse ? setRespondTarget(null) : undefined)}
+          onSend={(message) => sendResearchOrderResponse(message)}
+          sending={sendingResponse}
+        />
+
         {/* ── Email sent toast ───────────────────────────────────── */}
-        <EmailToast show={emailToast} onHide={() => setEmailToast(false)} />
+        <EmailToast
+          show={emailToast}
+          onHide={() => setEmailToast(false)}
+          title={toastCopy.title}
+          subtitle={toastCopy.subtitle}
+        />
       </div>
       <Footer />
     </>

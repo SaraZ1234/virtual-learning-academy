@@ -30,6 +30,8 @@ import {
   ChevronDown,
   Send,
   Loader2,
+  FileText,
+  CalendarDays,
 } from 'lucide-react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
@@ -237,12 +239,6 @@ function EnrollmentModal({ isOpen, onClose, courseName }: EnrollmentModalProps) 
     setErrorMsg('');
 
     try {
-      // Using Formspree — replace YOUR_FORM_ID with your actual Formspree form ID
-      // Formspree is free, works client-side, and forwards submissions to any email.
-      // Setup: go to https://formspree.io, create a free form, set email to hafsaakbar071@gmail.com
-      // Then replace 'YOUR_FORM_ID' below with your form ID (e.g. 'xpwzgkqb')
-      const FORMSPREE_FORM_ID = 'YOUR_FORM_ID';
-
       const response = await fetch("http://localhost:5000/api/enroll", {
         method: "POST",
         headers: {
@@ -524,6 +520,331 @@ function EnrollmentModal({ isOpen, onClose, courseName }: EnrollmentModalProps) 
 
                   <p className="text-xs text-center text-[#1A1A1A]/40 pb-1">
                     By submitting, you agree to be contacted by our team regarding your enrollment.
+                  </p>
+                </form>
+              )}
+            </div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RESEARCH ORDER MODAL  (new — mirrors EnrollmentModal exactly)
+═══════════════════════════════════════════════════════════════ */
+
+interface ResearchOrderModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  serviceName: string;
+}
+
+function ResearchOrderModal({ isOpen, onClose, serviceName }: ResearchOrderModalProps) {
+  const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    phone: '',
+    subjectTopic: '',
+    deadline: '',
+    requirements: '',
+  });
+  const [status, setStatus] = useState<FormStatus>('idle');
+  const [errorMsg, setErrorMsg] = useState('');
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus('submitting');
+    setErrorMsg('');
+
+    try {
+      const response = await fetch("http://localhost:5000/api/research-order", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+  full_name: formData.fullName,
+  email: formData.email,
+  phone: formData.phone,
+  service: serviceName,
+  subject: formData.subjectTopic,
+  deadline: formData.deadline,
+  requirements: formData.requirements,
+}),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setStatus("success");
+
+        setFormData({
+          fullName: "",
+          email: "",
+          phone: "",
+          subjectTopic: "",
+          deadline: "",
+          requirements: "",
+        });
+      } else {
+        throw new Error(data.message || "Submission failed");
+      }
+    } catch (err: unknown) {
+      setStatus('error');
+      setErrorMsg(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
+    }
+  };
+
+  const handleClose = () => {
+    if (status === 'submitting') return;
+    setStatus('idle');
+    setErrorMsg('');
+    setFormData({ fullName: '', email: '', phone: '', subjectTopic: '', deadline: '', requirements: '' });
+    onClose();
+  };
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          {/* Backdrop */}
+          <motion.div
+            key="research-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[1000]"
+            onClick={handleClose}
+          />
+
+          {/* Modal */}
+          <motion.div
+            key="research-modal"
+            initial={{ opacity: 0, scale: 0.92, y: 30 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.92, y: 30 }}
+            transition={{ duration: 0.4, ease: EASE }}
+            className="fixed inset-0 z-[1001] flex items-center justify-center p-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+              {/* Top accent bar */}
+              <div className="absolute top-0 left-0 right-0 h-[4px] bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E] rounded-t-2xl" />
+
+              {/* Header */}
+              <div className="flex items-start justify-between p-6 pb-4 pt-7">
+                <div>
+                  <div className="inline-flex items-center gap-2 text-xs font-bold tracking-[0.18em] uppercase text-[#8C1B2E] mb-1">
+                    <span className="block w-4 h-[2px] rounded-full bg-[#8C1B2E]" />
+                    Research Order
+                  </div>
+                  <h3 className="text-xl font-extrabold text-[#1A1A1A]">Book Order: {serviceName}</h3>
+                  <p className="text-sm text-[#1A1A1A]/60 mt-1">Fill in your details and we'll get back to you shortly.</p>
+                </div>
+                <button
+                  onClick={handleClose}
+                  disabled={status === 'submitting'}
+                  className="ml-4 mt-1 w-8 h-8 rounded-full bg-[#F5F7FA] hover:bg-[#8C1B2E]/10 flex items-center justify-center transition-colors duration-200 shrink-0"
+                >
+                  <X className="w-4 h-4 text-[#1A1A1A]/60" />
+                </button>
+              </div>
+
+              {/* Success State */}
+              {status === 'success' ? (
+                <motion.div
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="px-6 pb-8 flex flex-col items-center text-center"
+                >
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: 'spring', stiffness: 200, damping: 14, delay: 0.1 }}
+                    className="w-20 h-20 bg-gradient-to-br from-[#8C1B2E] to-[#B43A4E] rounded-full flex items-center justify-center mb-5 shadow-lg"
+                  >
+                    <CheckCircle className="w-10 h-10 text-white" />
+                  </motion.div>
+                  <h4 className="text-xl font-extrabold text-[#1A1A1A] mb-2">Order Submitted!</h4>
+                  <p className="text-[#1A1A1A]/65 text-sm leading-relaxed mb-6">
+                    Thank you for booking <span className="font-bold text-[#8C1B2E]">{serviceName}</span>. Our team will review your request and contact you within 24 hours.
+                  </p>
+                  <motion.button
+                    whileHover={{ scale: 1.04 }}
+                    whileTap={{ scale: 0.96 }}
+                    onClick={handleClose}
+                    className="bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E] text-white px-8 py-3 rounded-xl font-bold text-sm hover:shadow-lg transition-all"
+                  >
+                    Close
+                  </motion.button>
+                </motion.div>
+              ) : (
+                /* Form */
+                <form onSubmit={handleSubmit} className="px-6 pb-6 space-y-4">
+                  {/* Full Name */}
+                  <div>
+                    <label className="block text-xs font-bold text-[#1A1A1A]/70 uppercase tracking-wide mb-1.5">
+                      Full Name <span className="text-[#8C1B2E]">*</span>
+                    </label>
+                    <div className="relative">
+                      <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1A1A1A]/40" />
+                      <input
+                        type="text"
+                        name="fullName"
+                        required
+                        value={formData.fullName}
+                        onChange={handleChange}
+                        placeholder="Enter your full name"
+                        className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-[#C0C5CE]/70 focus:border-[#8C1B2E] focus:outline-none text-sm text-[#1A1A1A] placeholder:text-[#1A1A1A]/35 transition-colors duration-200"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Email */}
+                  <div>
+                    <label className="block text-xs font-bold text-[#1A1A1A]/70 uppercase tracking-wide mb-1.5">
+                      Email Address <span className="text-[#8C1B2E]">*</span>
+                    </label>
+                    <div className="relative">
+                      <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1A1A1A]/40" />
+                      <input
+                        type="email"
+                        name="email"
+                        required
+                        value={formData.email}
+                        onChange={handleChange}
+                        placeholder="Enter your email"
+                        className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-[#C0C5CE]/70 focus:border-[#8C1B2E] focus:outline-none text-sm text-[#1A1A1A] placeholder:text-[#1A1A1A]/35 transition-colors duration-200"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Phone */}
+                  <div>
+                    <label className="block text-xs font-bold text-[#1A1A1A]/70 uppercase tracking-wide mb-1.5">
+                      Phone Number <span className="text-[#8C1B2E]">*</span>
+                    </label>
+                    <div className="relative">
+                      <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1A1A1A]/40" />
+                      <input
+                        type="tel"
+                        name="phone"
+                        required
+                        value={formData.phone}
+                        onChange={handleChange}
+                        placeholder="Enter your phone number"
+                        className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-[#C0C5CE]/70 focus:border-[#8C1B2E] focus:outline-none text-sm text-[#1A1A1A] placeholder:text-[#1A1A1A]/35 transition-colors duration-200"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Selected Research Service (auto-filled, read-only) */}
+                  <div>
+                    <label className="block text-xs font-bold text-[#1A1A1A]/70 uppercase tracking-wide mb-1.5">
+                      Selected Research Service
+                    </label>
+                    <div className="relative">
+                      <FileText className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1A1A1A]/40" />
+                      <input
+                        type="text"
+                        value={serviceName}
+                        readOnly
+                        className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-[#C0C5CE]/70 bg-[#F5F7FA] text-sm text-[#1A1A1A]/70 cursor-not-allowed"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Subject / Topic */}
+                  <div>
+                    <label className="block text-xs font-bold text-[#1A1A1A]/70 uppercase tracking-wide mb-1.5">
+                      Subject / Topic <span className="text-[#8C1B2E]">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      name="subjectTopic"
+                      required
+                      value={formData.subjectTopic}
+                      onChange={handleChange}
+                      placeholder="e.g. Effect of nanoparticles on..."
+                      className="w-full px-4 py-3 rounded-xl border-2 border-[#C0C5CE]/70 focus:border-[#8C1B2E] focus:outline-none text-sm text-[#1A1A1A] placeholder:text-[#1A1A1A]/35 transition-colors duration-200"
+                    />
+                  </div>
+
+                  {/* Deadline */}
+                  <div>
+                    <label className="block text-xs font-bold text-[#1A1A1A]/70 uppercase tracking-wide mb-1.5">
+                      Deadline <span className="text-[#8C1B2E]">*</span>
+                    </label>
+                    <div className="relative">
+                      <CalendarDays className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1A1A1A]/40 pointer-events-none" />
+                      <input
+                        type="date"
+                        name="deadline"
+                        required
+                        value={formData.deadline}
+                        onChange={handleChange}
+                        className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-[#C0C5CE]/70 focus:border-[#8C1B2E] focus:outline-none text-sm text-[#1A1A1A] transition-colors duration-200 bg-white"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Additional Requirements */}
+                  <div>
+                    <label className="block text-xs font-bold text-[#1A1A1A]/70 uppercase tracking-wide mb-1.5">
+                      Additional Requirements
+                    </label>
+                    <textarea
+                      name="requirements"
+                      rows={3}
+                      value={formData.requirements}
+                      onChange={handleChange}
+                      placeholder="Any specific instructions, formatting, or references..."
+                      className="w-full px-4 py-3 rounded-xl border-2 border-[#C0C5CE]/70 focus:border-[#8C1B2E] focus:outline-none text-sm text-[#1A1A1A] placeholder:text-[#1A1A1A]/35 transition-colors duration-200 resize-none"
+                    />
+                  </div>
+
+                  {/* Error */}
+                  {status === 'error' && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="flex items-center gap-2 bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700"
+                    >
+                      <X className="w-4 h-4 shrink-0" />
+                      {errorMsg || 'Something went wrong. Please try again.'}
+                    </motion.div>
+                  )}
+
+                  {/* Submit */}
+                  <motion.button
+                    type="submit"
+                    disabled={status === 'submitting'}
+                    whileHover={status !== 'submitting' ? { scale: 1.03 } : {}}
+                    whileTap={status !== 'submitting' ? { scale: 0.97 } : {}}
+                    className="w-full bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E] text-white py-3.5 rounded-xl font-bold text-sm hover:shadow-lg transition-all disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  >
+                    {status === 'submitting' ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Submitting...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-4 h-4" />
+                        Submit Order
+                      </>
+                    )}
+                  </motion.button>
+
+                  <p className="text-xs text-center text-[#1A1A1A]/40 pb-1">
+                    By submitting, you agree to be contacted by our team regarding your order.
                   </p>
                 </form>
               )}
@@ -912,7 +1233,16 @@ function TrainingCard({
   );
 }
 
-function ResearchCard({ service, index }: { service: typeof researchServices[0]; index: number }) {
+/* ── ResearchCard now accepts onBookOrder callback ── */
+function ResearchCard({
+  service,
+  index,
+  onBookOrder,
+}: {
+  service: typeof researchServices[0];
+  index: number;
+  onBookOrder: (title: string) => void;
+}) {
   const Icon = service.icon;
   const [hovered, setHovered] = useState(false);
   return (
@@ -950,7 +1280,15 @@ function ResearchCard({ service, index }: { service: typeof researchServices[0];
           <Icon className="w-6 h-6 text-white" />
         </motion.div>
         <h3 className="text-base font-bold text-[#1A1A1A] mb-2">{service.title}</h3>
-        <p className="text-sm text-[#1A1A1A]/70 leading-relaxed flex-1">{service.description}</p>
+        <p className="text-sm text-[#1A1A1A]/70 leading-relaxed flex-1 mb-4">{service.description}</p>
+        <motion.button
+          onClick={() => onBookOrder(service.title)}
+          whileHover={{ scale: 1.04 }}
+          whileTap={{ scale: 0.96 }}
+          className="w-full bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E] text-white py-2.5 rounded-xl font-bold text-xs hover:shadow-lg transition-all"
+        >
+          Book Order
+        </motion.button>
       </div>
       <motion.div
         className="absolute bottom-0 right-0 w-20 h-20 bg-[#8C1B2E]/5 rounded-tl-full pointer-events-none"
@@ -1019,6 +1357,15 @@ export default function Page() {
     setEnrollModalOpen(true);
   }, []);
 
+  /* Research order modal state */
+  const [researchModalOpen, setResearchModalOpen] = useState(false);
+  const [selectedResearchService, setSelectedResearchService] = useState('');
+
+  const handleBookOrder = useCallback((serviceTitle: string) => {
+    setSelectedResearchService(serviceTitle);
+    setResearchModalOpen(true);
+  }, []);
+
   return (
     <>
       <ScrollProgress />
@@ -1028,6 +1375,13 @@ export default function Page() {
         isOpen={enrollModalOpen}
         onClose={() => setEnrollModalOpen(false)}
         courseName={selectedCourse}
+      />
+
+      {/* Global Research Order Modal */}
+      <ResearchOrderModal
+        isOpen={researchModalOpen}
+        onClose={() => setResearchModalOpen(false)}
+        serviceName={selectedResearchService}
       />
 
       <main className="min-h-screen bg-white">
@@ -1476,7 +1830,7 @@ export default function Page() {
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10"
             >
               {researchServices.map((service, index) => (
-                <ResearchCard key={index} service={service} index={index} />
+                <ResearchCard key={index} service={service} index={index} onBookOrder={handleBookOrder} />
               ))}
             </motion.div>
 

@@ -79,6 +79,37 @@ INSERT INTO `enrollments` VALUES (1,'Mahnoor','mahnoor@example.com','03001234567
 UNLOCK TABLES;
 
 --
+-- Table structure for table `research_orders`
+--
+
+DROP TABLE IF EXISTS `research_orders`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `research_orders` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `full_name` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `phone` varchar(20) DEFAULT NULL,
+  `service` varchar(100) NOT NULL,
+  `subject` varchar(255) DEFAULT NULL,
+  `deadline` date DEFAULT NULL,
+  `requirements` text,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `research_orders`
+--
+
+LOCK TABLES `research_orders` WRITE;
+/*!40000 ALTER TABLE `research_orders` DISABLE KEYS */;
+INSERT INTO `research_orders` VALUES (3,'Ali Khan','sarah.javaid.232012045@mypgi.edu.pk','03194585840','Research Proposal','Blockchain Technology in Supply Chain Management','2026-07-15','Need a comprehensive literature review covering recent journal articles, key research gaps, and future research directions. APA 7th edition referencing is required.','2026-06-30 02:13:10'),(4,'Maya ','sarajavaidd@gmail.com','+92 301 4567890','Graphs & Plotting','The Impact of Artificial Intelligence on Modern Healthcare','2026-07-15','I need a 12-page IEEE-format research paper with abstract, literature review, methodology, results, conclusion, and references. Please use at least 25 recent journal articles (2022–2026) and ensure plagiarism is below 10%.','2026-06-30 02:16:06'),(6,'Fatima Noor','sarahjavaid111@gmail.com','+92 312 1122334','Thesis & Dissertation Chapters','Renewable Energy Adoption in Pakistan','2026-07-15','Prepare a professional research proposal including introduction, problem statement, objectives, research questions, hypothesis, research methodology, timeline, expected outcomes, and APA references suitable for MPhil admission.','2026-06-30 02:30:24');
+/*!40000 ALTER TABLE `research_orders` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `users`
 --
 
@@ -119,4 +150,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-06-29  1:39:48
+-- Dump completed on 2026-06-29 21:10:24

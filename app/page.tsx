@@ -148,7 +148,7 @@ function MagneticButton({ children, href }: { children: React.ReactNode; href: s
           animate={{ x: pos.x, y: pos.y }}
           transition={{ type: 'spring', stiffness: 300, damping: 20 }}
           whileTap={{ scale: 0.96 }}
-          className="inline-flex items-center gap-3 bg-white text-[#8C1B2E] font-bold px-10 py-5 rounded-full text-base shadow-2xl group"
+          className="inline-flex items-center gap-3 bg-white text-[#8C1B2E] font-bold px-6 py-4 sm:px-10 sm:py-5 rounded-full text-sm sm:text-base shadow-2xl group"
         >
           {children}
           <span className="group-hover:translate-x-1 transition-transform duration-200">
@@ -186,7 +186,7 @@ function SectionHeading({ label, title, subtitle, light = false }: { label: stri
       className="text-center mb-16"
     >
       <SectionLabel light={light}>{label}</SectionLabel>
-      <h2 className={`text-4xl md:text-5xl font-extrabold ${light ? 'text-white' : 'text-[#1A1A1A]'}`}>
+      <h2 className={`text-3xl sm:text-4xl md:text-5xl font-extrabold ${light ? 'text-white' : 'text-[#1A1A1A]'}`}>
         {title}
       </h2>
       <motion.div
@@ -197,7 +197,7 @@ function SectionHeading({ label, title, subtitle, light = false }: { label: stri
         transition={{ duration: 0.7, delay: 0.3, ease: EASE }}
       />
       {subtitle && (
-        <p className={`text-lg max-w-2xl mx-auto mt-6 ${light ? 'text-white/70' : 'text-[#1A1A1A]/70'}`}>
+        <p className={`text-base sm:text-lg max-w-2xl mx-auto mt-6 px-2 ${light ? 'text-white/70' : 'text-[#1A1A1A]/70'}`}>
           {subtitle}
         </p>
       )}
@@ -321,7 +321,7 @@ function EnrollmentModal({ isOpen, onClose, courseName }: EnrollmentModalProps) 
                     <span className="block w-4 h-[2px] rounded-full bg-[#8C1B2E]" />
                     Course Enrollment
                   </div>
-                  <h3 className="text-xl font-extrabold text-[#1A1A1A]">Enroll in {courseName}</h3>
+                  <h3 className="text-lg sm:text-xl font-extrabold text-[#1A1A1A]">Enroll in {courseName}</h3>
                   <p className="text-sm text-[#1A1A1A]/60 mt-1">Fill in your details and we'll get back to you shortly.</p>
                 </div>
                 <button
@@ -645,7 +645,7 @@ function ResearchOrderModal({ isOpen, onClose, serviceName }: ResearchOrderModal
                     <span className="block w-4 h-[2px] rounded-full bg-[#8C1B2E]" />
                     Research Order
                   </div>
-                  <h3 className="text-xl font-extrabold text-[#1A1A1A]">Book Order: {serviceName}</h3>
+                  <h3 className="text-lg sm:text-xl font-extrabold text-[#1A1A1A]">Book Order: {serviceName}</h3>
                   <p className="text-sm text-[#1A1A1A]/60 mt-1">Fill in your details and we'll get back to you shortly.</p>
                 </div>
                 <button
@@ -1384,7 +1384,7 @@ export default function Page() {
         serviceName={selectedResearchService}
       />
 
-      <main className="min-h-screen bg-white">
+      <main className="min-h-screen bg-white overflow-x-hidden">
         <Navbar />
 
         {/* ╔══════════════════════════════════════════════════╗
@@ -1427,17 +1427,17 @@ export default function Page() {
 
           <motion.div
             style={{ y: heroY, opacity: heroOpacity, scale: heroScale }}
-            className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 flex flex-col items-center justify-center text-center py-28"
+            className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 flex flex-col items-center justify-center text-center py-20 sm:py-24 md:py-28"
           >
             {/* Badge */}
             <motion.div
               initial={{ opacity: 0, y: -16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1, ease: EASE }}
-              className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-5 py-2 text-sm font-medium mb-10"
+              className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 sm:px-5 py-2 text-xs sm:text-sm font-medium mb-8 sm:mb-10 text-center"
             >
               <motion.span
-                className="w-2 h-2 rounded-full bg-white"
+                className="w-2 h-2 rounded-full bg-white shrink-0"
                 animate={{ opacity: [1, 0.3, 1], scale: [1, 1.4, 1] }}
                 transition={{ duration: 2, repeat: Infinity }}
               />
@@ -1448,7 +1448,7 @@ export default function Page() {
             <div className="perspective-[800px] mb-6">
               <AnimatedTitle
                 text="Transforming Education Through Virtual Learning"
-                className="text-5xl md:text-7xl font-extrabold leading-[1.05] tracking-tight block"
+                className="text-4xl sm:text-5xl md:text-7xl font-extrabold leading-[1.1] sm:leading-[1.05] tracking-tight block"
               />
             </div>
 
@@ -1457,7 +1457,7 @@ export default function Page() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.55, ease: EASE }}
-              className="text-xl md:text-2xl text-white/80 font-light mb-4"
+              className="text-lg sm:text-xl md:text-2xl text-white/80 font-light mb-4"
             >
               Learn Without Limits. Study From Anywhere.
             </motion.p>
@@ -1477,7 +1477,7 @@ export default function Page() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.75, ease: EASE }}
-              className="grid grid-cols-2 gap-3 max-w-lg mx-auto mb-12 text-left"
+              className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-lg mx-auto mb-12 text-left"
             >
               {['Live Interactive Classes', 'Qualified Teachers', 'Small Class Sizes', 'Flexible Schedules'].map((f, i) => (
                 <div key={i} className="flex items-center gap-2">
@@ -1505,13 +1505,13 @@ export default function Page() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 1.0, ease: EASE }}
-              className="flex flex-col sm:flex-row gap-4 justify-center"
+              className="flex flex-col sm:flex-row gap-4 justify-center w-full sm:w-auto px-4 sm:px-0"
             >
               <Link href="/programs">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.96 }}
-                  className="group inline-flex items-center gap-2 bg-white text-[#8C1B2E] px-8 py-4 rounded-full font-bold text-base shadow-2xl"
+                  className="group inline-flex items-center justify-center gap-2 bg-white text-[#8C1B2E] px-8 py-4 rounded-full font-bold text-base shadow-2xl w-full sm:w-auto"
                 >
                   <Play className="w-4 h-4" />
                   Start Learning
@@ -1522,7 +1522,7 @@ export default function Page() {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.96 }}
-                  className="inline-flex items-center gap-2 border-2 border-white/60 text-white px-8 py-4 rounded-full font-bold text-base hover:bg-white/10 transition-all backdrop-blur-sm"
+                  className="inline-flex items-center justify-center gap-2 border-2 border-white/60 text-white px-8 py-4 rounded-full font-bold text-base hover:bg-white/10 transition-all backdrop-blur-sm w-full sm:w-auto"
                 >
                   Free Trial Class
                 </motion.button>
@@ -1531,7 +1531,7 @@ export default function Page() {
 
             {/* Scroll indicator */}
             <motion.div
-              className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-white/40 text-xs tracking-widest uppercase"
+              className="hidden sm:flex absolute bottom-8 left-1/2 -translate-x-1/2 flex-col items-center gap-1 text-white/40 text-xs tracking-widest uppercase"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1.4, duration: 0.8 }}
@@ -1551,7 +1551,7 @@ export default function Page() {
         {/* ╔══════════════════════════════════════════════════╗
             ║  ABOUT US                                       ║
             ╚══════════════════════════════════════════════════╝ */}
-        <section className="py-24 bg-white">
+        <section className="py-16 md:py-24 bg-white">
           <div className="max-w-6xl mx-auto px-4 sm:px-6">
             <SectionHeading
               label="Quality Online Education"
@@ -1616,7 +1616,7 @@ export default function Page() {
             ╚══════════════════════════════════════════════════╝ */}
         <section
           id="programs"
-          className="py-24 bg-[#F5F7FA]"
+          className="py-16 md:py-24 bg-[#F5F7FA]"
         >
           <div className="max-w-6xl mx-auto px-4 sm:px-6">
             <SectionHeading
@@ -1643,7 +1643,7 @@ export default function Page() {
             ╚══════════════════════════════════════════════════╝ */}
         <section
           id="research-services"
-          className="py-24 bg-white"
+          className="py-16 md:py-24 bg-white"
         >
           <div className="max-w-6xl mx-auto px-4 sm:px-6">
             <SectionHeading
@@ -1656,7 +1656,7 @@ export default function Page() {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-12"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-12"
             >
               {trainingPrograms.map((program, index) => (
                 <TrainingCard key={index} program={program} index={index} onEnroll={handleEnroll} />
@@ -1673,7 +1673,7 @@ export default function Page() {
                 viewport={{ once: true }}
                 whileHover={{ y: -6, boxShadow: '0 20px 40px rgba(140,27,46,0.13)' }}
                 transition={{ duration: 0.28 }}
-                className="relative bg-gradient-to-b from-[#FBFBFC] to-[#E9EAED] rounded-2xl border-2 border-[#8C1B2E]/40 p-8 overflow-hidden shadow-sm"
+                className="relative bg-gradient-to-b from-[#FBFBFC] to-[#E9EAED] rounded-2xl border-2 border-[#8C1B2E]/40 p-6 sm:p-8 overflow-hidden shadow-sm"
               >
                 <motion.div
                   className="absolute top-0 left-0 right-0 h-[3px] bg-[#8C1B2E]"
@@ -1682,15 +1682,15 @@ export default function Page() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.7, ease: EASE }}
                 />
-                <h3 className="text-2xl font-extrabold text-[#1A1A1A] mb-6">Flexible Pricing</h3>
+                <h3 className="text-xl sm:text-2xl font-extrabold text-[#1A1A1A] mb-6">Flexible Pricing</h3>
                 <div className="space-y-4 mb-6">
-                  <div className="flex justify-between items-center pb-4 border-b border-[#C0C5CE]/70">
+                  <div className="flex justify-between items-center pb-4 border-b border-[#C0C5CE]/70 gap-2">
                     <span className="text-[#1A1A1A] font-semibold">Enrollment Fee</span>
-                    <span className="text-2xl font-extrabold text-[#8C1B2E]">Rs. 1,000</span>
+                    <span className="text-xl sm:text-2xl font-extrabold text-[#8C1B2E]">Rs. 1,000</span>
                   </div>
-                  <div className="flex justify-between items-center pb-4 border-b border-[#C0C5CE]/70">
+                  <div className="flex justify-between items-center pb-4 border-b border-[#C0C5CE]/70 gap-2">
                     <span className="text-[#1A1A1A] font-semibold">Per Course Fee</span>
-                    <span className="text-2xl font-extrabold text-[#8C1B2E]">Rs. 14,000</span>
+                    <span className="text-xl sm:text-2xl font-extrabold text-[#8C1B2E]">Rs. 14,000</span>
                   </div>
                 </div>
                 <p className="text-sm text-[#1A1A1A]/70 leading-relaxed mb-6">Learn, build skills, and shine in the global market with our comprehensive training programs designed for professionals.</p>
@@ -1711,7 +1711,7 @@ export default function Page() {
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true }}
-                className="relative bg-gradient-to-br from-[#8C1B2E] to-[#B43A4E] rounded-2xl p-8 text-white overflow-hidden"
+                className="relative bg-gradient-to-br from-[#8C1B2E] to-[#B43A4E] rounded-2xl p-6 sm:p-8 text-white overflow-hidden"
               >
                 <motion.div
                   aria-hidden
@@ -1722,7 +1722,7 @@ export default function Page() {
                 <motion.div
                   className="absolute top-0 left-0 right-0 h-[3px] bg-white/30"
                 />
-                <h3 className="text-2xl font-extrabold mb-6 relative z-10">Live Zoom Consultations</h3>
+                <h3 className="text-xl sm:text-2xl font-extrabold mb-6 relative z-10">Live Zoom Consultations</h3>
                 <div className="space-y-4 mb-6 relative z-10">
                   {[
                     { title: 'Expert Guidance', desc: 'Get personalized course recommendations' },
@@ -1771,7 +1771,7 @@ export default function Page() {
                   transition={{ duration: 2, repeat: Infinity }}
                   className="absolute z-10 pointer-events-none"
                 >
-                  <Play className="w-16 h-16 text-white drop-shadow-lg" />
+                  <Play className="w-12 h-12 sm:w-16 sm:h-16 text-white drop-shadow-lg" />
                 </motion.div>
                 <video
                   className="w-full h-full object-cover" controls
@@ -1780,8 +1780,8 @@ export default function Page() {
                   <source src="/videos/Video.mp4" type="video/mp4" />
                 </video>
               </div>
-              <div className="p-6">
-                <h3 className="text-lg font-bold text-[#1A1A1A] mb-2">Watch Our Training Overview</h3>
+              <div className="p-4 sm:p-6">
+                <h3 className="text-base sm:text-lg font-bold text-[#1A1A1A] mb-2">Watch Our Training Overview</h3>
                 <p className="text-sm text-[#1A1A1A]/70">Discover how our comprehensive training programs can transform your career and help you excel in the competitive global market.</p>
               </div>
             </motion.div>
@@ -1799,7 +1799,7 @@ export default function Page() {
                   <span className="block w-5 h-[2px] rounded-full bg-[#8C1B2E]" />
                   Live In Session
                 </span>
-                <h3 className="text-2xl sm:text-3xl font-extrabold text-[#1A1A1A]">
+                <h3 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-[#1A1A1A]">
                   Glimpses From Our Zoom Meetings
                 </h3>
               </motion.div>
@@ -1866,7 +1866,7 @@ export default function Page() {
         {/* ╔══════════════════════════════════════════════════╗
             ║  WHY CHOOSE US                                  ║
             ╚══════════════════════════════════════════════════╝ */}
-        <section className="py-24 bg-[#F5F7FA]">
+        <section className="py-16 md:py-24 bg-[#F5F7FA]">
           <div className="max-w-6xl mx-auto px-4 sm:px-6">
             <SectionHeading
               label="Our Advantage"
@@ -1890,7 +1890,7 @@ export default function Page() {
         {/* ╔══════════════════════════════════════════════════╗
             ║  RESEARCH SERVICES                              ║
             ╚══════════════════════════════════════════════════╝ */}
-        <section className="py-24 bg-white">
+        <section className="py-16 md:py-24 bg-white">
           <div className="max-w-6xl mx-auto px-4 sm:px-6">
             <SectionHeading
               label="Academic Support"
@@ -1916,7 +1916,7 @@ export default function Page() {
               whileInView="visible"
               viewport={{ once: true }}
               whileHover={{ y: -4, boxShadow: '0 16px 40px rgba(140,27,46,0.10)' }}
-              className="relative bg-[#F5F7FA] rounded-2xl border-2 border-[#C0C5CE]/70 hover:border-[#8C1B2E]/40 transition-colors duration-300 overflow-hidden p-8 mb-10"
+              className="relative bg-[#F5F7FA] rounded-2xl border-2 border-[#C0C5CE]/70 hover:border-[#8C1B2E]/40 transition-colors duration-300 overflow-hidden p-6 sm:p-8 mb-10"
             >
               <motion.div
                 className="absolute top-0 left-0 right-0 h-[3px] bg-[#8C1B2E] origin-left"
@@ -1956,7 +1956,7 @@ export default function Page() {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
-              className="relative bg-gradient-to-br from-[#8C1B2E] to-[#B43A4E] rounded-2xl p-8 md:p-12 text-white overflow-hidden"
+              className="relative bg-gradient-to-br from-[#8C1B2E] to-[#B43A4E] rounded-2xl p-6 sm:p-8 md:p-12 text-white overflow-hidden"
             >
               <motion.div
                 aria-hidden
@@ -1973,7 +1973,7 @@ export default function Page() {
               <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                 <div>
                   <SectionLabel light>Expert Consultations</SectionLabel>
-                  <h3 className="text-3xl md:text-4xl font-extrabold mb-4">Live Zoom Consultations</h3>
+                  <h3 className="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-4">Live Zoom Consultations</h3>
                   <p className="text-white/80 mb-6 leading-relaxed">
                     Get personalized guidance through our live Zoom meetings. Our expert researchers will discuss your project, address concerns, and provide detailed guidance tailored to your needs.
                   </p>
@@ -2011,7 +2011,7 @@ export default function Page() {
                       transition={{ duration: 2, repeat: Infinity }}
                       className="absolute z-10 pointer-events-none"
                     >
-                      <Play className="w-14 h-14 text-white drop-shadow-lg" />
+                      <Play className="w-12 h-12 sm:w-14 sm:h-14 text-white drop-shadow-lg" />
                     </motion.div>
                     <video
                       className="w-full h-full object-cover"
@@ -2035,7 +2035,7 @@ export default function Page() {
         {/* ╔══════════════════════════════════════════════════╗
             ║  HOW IT WORKS                                   ║
             ╚══════════════════════════════════════════════════╝ */}
-        <section className="py-24 bg-[#F5F7FA]">
+        <section className="py-16 md:py-24 bg-[#F5F7FA]">
           <div className="max-w-6xl mx-auto px-4 sm:px-6">
             <SectionHeading
               label="Getting Started"
@@ -2059,7 +2059,7 @@ export default function Page() {
         {/* ╔══════════════════════════════════════════════════╗
             ║  TESTIMONIALS                                   ║
             ╚══════════════════════════════════════════════════╝ */}
-        <section className="py-24 bg-white">
+        <section className="py-16 md:py-24 bg-white">
           <div className="max-w-6xl mx-auto px-4 sm:px-6">
             <SectionHeading
               label="Voices Of Our Community"
@@ -2083,7 +2083,7 @@ export default function Page() {
         {/* ╔══════════════════════════════════════════════════╗
             ║  CTA                                            ║
             ╚══════════════════════════════════════════════════╝ */}
-        <section className="relative overflow-hidden bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E] text-white py-28">
+        <section className="relative overflow-hidden bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E] text-white py-20 md:py-28">
           <motion.div
             aria-hidden
             className="pointer-events-none absolute inset-0 opacity-40"
@@ -2113,7 +2113,7 @@ export default function Page() {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
-              className="text-4xl md:text-6xl font-extrabold mb-6 leading-tight"
+              className="text-3xl sm:text-4xl md:text-6xl font-extrabold mb-6 leading-tight"
             >
               Book Your Free Trial Class
             </motion.h2>
@@ -2123,7 +2123,7 @@ export default function Page() {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
-              className="text-white/70 text-lg mb-12 max-w-md mx-auto"
+              className="text-white/70 text-base sm:text-lg mb-12 max-w-md mx-auto"
             >
               Experience quality education. Just provide your child's name and grade for instant access.
             </motion.p>

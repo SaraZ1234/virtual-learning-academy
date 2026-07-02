@@ -246,7 +246,7 @@ function StatCard({ stat, index }: { stat: typeof stats[0]; index: number }) {
       custom={index}
       whileHover={{ y: -6 }}
       transition={{ duration: 0.25 }}
-      className="relative bg-white rounded-2xl border-2 border-[#C0C5CE]/70 hover:border-[#8C1B2E]/40 transition-colors duration-300 px-6 py-9 text-center overflow-hidden"
+      className="relative bg-[#EEEFF1] rounded-2xl border-2 border-[#C0C5CE]/70 hover:border-[#8C1B2E]/40 transition-colors duration-300 px-6 py-9 text-center overflow-hidden"
     >
       <motion.div
         className="absolute top-0 left-0 right-0 h-[3px] bg-[#8C1B2E] origin-left"
@@ -283,7 +283,7 @@ function TestimonialCard({ testimonial, index }: { testimonial: typeof testimoni
       onHoverEnd={() => setHovered(false)}
       whileHover={{ y: -10, boxShadow: '0 24px 48px rgba(140,27,46,0.13)' }}
       transition={{ duration: 0.28 }}
-      className="group relative bg-white rounded-2xl border-2 border-[#C0C5CE]/70 hover:border-[#8C1B2E]/40 transition-colors duration-300 overflow-hidden flex flex-col p-8"
+      className="group relative bg-[#EEEFF1] rounded-2xl border-2 border-[#C0C5CE]/70 hover:border-[#8C1B2E]/40 transition-colors duration-300 overflow-hidden flex flex-col p-8"
     >
       <motion.div
         className="absolute top-0 left-0 right-0 h-[3px] bg-[#8C1B2E] origin-left"
@@ -350,7 +350,7 @@ function FaqItem({ faq, index }: { faq: typeof faqs[0]; index: number }) {
       custom={index}
       onHoverStart={() => setHovered(true)}
       onHoverEnd={() => setHovered(false)}
-      className="group relative bg-[#F5F7FA] rounded-2xl border-2 border-[#C0C5CE]/70 hover:border-[#8C1B2E]/40 transition-colors duration-300 overflow-hidden p-7"
+      className="group relative bg-[#F4F5F6] rounded-2xl border-2 border-[#C0C5CE]/70 hover:border-[#8C1B2E]/40 transition-colors duration-300 overflow-hidden p-7"
     >
       <motion.div
         className="absolute top-0 left-0 bottom-0 w-[3px] bg-[#8C1B2E] origin-top"

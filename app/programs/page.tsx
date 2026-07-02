@@ -366,7 +366,7 @@ if (response.ok) {
             className="fixed inset-0 z-[1001] flex items-center justify-center p-4"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <div className="relative bg-[#EEEFF1] rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
               {/* Top accent bar */}
               <div className="absolute top-0 left-0 right-0 h-[4px] bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E] rounded-t-2xl" />
 
@@ -610,7 +610,7 @@ function ProgramCard({
       onHoverEnd={() => setHovered(false)}
       whileHover={{ y: -10, boxShadow: '0 28px 56px rgba(140,27,46,0.13)' }}
       transition={{ duration: 0.3 }}
-      className="group relative bg-white rounded-2xl border border-[#C0C5CE]/70 shadow-sm overflow-hidden flex flex-col"
+      className="group relative bg-[#EEEFF1] rounded-2xl border border-[#C0C5CE]/70 shadow-sm overflow-hidden flex flex-col"
     >
       {/* Animated top accent bar */}
       <motion.div
@@ -646,7 +646,7 @@ function ProgramCard({
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: index * 0.1 + 0.2 }}
-            className="mb-6 p-4 bg-[#F5F7FA] rounded-xl border border-[#C0C5CE]/60"
+            className="mb-6 p-4 bg-[#F4F5F6] rounded-xl border border-[#C0C5CE]/60"
           >
             <div className="flex items-center gap-2 mb-3">
               <Clock className="w-4 h-4 text-[#8C1B2E]" />
@@ -990,7 +990,7 @@ export default function Programs() {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
-              className="bg-white rounded-2xl p-8 border border-[#C0C5CE]/60 shadow-sm"
+              className="bg-[#EEEFF1] rounded-2xl p-8 border border-[#C0C5CE]/60 shadow-sm"
             >
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {islamicPrograms.map((course, index) => (
@@ -1003,7 +1003,7 @@ export default function Programs() {
                       borderColor: '#8C1B2E',
                       boxShadow: '0 12px 28px rgba(140,27,46,0.10)',
                     }}
-                    className="group p-5 bg-[#F5F7FA] rounded-xl border border-[#C0C5CE]/80 transition-all duration-300 cursor-default"
+                    className="group p-5 bg-[#F4F5F6] rounded-xl border border-[#C0C5CE]/80 transition-all duration-300 cursor-default"
                   >
                     {/* Animated dot */}
                     <motion.div

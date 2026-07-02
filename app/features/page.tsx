@@ -276,7 +276,7 @@ function FeatureCard({ feature, index }: { feature: typeof features[0]; index: n
       onHoverEnd={() => setHovered(false)}
       whileHover={{ y: -10, boxShadow: '0 24px 48px rgba(140,27,46,0.13)' }}
       transition={{ duration: 0.28 }}
-      className="group relative bg-white rounded-2xl border-2 border-[#C0C5CE]/70 hover:border-[#8C1B2E]/40 transition-colors duration-300 overflow-hidden flex flex-col p-7"
+      className="group relative bg-[#EEEFF1] rounded-2xl border-2 border-[#C0C5CE]/70 hover:border-[#8C1B2E]/40 transition-colors duration-300 overflow-hidden flex flex-col p-7"
     >
       {/* Animated top accent */}
       <motion.div
@@ -584,7 +584,7 @@ export default function Page() {
                     onHoverStart={() => setHovered(true)}
                     onHoverEnd={() => setHovered(false)}
                     whileHover={{ y: -8, boxShadow: '0 20px 48px rgba(140,27,46,0.11)' }}
-                    className="group relative bg-white rounded-2xl border-2 border-[#C0C5CE]/70 hover:border-[#8C1B2E]/40 transition-colors duration-300 overflow-hidden p-7"
+                    className="group relative bg-[#EEEFF1] rounded-2xl border-2 border-[#C0C5CE]/70 hover:border-[#8C1B2E]/40 transition-colors duration-300 overflow-hidden p-7"
                   >
                     {/* Top bar */}
                     <motion.div

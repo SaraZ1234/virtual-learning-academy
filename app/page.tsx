@@ -310,7 +310,7 @@ function EnrollmentModal({ isOpen, onClose, courseName }: EnrollmentModalProps) 
             className="fixed inset-0 z-[1001] flex items-center justify-center p-4"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <div className="relative bg-gradient-to-b from-[#FBFBFC] to-[#E9EAED] rounded-2xl shadow-2xl ring-1 ring-black/5 w-full max-w-lg max-h-[90vh] overflow-y-auto">
               {/* Top accent bar */}
               <div className="absolute top-0 left-0 right-0 h-[4px] bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E] rounded-t-2xl" />
 
@@ -634,7 +634,7 @@ function ResearchOrderModal({ isOpen, onClose, serviceName }: ResearchOrderModal
             className="fixed inset-0 z-[1001] flex items-center justify-center p-4"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <div className="relative bg-gradient-to-b from-[#FBFBFC] to-[#E9EAED] rounded-2xl shadow-2xl ring-1 ring-black/5 w-full max-w-lg max-h-[90vh] overflow-y-auto">
               {/* Top accent bar */}
               <div className="absolute top-0 left-0 right-0 h-[4px] bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E] rounded-t-2xl" />
 
@@ -1006,7 +1006,7 @@ function ProgramCard({ program, index }: { program: typeof programs[0]; index: n
       onHoverEnd={() => setHovered(false)}
       whileHover={{ y: -10, boxShadow: '0 24px 48px rgba(140,27,46,0.13)' }}
       transition={{ duration: 0.28 }}
-      className="group relative bg-white rounded-2xl border-2 border-[#C0C5CE]/70 hover:border-[#8C1B2E]/40 transition-colors duration-300 overflow-hidden flex flex-col"
+      className="group relative bg-gradient-to-b from-[#FBFBFC] to-[#E9EAED] rounded-2xl border-2 border-[#C0C5CE]/70 hover:border-[#8C1B2E]/40 transition-colors duration-300 overflow-hidden flex flex-col shadow-sm"
     >
       <motion.div
         className="absolute top-0 left-0 right-0 h-[3px] bg-[#8C1B2E] origin-left"
@@ -1072,7 +1072,7 @@ function WhyCard({ reason, index }: { reason: typeof whyChoose[0]; index: number
       onHoverEnd={() => setHovered(false)}
       whileHover={{ y: -10, boxShadow: '0 24px 48px rgba(140,27,46,0.13)' }}
       transition={{ duration: 0.28 }}
-      className="group relative bg-white rounded-2xl border-2 border-[#C0C5CE]/70 hover:border-[#8C1B2E]/40 transition-colors duration-300 overflow-hidden p-8"
+      className="group relative bg-gradient-to-b from-[#FBFBFC] to-[#E9EAED] rounded-2xl border-2 border-[#C0C5CE]/70 hover:border-[#8C1B2E]/40 transition-colors duration-300 overflow-hidden p-8 shadow-sm"
     >
       <motion.div
         className="absolute top-0 left-0 right-0 h-[3px] bg-[#8C1B2E] origin-left"
@@ -1118,7 +1118,7 @@ function TestimonialCard({ testimonial, index }: { testimonial: typeof testimoni
       onHoverEnd={() => setHovered(false)}
       whileHover={{ y: -10, boxShadow: '0 24px 48px rgba(140,27,46,0.13)' }}
       transition={{ duration: 0.28 }}
-      className="group relative bg-white rounded-2xl border-2 border-[#C0C5CE]/70 hover:border-[#8C1B2E]/40 transition-colors duration-300 overflow-hidden flex flex-col p-8"
+      className="group relative bg-gradient-to-b from-[#FBFBFC] to-[#E9EAED] rounded-2xl border-2 border-[#C0C5CE]/70 hover:border-[#8C1B2E]/40 transition-colors duration-300 overflow-hidden flex flex-col p-8 shadow-sm"
     >
       <motion.div
         className="absolute top-0 left-0 right-0 h-[3px] bg-[#8C1B2E] origin-left"
@@ -1186,7 +1186,7 @@ function TrainingCard({
       onHoverEnd={() => setHovered(false)}
       whileHover={{ y: -10, boxShadow: '0 20px 40px rgba(140,27,46,0.13)' }}
       transition={{ duration: 0.28 }}
-      className="group relative bg-white rounded-2xl border-2 border-[#C0C5CE]/70 hover:border-[#8C1B2E]/40 transition-colors duration-300 overflow-hidden flex flex-col"
+      className="group relative bg-gradient-to-b from-[#FBFBFC] to-[#E9EAED] rounded-2xl border-2 border-[#C0C5CE]/70 hover:border-[#8C1B2E]/40 transition-colors duration-300 overflow-hidden flex flex-col shadow-sm"
     >
       <motion.div
         className="absolute top-0 left-0 right-0 h-[3px] bg-[#8C1B2E] origin-left"
@@ -1253,7 +1253,7 @@ function ResearchCard({
       onHoverEnd={() => setHovered(false)}
       whileHover={{ y: -8, boxShadow: '0 20px 40px rgba(140,27,46,0.13)' }}
       transition={{ duration: 0.28 }}
-      className="group relative bg-white rounded-2xl border-2 border-[#C0C5CE]/70 hover:border-[#8C1B2E]/40 transition-colors duration-300 overflow-hidden flex flex-col"
+      className="group relative bg-gradient-to-b from-[#FBFBFC] to-[#E9EAED] rounded-2xl border-2 border-[#C0C5CE]/70 hover:border-[#8C1B2E]/40 transition-colors duration-300 overflow-hidden flex flex-col shadow-sm"
     >
       <motion.div
         className="absolute top-0 left-0 right-0 h-[3px] bg-[#8C1B2E] origin-left"
@@ -1307,7 +1307,7 @@ function ProcessStep({ item, index }: { item: typeof processSteps[0]; index: num
       custom={index}
       whileHover={{ y: -6 }}
       transition={{ duration: 0.25 }}
-      className="relative bg-white rounded-2xl border-2 border-[#C0C5CE]/70 hover:border-[#8C1B2E]/40 transition-colors duration-300 px-5 py-8 text-center overflow-hidden"
+      className="relative bg-gradient-to-b from-[#FBFBFC] to-[#E9EAED] rounded-2xl border-2 border-[#C0C5CE]/70 hover:border-[#8C1B2E]/40 transition-colors duration-300 px-5 py-8 text-center overflow-hidden shadow-sm"
     >
       <motion.div
         className="absolute top-0 left-0 right-0 h-[3px] bg-[#8C1B2E] origin-left"
@@ -1580,7 +1580,7 @@ export default function Page() {
                     onHoverEnd={() => setHovered(false)}
                     whileHover={{ y: -10, boxShadow: '0 24px 48px rgba(140,27,46,0.13)' }}
                     transition={{ duration: 0.28 }}
-                    className="group relative bg-white rounded-2xl border-2 border-[#C0C5CE]/70 hover:border-[#8C1B2E]/40 transition-colors duration-300 overflow-hidden p-8"
+                    className="group relative bg-gradient-to-b from-[#FBFBFC] to-[#E9EAED] rounded-2xl border-2 border-[#C0C5CE]/70 hover:border-[#8C1B2E]/40 transition-colors duration-300 overflow-hidden p-8 shadow-sm"
                   >
                     <motion.div
                       className="absolute top-0 left-0 right-0 h-[3px] bg-[#8C1B2E] origin-left"
@@ -1673,7 +1673,7 @@ export default function Page() {
                 viewport={{ once: true }}
                 whileHover={{ y: -6, boxShadow: '0 20px 40px rgba(140,27,46,0.13)' }}
                 transition={{ duration: 0.28 }}
-                className="relative bg-white rounded-2xl border-2 border-[#8C1B2E]/40 p-8 overflow-hidden"
+                className="relative bg-gradient-to-b from-[#FBFBFC] to-[#E9EAED] rounded-2xl border-2 border-[#8C1B2E]/40 p-8 overflow-hidden shadow-sm"
               >
                 <motion.div
                   className="absolute top-0 left-0 right-0 h-[3px] bg-[#8C1B2E]"
@@ -1756,7 +1756,7 @@ export default function Page() {
               whileInView="visible"
               viewport={{ once: true }}
               whileHover={{ boxShadow: '0 20px 40px rgba(140,27,46,0.13)' }}
-              className="relative bg-white rounded-2xl border-2 border-[#C0C5CE]/70 overflow-hidden"
+              className="relative bg-gradient-to-b from-[#FBFBFC] to-[#E9EAED] rounded-2xl border-2 border-[#C0C5CE]/70 overflow-hidden shadow-sm"
             >
               <motion.div
                 className="absolute top-0 left-0 right-0 h-[3px] bg-[#8C1B2E]"
@@ -1785,8 +1785,83 @@ export default function Page() {
                 <p className="text-sm text-[#1A1A1A]/70">Discover how our comprehensive training programs can transform your career and help you excel in the competitive global market.</p>
               </div>
             </motion.div>
+
+            {/* Zoom Meeting Photos */}
+            <div className="mt-14">
+              <motion.div
+                variants={fadeUp}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                className="text-center mb-8"
+              >
+                <span className="inline-flex items-center gap-2 text-xs font-bold tracking-[0.22em] uppercase mb-3 text-[#8C1B2E]">
+                  <span className="block w-5 h-[2px] rounded-full bg-[#8C1B2E]" />
+                  Live In Session
+                </span>
+                <h3 className="text-2xl sm:text-3xl font-extrabold text-[#1A1A1A]">
+                  Glimpses From Our Zoom Meetings
+                </h3>
+              </motion.div>
+
+              <motion.div
+                variants={stagger}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+              >
+                {[
+                  { src: '/images/zoom-meeting-1.jpg', alt: 'Zoom meeting session 1', caption: 'Live Training Session' },
+                  { src: '/images/zoom-meeting-2.jpg', alt: 'Zoom meeting session 2', caption: 'One-on-One Consultation' },
+                  { src: '/images/zoom-meeting-3.jpg', alt: 'Zoom meeting session 3', caption: 'Group Q&A Discussion' },
+                ].map((photo, index) => (
+                  <motion.div
+                    key={index}
+                    variants={scaleIn}
+                    custom={index}
+                    whileHover={{ y: -8, boxShadow: '0 24px 48px rgba(140,27,46,0.16)' }}
+                    transition={{ duration: 0.3 }}
+                    className="group relative bg-gradient-to-b from-[#FBFBFC] to-[#E9EAED] rounded-2xl border-2 border-[#C0C5CE]/70 overflow-hidden shadow-sm"
+                  >
+                    <motion.div
+                      className="absolute top-0 left-0 right-0 h-[3px] bg-[#8C1B2E] origin-left z-10"
+                      initial={{ scaleX: 0 }}
+                      whileInView={{ scaleX: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.6, delay: index * 0.1, ease: EASE }}
+                    />
+
+                    <div className="relative w-full aspect-[4/3] overflow-hidden bg-[#1A1A1A]/5">
+                      <img
+                        src={photo.src}
+                        alt={photo.alt}
+                        loading="lazy"
+                        className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-110"
+                      />
+                      {/* Gradient overlay for caption legibility */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-300" />
+
+                      {/* Live-meeting badge */}
+                      <div className="absolute top-3 right-3 flex items-center gap-1.5 bg-white/15 backdrop-blur-md border border-white/25 rounded-full px-3 py-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#4ADE80] animate-pulse" />
+                        <span className="text-[10px] font-semibold tracking-wide uppercase text-white">Zoom</span>
+                      </div>
+
+                      {/* Caption */}
+                      <div className="absolute bottom-0 left-0 right-0 p-4">
+                        <p className="text-white font-bold text-sm sm:text-base drop-shadow-sm">
+                          {photo.caption}
+                        </p>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </motion.div>
+            </div>
           </div>
         </section>
+
 
         {/* ╔══════════════════════════════════════════════════╗
             ║  WHY CHOOSE US                                  ║

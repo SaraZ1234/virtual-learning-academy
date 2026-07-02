@@ -539,7 +539,7 @@ export default function About() {
                     boxShadow: '0 24px 48px rgba(140,27,46,0.14)',
                     transition: { duration: 0.25 },
                   }}
-                  className="group relative bg-white rounded-2xl p-9 border border-[#C0C5CE]/70 shadow-sm overflow-hidden cursor-default"
+                  className="group relative bg-gradient-to-b from-[#FBFBFC] to-[#E9EAED] rounded-2xl p-9 border border-[#C0C5CE]/70 shadow-sm overflow-hidden cursor-default"
                 >
                   {/* Gradient shine on hover */}
                   <motion.div
@@ -694,7 +694,7 @@ export default function About() {
                     y: -8,
                     boxShadow: '0 20px 48px rgba(0,0,0,0.08)',
                   }}
-                  className="group relative bg-white rounded-2xl p-10 border border-[#C0C5CE]/60 shadow-sm overflow-hidden"
+                  className="group relative bg-gradient-to-b from-[#FBFBFC] to-[#E9EAED] rounded-2xl p-10 border border-[#C0C5CE]/60 shadow-sm overflow-hidden"
                 >
                   {/* Animated number */}
                   <motion.div

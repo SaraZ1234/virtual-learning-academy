@@ -150,7 +150,7 @@ function SectionLabel({ children, light = false }: { children: React.ReactNode; 
 const contactInfo = [
   { icon: Phone, label: 'Phone', value: '+92 3252467463', link: 'tel:+92 3252467463' },
   { icon: Mail, label: 'Email', value: 'hafsaakbar071@gmail.com ', link: 'mailto:hafsaakbar071@gmail.com ' },
-  { icon: MapPin, label: 'Address', value: 'Your Office Address', link: '#' },
+  { icon: MapPin, label: 'Address', value: '  Lahore, Bahawalpur, Pakistan', link: '#' },
 ];
 
 /* ═══════════════════════════════════════════════════════════════
@@ -168,7 +168,7 @@ function ContactInfoCard({ info, index }: { info: typeof contactInfo[0]; index: 
       onHoverEnd={() => setHovered(false)}
       whileHover={{ y: -10, boxShadow: '0 24px 48px rgba(140,27,46,0.13)' }}
       transition={{ duration: 0.28 }}
-      className="group relative bg-white rounded-2xl border-2 border-[#C0C5CE]/70 hover:border-[#8C1B2E]/40 transition-colors duration-300 overflow-hidden p-8 flex flex-col items-start"
+      className="group relative bg-[#EEEFF1] rounded-2xl border-2 border-[#C0C5CE]/70 hover:border-[#8C1B2E]/40 transition-colors duration-300 overflow-hidden p-8 flex flex-col items-start"
     >
       <motion.div
         className="absolute top-0 left-0 right-0 h-[3px] bg-[#8C1B2E] origin-left"
@@ -566,7 +566,7 @@ export default function Contact() {
                   variants={fadeUp}
                   whileHover={{ y: -6, boxShadow: '0 20px 40px rgba(140,27,46,0.10)' }}
                   transition={{ duration: 0.28 }}
-                  className="relative bg-white rounded-2xl border-2 border-[#C0C5CE]/70 hover:border-[#8C1B2E]/40 transition-colors duration-300 overflow-hidden p-8"
+                  className="relative bg-[#EEEFF1] rounded-2xl border-2 border-[#C0C5CE]/70 hover:border-[#8C1B2E]/40 transition-colors duration-300 overflow-hidden p-8"
                 >
                   <motion.div
                     className="absolute top-0 left-0 right-0 h-[3px] bg-[#8C1B2E] origin-left"
@@ -596,7 +596,7 @@ export default function Contact() {
                   custom={1}
                   whileHover={{ y: -6, boxShadow: '0 20px 40px rgba(140,27,46,0.10)' }}
                   transition={{ duration: 0.28 }}
-                  className="relative bg-white rounded-2xl border-2 border-[#C0C5CE]/70 hover:border-[#8C1B2E]/40 transition-colors duration-300 overflow-hidden p-8"
+                  className="relative bg-[#EEEFF1] rounded-2xl border-2 border-[#C0C5CE]/70 hover:border-[#8C1B2E]/40 transition-colors duration-300 overflow-hidden p-8"
                 >
                   <motion.div
                     className="absolute top-0 left-0 right-0 h-[3px] bg-[#8C1B2E] origin-left"

@@ -346,17 +346,17 @@ export default function About() {
           {/* Hero content */}
           <motion.div
             style={{ y: heroY, opacity: heroOpacity, scale: heroScale }}
-            className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center text-center py-32"
+            className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center text-center py-20 sm:py-24 md:py-32"
           >
             {/* Eyebrow */}
             <motion.div
               initial={{ opacity: 0, y: -16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1, ease: EASE }}
-              className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-5 py-2 text-sm font-medium mb-10"
+              className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 sm:px-5 py-2 text-xs sm:text-sm font-medium mb-8 sm:mb-10"
             >
               <motion.span
-                className="w-2 h-2 rounded-full bg-white"
+                className="w-2 h-2 rounded-full bg-white shrink-0"
                 animate={{ opacity: [1, 0.3, 1], scale: [1, 1.4, 1] }}
                 transition={{ duration: 2, repeat: Infinity }}
               />
@@ -364,10 +364,10 @@ export default function About() {
             </motion.div>
 
             {/* Main title — word reveal + 3D flip */}
-            <div className="perspective-[800px] mb-6">
+            <div className="perspective-[800px] mt-2 sm:mt-4 mb-6">
               <AnimatedTitle
                 text="About Us"
-                className="text-6xl md:text-8xl font-extrabold leading-[1.02] tracking-tight block"
+                className="text-5xl sm:text-6xl md:text-8xl font-extrabold leading-[1.05] sm:leading-[1.02] tracking-tight block"
               />
             </div>
 
@@ -376,7 +376,7 @@ export default function About() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.55, ease: EASE }}
-              className="text-xl md:text-2xl text-white/80 max-w-xl font-light mb-14"
+              className="text-lg sm:text-xl md:text-2xl text-white/80 max-w-xl font-light mb-14 px-2"
             >
               Empowering Students Through Quality Online Education
             </motion.p>
@@ -396,7 +396,7 @@ export default function About() {
 
             {/* Scroll cue */}
             <motion.div
-              className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-white/40 text-xs tracking-widest uppercase"
+              className="hidden sm:flex absolute bottom-8 left-1/2 -translate-x-1/2 flex-col items-center gap-1 text-white/40 text-xs tracking-widest uppercase"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1.4, duration: 0.8 }}

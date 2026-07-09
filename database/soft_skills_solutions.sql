@@ -65,7 +65,7 @@ CREATE TABLE `enrollments` (
   `user_id` int DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -74,7 +74,7 @@ CREATE TABLE `enrollments` (
 
 LOCK TABLES `enrollments` WRITE;
 /*!40000 ALTER TABLE `enrollments` DISABLE KEYS */;
-INSERT INTO `enrollments` VALUES (1,'Mahnoor','mahnoor@example.com','03001234567','Pakistan','Web Development','BS Software Engineering','I want to enroll.','2026-06-28 12:50:07','Approved',NULL),(2,'Ali Raza','ali.raza.dev2026@example.com','03124567890','','AI & Machine Learning','Bachelor\'s Degree','I am interested in joining the AI & Machine Learning course. Please share the course schedule, fee structure, and starting date.','2026-06-28 12:59:52','Approved',NULL),(3,'Ahmed Hassan','ahmed.hassan101@example.com','03114567890','','FBISE Grade 8-12 Program','Other','I would like to enroll in this program. Please share the class timings and fee details.','2026-06-28 13:03:53','Approved',NULL),(4,'Ayesha Khan','ayesha.khan@example.com','03014567891','','Cloud Computing','High School','I am a beginner and want to learn Cloud Computing from scratch.','2026-06-28 13:37:53','Approved',10),(5,'Zainab Ali','zainab.ali@example.com','03001234567','','Full Stack Development','High School','I am a beginner and want to start my career in web development.','2026-06-28 13:54:20','Pending',NULL),(6,'Aryan A. Sharma','aryan@gmail.com','0919876543210','','Data Science','High School','I want to enroll in Beginner course of Data Science. Inorder to get details about advanced tech. Kindly share with me fees structure.','2026-06-28 14:11:35','Pending',NULL),(7,'Danyal G. Zafar','ali@gmail.com','03194424560','','Blockchain','Intermediate / A-Level','I want to enroll in this course for getting details about Block-Chain. And kindly share fees structure','2026-06-28 14:20:11','Pending',NULL),(8,'Khadija K. Hussain','khadija@gmail.com','9876543210','','Graphic Design','High School','I want to enroll in beginners course of Graphic Designing. And share kindly fee structure. ','2026-06-28 14:30:28','Pending',NULL),(9,'Ali Raza','ali.raza@example.com','03011234567','','Federal Board Curriculum (Grades 8-12)','Intermediate / A-Level','I want to improve my understanding of Federal Board syllabus and prepare for exams with proper guidance.','2026-06-28 14:33:16','Pending',NULL),(10,'Fizza','sarah.javaid.232012045@mypgi.edu.pk','03194585840','','DevOps & Automation','Bachelor\'s Degree','I want to learn about Deployment and handlng of projects from designing to deployment and handling afterwards. Can you plz share details about teachers who would be offering this course.  ','2026-06-28 17:01:38','Approved',NULL),(11,'Sania','sarah111@gmail.com','9876543210','','Cloud Computing','Intermediate / A-Level','I want to learn cloud computing because it\'s latest field. ','2026-06-28 18:38:05','Rejected',NULL),(16,'Aryan A. Sharma','javaidmoris789@gmail.com','0919876543210','','Cloud Computing','Intermediate / A-Level','I want to learn from basic. ','2026-06-29 02:46:23','Approved',8),(20,'Hamza Ali','sarahjavaid111@gmail.com','+92 300 4567891','','AI & Machine Learning','Bachelor\'s Degree','I want to build a strong foundation in Artificial Intelligence and Machine Learning. My goal is to learn Python, data preprocessing, model training, and deployment so I can work on real-world AI projects and pursue a career as an AI Engineer. I am eager to gain hands-on experience through practical assignments and projects.','2026-06-30 09:53:45','Approved',11);
+INSERT INTO `enrollments` VALUES (1,'Mahnoor','mahnoor@example.com','03001234567','Pakistan','Web Development','BS Software Engineering','I want to enroll.','2026-06-28 12:50:07','Approved',NULL),(2,'Ali Raza','ali.raza.dev2026@example.com','03124567890','','AI & Machine Learning','Bachelor\'s Degree','I am interested in joining the AI & Machine Learning course. Please share the course schedule, fee structure, and starting date.','2026-06-28 12:59:52','Approved',NULL),(3,'Ahmed Hassan','ahmed.hassan101@example.com','03114567890','','FBISE Grade 8-12 Program','Other','I would like to enroll in this program. Please share the class timings and fee details.','2026-06-28 13:03:53','Approved',NULL),(4,'Ayesha Khan','ayesha.khan@example.com','03014567891','','Cloud Computing','High School','I am a beginner and want to learn Cloud Computing from scratch.','2026-06-28 13:37:53','Approved',10),(5,'Zainab Ali','zainab.ali@example.com','03001234567','','Full Stack Development','High School','I am a beginner and want to start my career in web development.','2026-06-28 13:54:20','Pending',NULL),(6,'Aryan A. Sharma','aryan@gmail.com','0919876543210','','Data Science','High School','I want to enroll in Beginner course of Data Science. Inorder to get details about advanced tech. Kindly share with me fees structure.','2026-06-28 14:11:35','Pending',NULL),(7,'Danyal G. Zafar','ali@gmail.com','03194424560','','Blockchain','Intermediate / A-Level','I want to enroll in this course for getting details about Block-Chain. And kindly share fees structure','2026-06-28 14:20:11','Pending',NULL),(8,'Khadija K. Hussain','khadija@gmail.com','9876543210','','Graphic Design','High School','I want to enroll in beginners course of Graphic Designing. And share kindly fee structure. ','2026-06-28 14:30:28','Pending',NULL),(9,'Ali Raza','ali.raza@example.com','03011234567','','Federal Board Curriculum (Grades 8-12)','Intermediate / A-Level','I want to improve my understanding of Federal Board syllabus and prepare for exams with proper guidance.','2026-06-28 14:33:16','Pending',NULL),(10,'Fizza','sarah.javaid.232012045@mypgi.edu.pk','03194585840','','DevOps & Automation','Bachelor\'s Degree','I want to learn about Deployment and handlng of projects from designing to deployment and handling afterwards. Can you plz share details about teachers who would be offering this course.  ','2026-06-28 17:01:38','Approved',NULL),(11,'Sania','sarah111@gmail.com','9876543210','','Cloud Computing','Intermediate / A-Level','I want to learn cloud computing because it\'s latest field. ','2026-06-28 18:38:05','Rejected',NULL),(16,'Aryan A. Sharma','javaidmoris789@gmail.com','0919876543210','','Cloud Computing','Intermediate / A-Level','I want to learn from basic. ','2026-06-29 02:46:23','Approved',8),(31,'Hina Khan','sarahjavaid111@gmail.com','+92 345 5566778','','Federal Board Curriculum (Grades 8-12)','Bachelor\'s Degree','I want to understand the British Curriculum better so I can support students effectively and improve my teaching methods.','2026-07-03 13:21:49','Approved',13),(32,'Maya','sarajavaidd@gmail.com','+92 300 1234567','','IGCSE & O Level Preparation','Intermediate / A-Level','I want to strengthen my understanding of IGCSE & O Level subjects, improve my exam preparation techniques, and achieve excellent grades. This course will help me build a strong foundation and prepare confidently for my examinations.','2026-07-03 13:50:40','Approved',14);
 /*!40000 ALTER TABLE `enrollments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -106,7 +106,7 @@ CREATE TABLE `research_orders` (
 
 LOCK TABLES `research_orders` WRITE;
 /*!40000 ALTER TABLE `research_orders` DISABLE KEYS */;
-INSERT INTO `research_orders` VALUES (3,'Ali Khan','sarah.javaid.232012045@mypgi.edu.pk','03194585840','Research Proposal','Blockchain Technology in Supply Chain Management','2026-07-15','Need a comprehensive literature review covering recent journal articles, key research gaps, and future research directions. APA 7th edition referencing is required.','2026-06-30 02:13:10','awaiting_reply'),(4,'Maya ','sarajavaidd@gmail.com','+92 301 4567890','Graphs & Plotting','The Impact of Artificial Intelligence on Modern Healthcare','2026-07-15','I need a 12-page IEEE-format research paper with abstract, literature review, methodology, results, conclusion, and references. Please use at least 25 recent journal articles (2022–2026) and ensure plagiarism is below 10%.','2026-06-30 02:16:06','awaiting_reply'),(7,'Usman Tariq','sarahjavaid111@gmail.com','+92 321 6549870','Graphical Abstract','Impact of Machine Learning on Early Disease Diagnosis','2026-07-15','Design a graphical abstract showing the relationship between solar energy adoption, reduction in carbon emissions, economic benefits, and sustainable development. Use clear visual elements and a publication-ready layout. Include relevant icons and a concise summary of findings.','2026-06-30 09:58:57','Responded');
+INSERT INTO `research_orders` VALUES (3,'Ali Khan','sarah.javaid.232012045@mypgi.edu.pk','03194585840','Research Proposal','Blockchain Technology in Supply Chain Management','2026-07-15','Need a comprehensive literature review covering recent journal articles, key research gaps, and future research directions. APA 7th edition referencing is required.','2026-06-30 02:13:10','awaiting_reply'),(4,'Maya ','sarajavaidd@gmail.com','+92 301 4567890','Graphs & Plotting','The Impact of Artificial Intelligence on Modern Healthcare','2026-07-15','I need a 12-page IEEE-format research paper with abstract, literature review, methodology, results, conclusion, and references. Please use at least 25 recent journal articles (2022–2026) and ensure plagiarism is below 10%.','2026-06-30 02:16:06','awaiting_reply');
 /*!40000 ALTER TABLE `research_orders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -129,7 +129,7 @@ CREATE TABLE `users` (
   UNIQUE KEY `email` (`email`),
   KEY `users_ibfk_1` (`enrollment_id`),
   CONSTRAINT `users_ibfk_1` FOREIGN KEY (`enrollment_id`) REFERENCES `enrollments` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -138,8 +138,42 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,1,'Mahnoor','mahnoor@example.com','$2b$10$qgitsamdBzmp3FralrwCDuCB39uizrkawNnerusOMJMUPkJRrXRky','student','2026-06-28 17:50:20'),(3,NULL,'Administrator','admin@gmail.com','$2b$10$Heh1Dk6XrlH6VEYyJEwmLuDNpPJnjtG8j2NGlCTA.pPbyN8.rOFdm','admin','2026-06-29 01:43:54'),(4,2,'Ali Raza','ali.raza.dev2026@example.com','$2b$10$EuhjXDSACfM8PLSpVUl15OvhpxvU.HjnMUg1v8p8AYNAh5AQrkIX6','student','2026-06-29 02:15:14'),(5,3,'Ahmed Hassan','ahmed.hassan101@example.com','$2b$10$WhWwN/GaoWPE5GGj3XpcTeg1K.dv7C3gWK4uX/uNhBYzkK5LvlcUa','student','2026-06-29 03:14:06'),(6,10,'Fizza','sarah.javaid.232012045@mypgi.edu.pk','$2b$10$zOtbkH1JaGoI0Ze9kLQYKuYQuSTFkJvAHsuM17MX0okG/JvvgtEOK','student','2026-06-29 03:15:41'),(8,16,'Aryan A. Sharma','javaidmoris789@gmail.com','$2b$10$dkwbs54nw9sxHhz6qaXMJepbJDxyQWZip5Wuspytm.nZ5Z5lODa76','student','2026-06-29 06:38:41'),(10,4,'Ayesha Khan','ayesha.khan@example.com','$2b$10$v/j3AYkaNUt3XFofSUJBYOequiOgoIXTGE5wz1dp/SzzwxjkN0cBm','student','2026-06-29 07:47:21'),(11,20,'Hamza Ali','sarahjavaid111@gmail.com','$2b$10$jVM4YU4J4nd/OCg/928.iuLh65zrPS.75H5B5kJRZ49yIbN3xuWPm','student','2026-06-30 09:55:16');
+INSERT INTO `users` VALUES (1,1,'Mahnoor','mahnoor@example.com','$2b$10$qgitsamdBzmp3FralrwCDuCB39uizrkawNnerusOMJMUPkJRrXRky','student','2026-06-28 17:50:20'),(3,NULL,'Administrator','admin@gmail.com','$2b$10$Heh1Dk6XrlH6VEYyJEwmLuDNpPJnjtG8j2NGlCTA.pPbyN8.rOFdm','admin','2026-06-29 01:43:54'),(4,2,'Ali Raza','ali.raza.dev2026@example.com','$2b$10$EuhjXDSACfM8PLSpVUl15OvhpxvU.HjnMUg1v8p8AYNAh5AQrkIX6','student','2026-06-29 02:15:14'),(5,3,'Ahmed Hassan','ahmed.hassan101@example.com','$2b$10$WhWwN/GaoWPE5GGj3XpcTeg1K.dv7C3gWK4uX/uNhBYzkK5LvlcUa','student','2026-06-29 03:14:06'),(6,10,'Fizza','sarah.javaid.232012045@mypgi.edu.pk','$2b$10$zOtbkH1JaGoI0Ze9kLQYKuYQuSTFkJvAHsuM17MX0okG/JvvgtEOK','student','2026-06-29 03:15:41'),(8,16,'Aryan A. Sharma','javaidmoris789@gmail.com','$2b$10$dkwbs54nw9sxHhz6qaXMJepbJDxyQWZip5Wuspytm.nZ5Z5lODa76','student','2026-06-29 06:38:41'),(10,4,'Ayesha Khan','ayesha.khan@example.com','$2b$10$v/j3AYkaNUt3XFofSUJBYOequiOgoIXTGE5wz1dp/SzzwxjkN0cBm','student','2026-06-29 07:47:21'),(13,31,'Hina Khan','sarahjavaid111@gmail.com','$2b$10$O5mhnPfH91sXqNxSJjKZOeMSBwRV6Mj66t3AR1wytVgYMNIQUn6mi','student','2026-07-03 13:26:48'),(14,32,'Maya','sarajavaidd@gmail.com','$2b$10$h9ZO7Mr1Vn10RQSCGuSfkeYBQK5mzbr19M8wcCEGQXgd3oDDt9oKG','student','2026-07-03 13:51:41');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `zoom_bookings`
+--
+
+DROP TABLE IF EXISTS `zoom_bookings`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `zoom_bookings` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `full_name` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `phone` varchar(20) NOT NULL,
+  `course` varchar(100) NOT NULL,
+  `preferred_date` date NOT NULL,
+  `preferred_time` time NOT NULL,
+  `status` enum('Pending','Approved','Rejected') DEFAULT 'Pending',
+  `meeting_link` varchar(255) DEFAULT NULL,
+  `meeting_id` varchar(100) DEFAULT NULL,
+  `meeting_password` varchar(100) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `zoom_bookings`
+--
+
+LOCK TABLES `zoom_bookings` WRITE;
+/*!40000 ALTER TABLE `zoom_bookings` DISABLE KEYS */;
+INSERT INTO `zoom_bookings` VALUES (1,'Mahnoor','sarah@gmail.com','03123456789','Web Development','2026-07-20','18:00:00','Approved','https://us05web.zoom.us/j/84345469721?pwd=rneG88GiM4uAhONVgpptMmwDd5bvyL.1','84345469721','k1x916','2026-07-08 09:53:11'),(2,'Mahnoor','sarahjavaid111@gmail.com','03123456789','Web Development','2026-07-20','18:00:00','Approved','https://us05web.zoom.us/j/89146024918?pwd=sw2VbJ4PWjajTvSUuVSlMiEVUJmKTs.1','89146024918','nS8D4Y','2026-07-08 11:02:45'),(3,'Mahnoor','sarahjavaid111@gmail.com','03123456789','Web Development','2026-07-20','18:00:00','Pending',NULL,NULL,NULL,'2026-07-08 12:38:51'),(4,'Mahnoor','sarahjavaid111@gmail.com','03123456789','Web Development','2026-07-20','18:00:00','Pending',NULL,NULL,NULL,'2026-07-08 12:39:09'),(5,'Mahnoor','sarahjavaid111@gmail.com','03123456789','Web Development','2026-07-20','18:00:00','Pending',NULL,NULL,NULL,'2026-07-08 12:39:30'),(6,'Mahnoor','sarahjavaid111@gmail.com','03123456789','Web Development','2026-07-20','18:00:00','Pending',NULL,NULL,NULL,'2026-07-08 13:15:34'),(7,'Khadija K. Hussain','sarahjavaid111@gmail.com','9876543210','IGCSE','2026-07-16','20:30:00','Approved','https://us05web.zoom.us/j/87478696836?pwd=NW8bKp2bICrmEAuhWjBxLLcVqytlAl.1','87478696836','eNYSP4','2026-07-08 13:28:02'),(8,'Manvi','sarah.javaid.232012045@mypgi.edu.pk','03194585840','A Level','2026-07-24','22:40:00','Approved','https://us05web.zoom.us/j/89825596350?pwd=9kqgtqAOHU3w3KzJXTna8elpoJCjRD.1','89825596350','2A43Vj','2026-07-08 14:39:25');
+/*!40000 ALTER TABLE `zoom_bookings` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -151,4 +185,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-06-30  3:05:37
+-- Dump completed on 2026-07-08 22:49:59

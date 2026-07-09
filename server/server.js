@@ -7,18 +7,21 @@ const authRoutes = require("./routes/authRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const contactRoutes = require("./routes/contactRoutes");
 const researchOrderRoutes = require("./routes/researchOrderRoutes");
+const zoomRoutes = require("./routes/zoomRoutes");
 
 const app = express();
 
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use("/api", enrollmentRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api", contactRoutes);
 app.use("/api", researchOrderRoutes);
+app.use("/api/zoom", zoomRoutes);
 
 // Test Route
 app.get("/", (req, res) => {

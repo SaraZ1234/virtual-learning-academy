@@ -4,6 +4,8 @@ const bcrypt = require("bcryptjs");
 const sendApprovalMail = require("../utils/sendApprovalMail");
 const sendRejectionMail = require("../utils/sendRejectionMail");
 
+
+
 const createEnrollment = async (req, res) => {
   const {
     full_name,

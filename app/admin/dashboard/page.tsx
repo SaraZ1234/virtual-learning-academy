@@ -27,6 +27,8 @@ import {
   ClipboardList,
   CalendarClock,
   Reply,
+  Video,
+  Link2,
 } from 'lucide-react';
 import { useEffect, useMemo, useState, useCallback, useRef } from 'react';
 import Header from "@/components/Navbar";
@@ -158,8 +160,24 @@ interface ResearchOrder {
   status: string;
 }
 
+/* New: Zoom Meeting type */
+interface ZoomMeeting {
+  id: number;
+  full_name: string;
+  email: string;
+  phone: string;
+  course: string;
+  preferred_date: string;
+  preferred_time: string;
+  status: string;
+  meeting_link: string | null;
+  meeting_id: string | null;
+  meeting_password: string | null;
+  created_at: string;
+}
+
 /* Top-level dashboard view */
-type DashboardView = 'enrollments' | 'research-orders';
+type DashboardView = 'enrollments' | 'research-orders' | 'zoom-meetings';
 
 const API_BASE = 'http://localhost:5000/api';
 
@@ -984,6 +1002,289 @@ function ResearchOrderRow({
 }
 
 /* ═══════════════════════════════════════════════════════════════
+   ZOOM MEETING ROW  (new)
+═══════════════════════════════════════════════════════════════ */
+function ZoomMeetingRow({
+  meeting,
+  index,
+  onView,
+}: {
+  meeting: ZoomMeeting;
+  index: number;
+  onView: () => void;
+}) {
+  const formattedStart = `${meeting.preferred_date} ${meeting.preferred_time}`
+    ? new Date(`${meeting.preferred_date} ${meeting.preferred_time}`).toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    })
+    : '—';
+
+  return (
+    <motion.tr
+      variants={fadeUp}
+      custom={index}
+      className="border-b border-[#C0C5CE]/40 hover:bg-[#F5F7FA]/60 transition-colors duration-150 group"
+    >
+      {/* ID */}
+      <td className="py-4 px-4 text-xs font-bold text-[#1A1A1A]/45 whitespace-nowrap">
+        #{meeting.id}
+      </td>
+
+      {/* Topic */}
+      <td className="py-4 px-4">
+        <button onClick={onView} className="text-left">
+          <p className="font-bold text-[#1A1A1A] text-sm group-hover:text-[#8C1B2E] transition-colors">
+            {meeting.full_name}
+          </p>
+          {meeting.email && (
+            <p className="text-xs text-[#1A1A1A]/50 mt-0.5">{meeting.email}</p>
+          )}
+        </button>
+      </td>
+
+      {/* Start time */}
+      <td className="py-4 px-4 text-sm text-[#1A1A1A]/60 hidden md:table-cell whitespace-nowrap">
+        {formattedStart}
+      </td>
+
+      {/* Duration */}
+      <td className="py-4 px-4 text-sm text-[#1A1A1A]/60 hidden lg:table-cell">
+        {meeting.duration ? `${meeting.duration} min` : '—'}
+      </td>
+
+      {/* Join link */}
+      <td className="py-4 px-4 text-sm hidden xl:table-cell max-w-[220px]">
+        {meeting.meeting_link ? (
+          <a
+            href={meeting.meeting_link!}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-[#8C1B2E] font-semibold hover:underline truncate"
+          >
+            <Link2 className="w-3.5 h-3.5 shrink-0" />
+            <span className="truncate">Join Link</span>
+          </a>
+        ) : (
+          '—'
+        )}
+      </td>
+
+      {/* Created date */}
+      <td className="py-4 px-4 text-xs text-[#1A1A1A]/50 hidden sm:table-cell whitespace-nowrap">
+        {meeting.created_at
+          ? new Date(meeting.created_at).toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+          })
+          : '—'}
+      </td>
+
+{/* Actions */}
+<td className="py-4 px-4">
+  <div className="flex items-center justify-end gap-3">
+    <button
+      onClick={async () => {
+        try {
+          const response = await fetch(
+            `http://localhost:5000/api/zoom/approve/${meeting.id}`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+          if (response.ok) {
+            alert("Meeting approved successfully!");
+          } else {
+            alert("Failed to approve meeting.");
+          }
+        } catch (error) {
+          console.error("Error approving meeting:", error);
+          alert("An error occurred while approving the meeting.");
+        }
+      }}
+      className="text-xs font-bold bg-[#8C1B2E] text-white px-3 py-1.5 rounded hover:bg-[#8C1B2E]/90 transition-colors"
+    >
+      Approve
+    </button>
+
+    <button
+      onClick={onView}
+      className="text-xs font-bold text-[#8C1B2E] hover:underline"
+    >
+      View
+    </button>
+  </div>
+</td>    </motion.tr>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ZOOM MEETING DETAIL DRAWER  (new)
+═══════════════════════════════════════════════════════════════ */
+function ZoomMeetingDrawer({
+  meeting,
+  onClose,
+}: {
+  meeting: ZoomMeeting | null;
+  onClose: () => void;
+}) {
+  return (
+    <AnimatePresence>
+      {meeting && (
+        <>
+          <motion.div
+            key="zm-drawer-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[900]"
+            onClick={onClose}
+          />
+          <motion.div
+            key="zm-drawer"
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
+            transition={{ duration: 0.35, ease: EASE }}
+            className="fixed top-0 right-0 h-full w-full max-w-lg bg-white z-[901] shadow-2xl overflow-y-auto"
+          >
+            <div className="absolute top-0 left-0 right-0 h-[4px] bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E]" />
+
+            {/* Header */}
+            <div className="sticky top-0 bg-white/95 backdrop-blur-sm z-10 px-6 pt-6 pb-4 border-b border-[#C0C5CE]/30">
+              <div className="flex items-start justify-between">
+                <div>
+                  <SectionLabel>Zoom Meeting Details</SectionLabel>
+                  <h3 className="text-xl font-extrabold text-[#1A1A1A] leading-tight">
+                    {meeting.full_name}
+                  </h3>
+                  {meeting.email && (
+                    <p className="text-sm text-[#1A1A1A]/50 mt-0.5">{meeting.email}</p>
+                  )}
+                </div>
+                <button
+                  onClick={onClose}
+                  className="w-9 h-9 rounded-full bg-[#F5F7FA] hover:bg-[#8C1B2E]/10 flex items-center justify-center transition-colors shrink-0 mt-1"
+                >
+                  <X className="w-4 h-4 text-[#1A1A1A]/60" />
+                </button>
+              </div>
+            </div>
+
+            <div className="p-6">
+              {/* Meeting details */}
+              <div className="mb-6">
+                <p className="text-[10px] font-extrabold tracking-[0.2em] uppercase text-[#1A1A1A]/35 mb-3">
+                  Meeting Details
+                </p>
+                <div className="bg-[#F5F7FA] rounded-2xl p-4 space-y-3">
+                  <InfoRow icon={Video} label="Topic" value={meeting.full_name} />
+                  {`${meeting.preferred_date} ${meeting.preferred_time}` && (
+                    <>
+                      <div className="h-px bg-[#C0C5CE]/30" />
+                      <InfoRow
+                        icon={CalendarClock}
+                        label="Start Time"
+                        value={new Date(`${meeting.preferred_date} ${meeting.preferred_time}`).toLocaleString('en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
+                      />
+                    </>
+                  )}
+                  {meeting.duration != null && (
+                    <>
+                      <div className="h-px bg-[#C0C5CE]/30" />
+                      <InfoRow icon={Clock} label="Duration" value={`${meeting.duration} minutes`} />
+                    </>
+                  )}
+                </div>
+              </div>
+
+              {/* Join link */}
+              {meeting.meeting_link && (
+                <div className="mb-6">
+                  <p className="text-[10px] font-extrabold tracking-[0.2em] uppercase text-[#1A1A1A]/35 mb-3">
+                    Join Link
+                  </p>
+                  <div className="bg-[#F5F7FA] rounded-2xl p-4">
+                    <a
+                      href={meeting.meeting_link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-sm font-semibold text-[#8C1B2E] hover:underline break-all"
+                    >
+                      <Link2 className="w-4 h-4 shrink-0" />
+                      {meeting.meeting_link}
+                    </a>
+                  </div>
+                </div>
+              )}
+
+              {/* Agenda */}
+              {meeting.course && (
+                <div className="mb-6">
+                  <p className="text-[10px] font-extrabold tracking-[0.2em] uppercase text-[#1A1A1A]/35 mb-3">
+                    Agenda
+                  </p>
+                  <div className="bg-[#F5F7FA] rounded-2xl p-4">
+                    <div className="flex items-start gap-3">
+                      <div className="w-9 h-9 rounded-lg bg-white border border-[#C0C5CE]/40 flex items-center justify-center shrink-0 mt-0.5">
+                        <MessageSquare className="w-4 h-4 text-[#8C1B2E]" />
+                      </div>
+                      <p className="text-sm text-[#1A1A1A]/80 leading-relaxed pt-1">
+                        {meeting.course}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Meta */}
+              <div className="mb-2">
+                <p className="text-[10px] font-extrabold tracking-[0.2em] uppercase text-[#1A1A1A]/35 mb-3">
+                  Submission Info
+                </p>
+                <div className="bg-[#F5F7FA] rounded-2xl p-4 space-y-3">
+                  <InfoRow icon={FileText} label="Meeting ID" value={`#${meeting.id}`} />
+                  {meeting.created_at && (
+                    <>
+                      <div className="h-px bg-[#C0C5CE]/30" />
+                      <InfoRow
+                        icon={Calendar}
+                        label="Created"
+                        value={new Date(meeting.created_at).toLocaleString('en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
+                      />
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
    RESEARCH ORDER DETAIL DRAWER  (now with Respond action)
 ═══════════════════════════════════════════════════════════════ */
 function ResearchOrderDrawer({
@@ -1222,6 +1523,14 @@ export default function AdminDashboard() {
   const [respondTarget, setRespondTarget] = useState<ResearchOrder | null>(null);
   const [sendingResponse, setSendingResponse] = useState(false);
 
+  /* ── Zoom Meetings state (new) ────────────────────────────── */
+  const [zoomMeetings, setZoomMeetings] = useState<ZoomMeeting[]>([]);
+  const [zoomLoading, setZoomLoading] = useState(true);
+  const [zoomError, setZoomError] = useState('');
+  const [zoomSearch, setZoomSearch] = useState('');
+  const [zoomRefreshing, setZoomRefreshing] = useState(false);
+  const [selectedMeeting, setSelectedMeeting] = useState<ZoomMeeting | null>(null);
+
   const fetchEnrollments = useCallback(async (silent = false) => {
     if (!silent) setLoading(true);
     setRefreshing(true);
@@ -1264,6 +1573,25 @@ export default function AdminDashboard() {
     }
   }, []);
 
+  /* New: fetch zoom meetings — GET http://localhost:5000/api/zoom/all */
+  const fetchZoomMeetings = useCallback(async (silent = false) => {
+    if (!silent) setZoomLoading(true);
+    setZoomRefreshing(true);
+    setZoomError('');
+    try {
+      const res = await fetch(`${API_BASE}/zoom/all`);
+      if (!res.ok) throw new Error('Failed to load Zoom meetings');
+      const data = await res.json();
+      const list: ZoomMeeting[] = data.data || [];
+setZoomMeetings(list);
+    } catch (err: unknown) {
+      setZoomError(err instanceof Error ? err.message : 'Something went wrong while loading Zoom meetings.');
+    } finally {
+      setZoomLoading(false);
+      setZoomRefreshing(false);
+    }
+  }, []);
+
   useEffect(() => {
     fetchEnrollments();
   }, [fetchEnrollments]);
@@ -1274,6 +1602,13 @@ export default function AdminDashboard() {
       fetchResearchOrders();
     }
   }, [view, researchOrders.length, roLoading, fetchResearchOrders]);
+
+  /* Lazily fetch zoom meetings the first time that tab is opened */
+  useEffect(() => {
+    if (view === 'zoom-meetings' && zoomMeetings.length === 0 && zoomLoading) {
+      fetchZoomMeetings();
+    }
+  }, [view, zoomMeetings.length, zoomLoading, fetchZoomMeetings]);
 
   const counts = useMemo(() => ({
     all: enrollments.length,
@@ -1318,6 +1653,28 @@ export default function AdminDashboard() {
     responded: researchOrders.filter((o) => o.status === 'Responded').length,
     awaiting: researchOrders.filter((o) => o.status !== 'Responded').length,
   }), [researchOrders]);
+
+  /* New: filtered zoom meetings */
+  const filteredMeetings = useMemo(() => {
+    const q = zoomSearch.trim().toLowerCase();
+    if (!q) return zoomMeetings;
+    return zoomMeetings.filter((m) =>
+      m.topic?.toLowerCase().includes(q) ||
+      m.host_email?.toLowerCase().includes(q) ||
+      m.agenda?.toLowerCase().includes(q)
+    );
+  }, [zoomMeetings, zoomSearch]);
+
+  /* New: zoom meeting counts (upcoming vs past, based on start_time) */
+  const zoomCounts = useMemo(() => {
+    const now = Date.now();
+    const upcoming = zoomMeetings.filter((m) => m.start_time && new Date(m.start_time).getTime() >= now).length;
+    return {
+      total: zoomMeetings.length,
+      upcoming,
+      past: zoomMeetings.length - upcoming,
+    };
+  }, [zoomMeetings]);
   /**
    * Send approval email via backend, then update UI.
    * Falls back gracefully if the email endpoint doesn't exist yet.
@@ -1579,10 +1936,16 @@ export default function AdminDashboard() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => (view === 'enrollments' ? fetchEnrollments() : fetchResearchOrders())}
+              onClick={() =>
+                view === 'enrollments'
+                  ? fetchEnrollments()
+                  : view === 'research-orders'
+                    ? fetchResearchOrders()
+                    : fetchZoomMeetings()
+              }
               className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-2 text-xs font-bold text-white hover:bg-white/20 transition-colors"
             >
-              <RefreshCw className={`w-3.5 h-3.5 ${(view === 'enrollments' ? refreshing : roRefreshing) ? 'animate-spin' : ''}`} />
+              <RefreshCw className={`w-3.5 h-3.5 ${(view === 'enrollments' ? refreshing : view === 'research-orders' ? roRefreshing : zoomRefreshing) ? 'animate-spin' : ''}`} />
               Refresh
             </motion.button>
             <button className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-2 text-xs font-bold text-white hover:bg-white/20 transition-colors">
@@ -1630,6 +1993,21 @@ export default function AdminDashboard() {
               )}
               <ClipboardList className="w-4 h-4" />
               Research Orders
+            </button>
+            <button
+              onClick={() => setView('zoom-meetings')}
+              className={`relative flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-colors duration-200 ${view === 'zoom-meetings' ? 'text-white' : 'text-[#1A1A1A]/60 hover:text-[#8C1B2E]'
+                }`}
+            >
+              {view === 'zoom-meetings' && (
+                <motion.span
+                  layoutId="view-pill"
+                  className="absolute inset-0 bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E] rounded-xl -z-10"
+                  transition={{ duration: 0.3, ease: EASE }}
+                />
+              )}
+              <Video className="w-4 h-4" />
+              Zoom Meetings
             </button>
           </motion.div>
 
@@ -2049,6 +2427,183 @@ export default function AdminDashboard() {
               )}
             </>
           )}
+
+          {/* ════════════════════════════════════════════════════
+              ZOOM MEETINGS VIEW (new)
+          ════════════════════════════════════════════════════ */}
+          {view === 'zoom-meetings' && (
+            <>
+              {/* ── Heading ─────────────────────────────────────────── */}
+              <motion.div
+                variants={fadeUp}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                className="mb-10"
+              >
+                <SectionLabel>Zoom Meeting Management</SectionLabel>
+                <h2 className="text-3xl md:text-4xl font-extrabold text-[#1A1A1A] mb-2">
+                  Scheduled Zoom Meetings
+                </h2>
+                <p className="text-[#1A1A1A]/55 text-base max-w-2xl">
+                  View every Zoom meeting pulled from the API, including join links and schedule details.
+                </p>
+              </motion.div>
+
+              {/* ── Error banner ──────────────────────────────────────── */}
+              <AnimatePresence>
+                {zoomError && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 mb-6 text-sm font-medium overflow-hidden"
+                  >
+                    <AlertTriangle className="w-4 h-4 shrink-0" />
+                    {zoomError}
+                    <button onClick={() => setZoomError('')} className="ml-auto">
+                      <X className="w-4 h-4" />
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* ── Stat cards ──────────────────────────────────────── */}
+              <motion.div
+                variants={stagger}
+                initial="hidden"
+                animate="visible"
+                className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8"
+              >
+                <StatCard
+                  label="Total Meetings"
+                  value={zoomCounts.total}
+                  icon={ClipboardList}
+                  index={0}
+                  active={true}
+                  onClick={() => { }}
+                />
+                <StatCard
+                  label="Upcoming"
+                  value={zoomCounts.upcoming}
+                  icon={CalendarClock}
+                  index={1}
+                  active={false}
+                  onClick={() => { }}
+                  color="bg-gradient-to-br from-amber-500 to-amber-400"
+                />
+                <StatCard
+                  label="Past"
+                  value={zoomCounts.past}
+                  icon={Clock}
+                  index={2}
+                  active={false}
+                  onClick={() => { }}
+                  color="bg-gradient-to-br from-emerald-600 to-emerald-500"
+                />
+              </motion.div>
+
+              {/* ── Search ──────────────────────────────────────────── */}
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-end gap-4 mb-6">
+                <div className="relative w-full sm:w-80">
+                  <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1A1A1A]/40" />
+                  <input
+                    type="text"
+                    value={zoomSearch}
+                    onChange={(e) => setZoomSearch(e.target.value)}
+                    placeholder="Search topic, host, agenda..."
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border-2 border-[#C0C5CE]/70 focus:border-[#8C1B2E] focus:outline-none text-sm text-[#1A1A1A] placeholder:text-[#1A1A1A]/35 bg-white transition-colors duration-200"
+                  />
+                </div>
+              </div>
+
+              {/* ── Summary line ────────────────────────────────────── */}
+              {!zoomLoading && (
+                <p className="text-xs text-[#1A1A1A]/40 font-medium mb-4">
+                  Showing {filteredMeetings.length} of {zoomMeetings.length} meeting{zoomMeetings.length !== 1 ? 's' : ''}
+                  {zoomSearch ? ` for "${zoomSearch}"` : ''}
+                </p>
+              )}
+
+              {/* ── Table ───────────────────────────────────────────── */}
+              <div className="bg-white rounded-2xl border border-[#C0C5CE]/60 shadow-sm overflow-hidden">
+                {zoomLoading ? (
+                  <div className="py-24 flex flex-col items-center justify-center text-[#1A1A1A]/40">
+                    <div className="w-12 h-12 rounded-full border-4 border-[#8C1B2E]/20 border-t-[#8C1B2E] animate-spin mb-4" />
+                    <p className="text-sm font-semibold">Loading Zoom meetings...</p>
+                    <p className="text-xs mt-1">Fetching the latest data</p>
+                  </div>
+                ) : filteredMeetings.length === 0 ? (
+                  <div className="py-24 flex flex-col items-center justify-center text-[#1A1A1A]/40">
+                    <div className="w-16 h-16 rounded-2xl bg-[#F5F7FA] flex items-center justify-center mb-4">
+                      <Video className="w-8 h-8" />
+                    </div>
+                    <p className="text-sm font-bold text-[#1A1A1A]/60">No Zoom meetings found</p>
+                    <p className="text-xs mt-1.5 max-w-xs text-center">
+                      {zoomSearch
+                        ? `No results match "${zoomSearch}". Try a different keyword.`
+                        : 'There are no Zoom meetings yet.'}
+                    </p>
+                    {zoomSearch && (
+                      <button
+                        onClick={() => setZoomSearch('')}
+                        className="mt-4 text-xs font-bold text-[#8C1B2E] hover:underline"
+                      >
+                        Clear search
+                      </button>
+                    )}
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full min-w-[760px]">
+                      <thead>
+                        <tr className="border-b border-[#C0C5CE]/60 bg-[#F5F7FA]/60">
+                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide">
+                            ID
+                          </th>
+                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide">
+                            Topic / Host
+                          </th>
+                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden md:table-cell">
+                            Start Time
+                          </th>
+                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden lg:table-cell">
+                            Duration
+                          </th>
+                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden xl:table-cell">
+                            Join Link
+                          </th>
+                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden sm:table-cell">
+                            Created
+                          </th>
+                          <th className="text-right py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide">
+                            Actions
+                          </th>
+                        </tr>
+                      </thead>
+                      <motion.tbody variants={stagger} initial="hidden" animate="visible">
+                        {filteredMeetings.map((meeting, index) => (
+                          <ZoomMeetingRow
+                            key={meeting.id}
+                            meeting={meeting}
+                            index={index}
+                            onView={() => setSelectedMeeting(meeting)}
+                          />
+                        ))}
+                      </motion.tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+
+              {/* Table footer */}
+              {!zoomLoading && filteredMeetings.length > 0 && (
+                <p className="text-xs text-[#1A1A1A]/35 text-center mt-4 font-medium">
+                  {filteredMeetings.length} record{filteredMeetings.length !== 1 ? 's' : ''} displayed
+                </p>
+              )}
+            </>
+          )}
         </main>
 
         {/* ── Detail drawer (enrollments) ───────────────────────── */}
@@ -2070,6 +2625,12 @@ export default function AdminDashboard() {
           order={selectedOrder}
           onClose={() => setSelectedOrder(null)}
           onRespond={(order) => setRespondTarget(order)}
+        />
+
+        {/* ── Detail drawer (zoom meetings, new) ────────────────── */}
+        <ZoomMeetingDrawer
+          meeting={selectedMeeting}
+          onClose={() => setSelectedMeeting(null)}
         />
 
         {/* ── Confirm modal ──────────────────────────────────────── */}

@@ -38,6 +38,9 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { useRef, useState, useCallback } from 'react';
 
+import { useRouter } from 'next/navigation';
+
+// 2. Inside your ServiceCard component, initialize the router:
 const MotionLink = motion(Link);
 
 
@@ -532,7 +535,7 @@ function EnrollmentModal({ isOpen, onClose, courseName }: EnrollmentModalProps) 
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   RESEARCH ORDER MODAL  (new — mirrors EnrollmentModal exactly)
+   RESEARCH ORDER MODAL
 ═══════════════════════════════════════════════════════════════ */
 
 interface ResearchOrderModalProps {
@@ -552,6 +555,8 @@ function ResearchOrderModal({ isOpen, onClose, serviceName }: ResearchOrderModal
   });
   const [status, setStatus] = useState<FormStatus>('idle');
   const [errorMsg, setErrorMsg] = useState('');
+  const router = useRouter();
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -569,14 +574,14 @@ function ResearchOrderModal({ isOpen, onClose, serviceName }: ResearchOrderModal
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-  full_name: formData.fullName,
-  email: formData.email,
-  phone: formData.phone,
-  service: serviceName,
-  subject: formData.subjectTopic,
-  deadline: formData.deadline,
-  requirements: formData.requirements,
-}),
+          full_name: formData.fullName,
+          email: formData.email,
+          phone: formData.phone,
+          service: serviceName,
+          subject: formData.subjectTopic,
+          deadline: formData.deadline,
+          requirements: formData.requirements,
+        }),
       });
 
       const data = await response.json();
@@ -857,6 +862,166 @@ function ResearchOrderModal({ isOpen, onClose, serviceName }: ResearchOrderModal
 }
 
 /* ═══════════════════════════════════════════════════════════════
+   ZOOM BOOKING MODAL
+═══════════════════════════════════════════════════════════════ */
+
+interface ZoomBookingModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+function ZoomBookingModal({ isOpen, onClose }: ZoomBookingModalProps) {
+  const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    phone: '',
+    course: '',
+    preferredDate: '',
+    preferredTime: '',
+  });
+  const [status, setStatus] = useState<FormStatus>('idle');
+  const [errorMsg, setErrorMsg] = useState('');
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus('submitting');
+    setErrorMsg('');
+
+    try {
+      const response = await fetch("http://localhost:5000/api/zoom/book", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          full_name: formData.fullName,
+          email: formData.email,
+          phone: formData.phone,
+          course: formData.course,
+          preferred_date: formData.preferredDate,
+          preferred_time: formData.preferredTime,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setStatus("success");
+        setFormData({ fullName: '', email: '', phone: '', course: '', preferredDate: '', preferredTime: '' });
+      } else {
+        throw new Error(data.message || "Booking failed");
+      }
+    } catch (err: unknown) {
+      setStatus('error');
+      setErrorMsg(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
+    }
+  };
+
+  const handleClose = () => {
+    if (status === 'submitting') return;
+    setStatus('idle');
+    setErrorMsg('');
+    setFormData({ fullName: '', email: '', phone: '', course: '', preferredDate: '', preferredTime: '' });
+    onClose();
+  };
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          <motion.div
+            key="zoom-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[1000]"
+            onClick={handleClose}
+          />
+          <motion.div
+            key="zoom-modal"
+            initial={{ opacity: 0, scale: 0.92, y: 30 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.92, y: 30 }}
+            className="fixed inset-0 z-[1001] flex items-center justify-center p-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="relative bg-gradient-to-b from-[#FBFBFC] to-[#E9EAED] rounded-2xl shadow-2xl ring-1 ring-black/5 w-full max-w-lg max-h-[90vh] overflow-y-auto">
+              <div className="absolute top-0 left-0 right-0 h-[4px] bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E] rounded-t-2xl" />
+              <div className="flex items-start justify-between p-6 pb-4 pt-7">
+                <div>
+                  <div className="inline-flex items-center gap-2 text-xs font-bold tracking-[0.18em] uppercase text-[#8C1B2E] mb-1">
+                    <span className="block w-4 h-[2px] rounded-full bg-[#8C1B2E]" />
+                    Live Session
+                  </div>
+                  <h3 className="text-lg sm:text-xl font-extrabold text-[#1A1A1A]">Schedule Zoom Consultation</h3>
+                  <p className="text-sm text-[#1A1A1A]/60 mt-1">Book your expert guidance session now.</p>
+                </div>
+                <button onClick={handleClose} className="w-8 h-8 rounded-full bg-[#F5F7FA] flex items-center justify-center"><X className="w-4 h-4" /></button>
+              </div>
+
+              {status === 'success' ? (
+                <div className="px-6 pb-8 text-center flex flex-col items-center">
+                  <div className="w-20 h-20 bg-gradient-to-br from-[#8C1B2E] to-[#B43A4E] rounded-full flex items-center justify-center mb-5 shadow-lg">
+                    <CheckCircle className="w-10 h-10 text-white" />
+                  </div>
+                  <h4 className="text-xl font-extrabold mb-2">Session Requested!</h4>
+                  <p className="text-[#1A1A1A]/65 text-sm mb-6">Our team will contact you shortly to confirm your Zoom session.</p>
+                  <button onClick={handleClose} className="bg-[#8C1B2E] text-white px-8 py-3 rounded-xl font-bold">Close</button>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="px-6 pb-6 space-y-4">
+                  <div>
+                    <label className="block text-xs font-bold uppercase mb-1.5">Full Name *</label>
+                    <div className="relative"><User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" /><input type="text" name="fullName" required value={formData.fullName} onChange={handleChange} className="w-full pl-10 pr-4 py-3 rounded-xl border-2 focus:border-[#8C1B2E] outline-none text-sm" placeholder="Enter name" /></div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase mb-1.5">Email Address *</label>
+                    <div className="relative"><Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" /><input type="email" name="email" required value={formData.email} onChange={handleChange} className="w-full pl-10 pr-4 py-3 rounded-xl border-2 focus:border-[#8C1B2E] outline-none text-sm" placeholder="Enter email" /></div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase mb-1.5">Phone *</label>
+                    <div className="relative"><Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" /><input type="tel" name="phone" required value={formData.phone} onChange={handleChange} className="w-full pl-10 pr-4 py-3 rounded-xl border-2 focus:border-[#8C1B2E] outline-none text-sm" placeholder="Enter phone" /></div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase mb-1.5">Course of Interest *</label>
+                    <select name="course" required value={formData.course} onChange={handleChange} className="w-full px-4 py-3 rounded-xl border-2 focus:border-[#8C1B2E] outline-none text-sm appearance-none bg-white">
+                      <option value="">Select a Course</option>
+                      <option value="Online School">Online School Program</option>
+                      <option value="IGCSE">IGCSE & O Level</option>
+                      <option value="A Level">A Level Coaching</option>
+                      <option value="Professional Training">Professional Training</option>
+                      <option value="Research Support">Research Support</option>
+                    </select>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold uppercase mb-1.5">Date *</label>
+                      <div className="relative"><CalendarDays className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" /><input type="date" name="preferredDate" required value={formData.preferredDate} onChange={handleChange} className="w-full pl-10 pr-4 py-3 rounded-xl border-2 focus:border-[#8C1B2E] outline-none text-sm" /></div>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold uppercase mb-1.5">Time *</label>
+                      <div className="relative"><Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" /><input type="time" name="preferredTime" required value={formData.preferredTime} onChange={handleChange} className="w-full pl-10 pr-4 py-3 rounded-xl border-2 focus:border-[#8C1B2E] outline-none text-sm" /></div>
+                    </div>
+                  </div>
+                  {status === 'error' && <p className="text-red-500 text-xs">{errorMsg}</p>}
+                  <motion.button type="submit" disabled={status === 'submitting'} className="w-full bg-[#8C1B2E] text-white py-3.5 rounded-xl font-bold flex items-center justify-center gap-2">
+                    {status === 'submitting' ? <Loader2 className="animate-spin w-4 h-4" /> : <><Send className="w-4 h-4" /> Book Session</>}
+                  </motion.button>
+                </form>
+              )}
+            </div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
    DATA
 ═══════════════════════════════════════════════════════════════ */
 const programs = [
@@ -977,18 +1142,102 @@ const trainingPrograms = [
 ];
 
 const researchServices = [
-  { title: 'Research Paper Writing', description: 'Full paper writing service with expert research and analysis', image: '/services/research-paper-writing.png', icon: BookOpen, color: 'from-blue-500 to-blue-600' },
-  { title: 'Literature Review', description: 'Systematic, Scoping, and Meta-analysis literature reviews', image: '/services/literature-review.png', icon: CheckCircle, color: 'from-green-500 to-green-600' },
-  { title: 'Graphical Abstract', description: 'Professional BioRender and Illustrator designs', image: '/services/graphical-abstract.png', icon: Sparkles, color: 'from-purple-500 to-purple-600' },
-  { title: 'Assignment & Coursework Help', description: 'STEM and Business subject expertise', image: '/services/assignment-coursework.png', icon: Target, color: 'from-orange-500 to-orange-600' },
-  { title: 'Thesis & Dissertation Chapters', description: 'High-ticket service with comprehensive support', image: '/services/thesis-dissertation.png', icon: Award, color: 'from-pink-500 to-pink-600' },
-  { title: 'Journal Paper Editing', description: 'Native English polishing and professional proofreading', image: '/services/journal-editing.png', icon: BarChart3, color: 'from-red-500 to-red-600' },
-  { title: 'Data Analysis', description: 'SPSS, R, Python, and Origin expertise', image: '/services/data-analysis.png', icon: Zap, color: 'from-indigo-500 to-indigo-600' },
-  { title: 'Graphs & Plotting', description: 'Professional visualization with Origin, Excel, MATLAB', image: '/services/graphs-plotting.png', icon: BarChart3, color: 'from-cyan-500 to-cyan-600' },
-  { title: 'Characterization Graphs', description: 'XRD, SEM, UV, FTIR, TEM, BET, TGA, NMR, XPS, and more', image: '/services/characterization-graphs.png', icon: Sparkles, color: 'from-violet-500 to-violet-600' },
-  { title: 'Research Proposal', description: 'CSC, HEC, PhD, and MS proposals', image: '/services/research-proposal.png', icon: Target, color: 'from-amber-500 to-amber-600' },
-  { title: 'PPT Presentation', description: 'Defense, Viva, and Conference presentations', image: '/services/ppt-presentation.png', icon: Play, color: 'from-lime-500 to-lime-600' },
-  { title: 'Plagiarism Removal', description: 'Professional paraphrasing with Turnitin <5%', image: '/services/plagiarism-removal.png', icon: CheckCircle, color: 'from-teal-500 to-teal-600' },
+  {
+    id: "research-paper-writing",
+    title: "Research Paper Writing",
+    description: "Full paper writing service with expert research and analysis",
+    image: "/services/research-paper-writing.png",
+    icon: BookOpen,
+    color: "from-blue-500 to-blue-600",
+  },
+  {
+    id: "literature-review",
+    title: "Literature Review",
+    description: "Systematic, Scoping, and Meta-analysis literature reviews",
+    image: "/services/literature-review.png",
+    icon: CheckCircle,
+    color: "from-green-500 to-green-600",
+  },
+  {
+    id: "graphical-abstract",
+    title: "Graphical Abstract",
+    description: "Professional BioRender and Illustrator designs",
+    image: "/services/graphical-abstract.png",
+    icon: Sparkles,
+    color: "from-purple-500 to-purple-600",
+  },
+  {
+    id: "assignment-coursework-help",
+    title: "Assignment & Coursework Help",
+    description: "STEM and Business subject expertise",
+    image: "/services/assignment-coursework.png",
+    icon: Target,
+    color: "from-orange-500 to-orange-600",
+  },
+  {
+    id: "thesis-dissertation-chapters",
+    title: "Thesis & Dissertation Chapters",
+    description: "High-ticket service with comprehensive support",
+    image: "/services/thesis-dissertation.png",
+    icon: Award,
+    color: "from-pink-500 to-pink-600",
+  },
+  {
+    id: "journal-paper-editing",
+    title: "Journal Paper Editing",
+    description: "Native English polishing and professional proofreading",
+    image: "/services/journal-editing.png",
+    icon: BarChart3,
+    color: "from-red-500 to-red-600",
+  },
+  {
+    id: "data-analysis",
+    title: "Data Analysis",
+    description: "SPSS, R, Python, and Origin expertise",
+    image: "/services/data-analysis.png",
+    icon: Zap,
+    color: "from-indigo-500 to-indigo-600",
+  },
+  {
+    id: "graphs-plotting",
+    title: "Graphs & Plotting",
+    description: "Professional visualization with Origin, Excel, MATLAB",
+    image: "/services/graphs-plotting.png",
+    icon: BarChart3,
+    color: "from-cyan-500 to-cyan-600",
+  },
+  {
+    id: "characterization-graphs",
+    title: "Characterization Graphs",
+    description: "XRD, SEM, UV, FTIR, TEM, BET, TGA, NMR, XPS, and more",
+    image: "/services/characterization-graphs.png",
+    icon: Sparkles,
+    color: "from-violet-500 to-violet-600",
+  },
+  {
+    id: "research-proposal",
+    title: "Research Proposal",
+    description: "CSC, HEC, PhD, and MS proposals",
+    image: "/services/research-proposal.png",
+    icon: Target,
+    color: "from-amber-500 to-amber-600",
+  },
+  {
+    id: "ppt-presentation",
+    title: "PPT Presentation",
+    description: "Defense, Viva, and Conference presentations",
+    image: "/services/ppt-presentation.png",
+    icon: Play,
+    color: "from-lime-500 to-lime-600",
+  },
+  {
+    id: "plagiarism-removal",
+    title: "Plagiarism Removal",
+    description: "Professional paraphrasing with Turnitin <5%",
+    image: "/services/plagiarism-removal.png",
+    icon: CheckCircle,
+    color: "from-teal-500 to-teal-600",
+  },
 ];
 
 /* ═══════════════════════════════════════════════════════════════
@@ -1166,7 +1415,7 @@ function TestimonialCard({ testimonial, index }: { testimonial: typeof testimoni
   );
 }
 
-/* ── TrainingCard now accepts onEnroll callback ── */
+/* ── TrainingCard updated with dynamic Learn More link ── */
 function TrainingCard({
   program,
   index,
@@ -1178,6 +1427,10 @@ function TrainingCard({
 }) {
   const Icon = program.icon;
   const [hovered, setHovered] = useState(false);
+
+  // Creates a URL slug from the title (e.g. "Cloud Computing" -> "cloud-computing")
+  const slug = program.title.toLowerCase().replace(/ & /g, '-').replace(/\s+/g, '-');
+
   return (
     <motion.div
       variants={fadeUp}
@@ -1214,14 +1467,26 @@ function TrainingCard({
         </motion.div>
         <h3 className="text-base font-bold text-[#1A1A1A] mb-1">{program.title}</h3>
         <p className="text-xs text-[#1A1A1A]/70 leading-relaxed flex-1">{program.description}</p>
-        <motion.button
-          onClick={() => onEnroll(program.title)}
-          whileHover={{ scale: 1.04 }}
-          whileTap={{ scale: 0.96 }}
-          className="mt-4 w-full bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E] text-white py-2 rounded-xl font-bold text-xs hover:shadow-lg transition-all"
-        >
-          Enroll Now
-        </motion.button>
+
+        <div className="grid grid-cols-2 gap-2 mt-4">
+          <Link href={`/training/${slug}`}>
+            <motion.button
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.96 }}
+              className="w-full border-2 border-[#8C1B2E] text-[#8C1B2E] py-2 rounded-xl font-bold text-[10px] hover:bg-[#8C1B2E]/5 transition-all"
+            >
+              Learn More
+            </motion.button>
+          </Link>
+          <motion.button
+            onClick={() => onEnroll(program.title)}
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.96 }}
+            className="w-full bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E] text-white py-2 rounded-xl font-bold text-[10px] hover:shadow-lg transition-all"
+          >
+            Enroll Now
+          </motion.button>
+        </div>
       </div>
       <motion.div
         className="absolute bottom-0 right-0 w-16 h-16 bg-[#8C1B2E]/5 rounded-tl-full pointer-events-none"
@@ -1233,7 +1498,6 @@ function TrainingCard({
   );
 }
 
-/* ── ResearchCard now accepts onBookOrder callback ── */
 function ResearchCard({
   service,
   index,
@@ -1245,6 +1509,8 @@ function ResearchCard({
 }) {
   const Icon = service.icon;
   const [hovered, setHovered] = useState(false);
+  const router = useRouter();
+
   return (
     <motion.div
       variants={fadeUp}
@@ -1281,14 +1547,27 @@ function ResearchCard({
         </motion.div>
         <h3 className="text-base font-bold text-[#1A1A1A] mb-2">{service.title}</h3>
         <p className="text-sm text-[#1A1A1A]/70 leading-relaxed flex-1 mb-4">{service.description}</p>
-        <motion.button
-          onClick={() => onBookOrder(service.title)}
-          whileHover={{ scale: 1.04 }}
-          whileTap={{ scale: 0.96 }}
-          className="w-full bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E] text-white py-2.5 rounded-xl font-bold text-xs hover:shadow-lg transition-all"
-        >
-          Book Order
-        </motion.button>
+
+        {/* Button Wrapper */}
+        <div className="flex gap-2 w-full">
+          <motion.button
+            onClick={() => onBookOrder(service.title)}
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.96 }}
+            className="flex-1 bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E] text-white py-2.5 rounded-xl font-bold text-xs hover:shadow-lg transition-all"
+          >
+            Book Order
+          </motion.button>
+
+          <motion.button
+            /* 🟢 THIS LINE SENDS THE USER TO: /services/math-class or /services/english-class */
+            onClick={() => router.push(`/services/${service.id}`)}
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.96 }}
+            className="flex-1 border-2 border-[#C0C5CE]/80 text-[#1A1A1A] bg-white hover:bg-gray-50 py-2.5 rounded-xl font-bold text-xs hover:shadow-md transition-all"
+          >
+            View Details
+          </motion.button>        </div>
       </div>
       <motion.div
         className="absolute bottom-0 right-0 w-20 h-20 bg-[#8C1B2E]/5 rounded-tl-full pointer-events-none"
@@ -1366,6 +1645,9 @@ export default function Page() {
     setResearchModalOpen(true);
   }, []);
 
+  /* Zoom booking state */
+  const [zoomModalOpen, setZoomModalOpen] = useState(false);
+
   return (
     <>
       <ScrollProgress />
@@ -1384,8 +1666,16 @@ export default function Page() {
         serviceName={selectedResearchService}
       />
 
+      {/* Global Zoom Booking Modal */}
+      <ZoomBookingModal
+        isOpen={zoomModalOpen}
+        onClose={() => setZoomModalOpen(false)}
+      />
+
+      <Navbar />
+
       <main className="min-h-screen bg-white overflow-x-hidden">
-        <Navbar />
+
 
         {/* ╔══════════════════════════════════════════════════╗
             ║  HERO                                           ║
@@ -1738,15 +2028,15 @@ export default function Page() {
                     </div>
                   ))}
                 </div>
-                <Link href="/contact">
-                  <motion.button
-                    whileHover={{ scale: 1.04 }}
-                    whileTap={{ scale: 0.96 }}
-                    className="w-full bg-white text-[#8C1B2E] py-3 rounded-xl font-bold hover:bg-gray-100 transition-all relative z-10"
-                  >
-                    Schedule a Zoom Session
-                  </motion.button>
-                </Link>              </motion.div>
+                <motion.button
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.96 }}
+                  onClick={() => setZoomModalOpen(true)}
+                  className="w-full bg-white text-[#8C1B2E] py-3 rounded-xl font-bold hover:bg-gray-100 transition-all relative z-10"
+                >
+                  Schedule a Zoom Session
+                </motion.button>
+              </motion.div>
             </div>
 
             {/* Video */}
@@ -1839,16 +2129,11 @@ export default function Page() {
                         loading="lazy"
                         className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-110"
                       />
-                      {/* Gradient overlay for caption legibility */}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-300" />
-
-                      {/* Live-meeting badge */}
                       <div className="absolute top-3 right-3 flex items-center gap-1.5 bg-white/15 backdrop-blur-md border border-white/25 rounded-full px-3 py-1">
                         <span className="w-1.5 h-1.5 rounded-full bg-[#4ADE80] animate-pulse" />
                         <span className="text-[10px] font-semibold tracking-wide uppercase text-white">Zoom</span>
                       </div>
-
-                      {/* Caption */}
                       <div className="absolute bottom-0 left-0 right-0 p-4">
                         <p className="text-white font-bold text-sm sm:text-base drop-shadow-sm">
                           {photo.caption}
@@ -1890,7 +2175,7 @@ export default function Page() {
         {/* ╔══════════════════════════════════════════════════╗
             ║  RESEARCH SERVICES                              ║
             ╚══════════════════════════════════════════════════╝ */}
-        <section className="py-16 md:py-24 bg-white">
+        <section id="Academic-Support" className="py-16 md:py-24 bg-white">
           <div className="max-w-6xl mx-auto px-4 sm:px-6">
             <SectionHeading
               label="Academic Support"
@@ -1992,14 +2277,14 @@ export default function Page() {
                       </div>
                     ))}
                   </div>
-                  <MotionLink
-                    href="/contact"
+                  <motion.button
+                    onClick={() => setZoomModalOpen(true)}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.96 }}
                     className="inline-block bg-white text-[#8C1B2E] px-7 py-3 rounded-full font-bold hover:bg-gray-100 transition-all shadow-xl text-center"
                   >
                     Book a Zoom Session
-                  </MotionLink>
+                  </motion.button>
                 </div>
                 <motion.div
                   whileHover={{ scale: 1.02 }}
@@ -2032,6 +2317,8 @@ export default function Page() {
           </div>
         </section>
 
+
+
         {/* ╔══════════════════════════════════════════════════╗
             ║  HOW IT WORKS                                   ║
             ╚══════════════════════════════════════════════════╝ */}
@@ -2053,6 +2340,197 @@ export default function Page() {
                 <ProcessStep key={index} item={item} index={index} />
               ))}
             </motion.div>
+          </div>
+        </section>
+
+        {/* ╔═══════════════════════════════════════════════════════════════
+            ║ NEW PLACEMENT: STUDENT COURSE CERTIFICATIONS SHOWCASE       ║
+            ╚═══════════════════════════════════════════════════════════════ */}
+        <section className="bg-gradient-to-b from-zinc-50 via-white to-zinc-50 border-b border-zinc-200/80 py-20 relative z-20 overflow-hidden">
+          {/* Decorative background grid subtle accent */}
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#8c1b2e08_1px,transparent_1px),linear-gradient(to_bottom,#8c1b2e08_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
+
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+
+            {/* Section Header */}
+            <div className="text-center max-w-3xl mx-auto mb-16">
+              <span className="text-[11px] font-black uppercase tracking-widest text-[#8C1B2E] bg-[#8C1B2E]/5 px-3 py-1 rounded-full border border-[#8C1B2E]/10">
+                Industry Credentials
+              </span>
+              <h3 className="text-3xl sm:text-4xl font-black text-zinc-900 tracking-tight mt-3">
+                Earn Verifiable Course Certifications
+              </h3>
+              <p className="text-base text-zinc-500 mt-3 font-medium max-w-xl mx-auto">
+                Validate your skills and accelerate your professional career pathway with our globally recognized completion achievements.
+              </p>
+            </div>
+
+            {/* Responsive Grid Layout */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+              {/* Certificate Card 1: Web Development */}
+              <div className="group bg-white rounded-2xl border border-zinc-200/80 p-5 shadow-sm hover:shadow-xl hover:border-[#8C1B2E]/30 transition-all duration-300 flex flex-col justify-between">
+                <div>
+                  {/* Certificate Mockup Frame */}
+                  <div className="w-full h-48 bg-zinc-900 rounded-xl overflow-hidden relative border border-zinc-200 shadow-md mb-5">
+                    <img
+                      src="/images/Web-dev.jpg"
+                      alt="Full-Stack Web Development Certificate of Completion"
+                      className="w-full h-full object-cover opacity-95 group-hover:scale-105 transition-transform duration-500 group-hover:opacity-100"
+                    />
+                    <div className="absolute bottom-3 left-3 bg-zinc-900/90 backdrop-blur-md px-2.5 py-1 rounded-md text-[10px] font-black text-white uppercase tracking-wider border border-white/10">
+                      Web Dev Track
+                    </div>
+                  </div>
+                  {/* Info */}
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-400">Professional Skill Certificate</span>
+                  </div>
+                  <h4 className="text-lg font-black text-zinc-800 leading-tight group-hover:text-[#8C1B2E] transition-colors">
+                    Full-Stack Web Development
+                  </h4>
+                  <p className="text-sm text-zinc-500 font-medium mt-2 leading-relaxed">
+                    Awarded upon completing interactive mastery pathways covering Next.js, Node.js, and modern cloud deployment systems.
+                  </p>
+                </div>
+                <div className="mt-6 pt-4 border-t border-zinc-100 flex items-center justify-between text-xs font-bold text-zinc-400">
+                  <span className="font-mono text-[11px]">ID: CERT-WDEV-2026</span>
+                  <span className="text-emerald-600 font-extrabold flex items-center gap-1 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100 text-[10px]">
+                    Verifiable
+                  </span>
+                </div>
+              </div>
+
+              {/* Certificate Card 2: AI & Cloud Computing */}
+              <div className="group bg-white rounded-2xl border border-zinc-200/80 p-5 shadow-sm hover:shadow-xl hover:border-[#8C1B2E]/30 transition-all duration-300 flex flex-col justify-between">
+                <div>
+                  <div className="w-full h-48 bg-zinc-900 rounded-xl overflow-hidden relative border border-zinc-200 shadow-md mb-5">
+                    <img
+                      src="/images/AI.jpg"
+                      alt="AI and Cloud Computing Specialty Certificate"
+                      className="w-full h-full object-cover opacity-95 group-hover:scale-105 transition-transform duration-500 group-hover:opacity-100"
+                    />
+                    <div className="absolute bottom-3 left-3 bg-zinc-900/90 backdrop-blur-md px-2.5 py-1 rounded-md text-[10px] font-black text-white uppercase tracking-wider border border-white/10">
+                      AI &amp; Cloud Track
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-400">Advanced Specialization</span>
+                  </div>
+                  <h4 className="text-lg font-black text-zinc-800 leading-tight group-hover:text-[#8C1B2E] transition-colors">
+                    Cloud Architect &amp; AI Integration
+                  </h4>
+                  <p className="text-sm text-zinc-500 font-medium mt-2 leading-relaxed">
+                    Validates core capabilities in engineering secure cloud pipelines, training AI models, and optimizing DevOps frameworks.
+                  </p>
+                </div>
+                <div className="mt-6 pt-4 border-t border-zinc-100 flex items-center justify-between text-xs font-bold text-zinc-400">
+                  <span className="font-mono text-[11px]">ID: CERT-CLAI-2026</span>
+                  <span className="text-emerald-600 font-extrabold flex items-center gap-1 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100 text-[10px]">
+                    Verifiable
+                  </span>
+                </div>
+              </div>
+
+              {/* Certificate Card 3: Academic Research & Analytics */}
+              <div className="group bg-white rounded-2xl border border-zinc-200/80 p-5 shadow-sm hover:shadow-xl hover:border-[#8C1B2E]/30 transition-all duration-300 flex flex-col justify-between">
+                <div>
+                  <div className="w-full h-48 bg-zinc-900 rounded-xl overflow-hidden relative border border-zinc-200 shadow-md mb-5">
+                    <img
+                      src="/images/Data-Science.jpg"
+                      alt="Academic Data Analysis and Research Paper Writing Certificate"
+                      className="w-full h-full object-cover opacity-95 group-hover:scale-105 transition-transform duration-500 group-hover:opacity-100"
+                    />
+                    <div className="absolute bottom-3 left-3 bg-zinc-900/90 backdrop-blur-md px-2.5 py-1 rounded-md text-[10px] font-black text-white uppercase tracking-wider border border-white/10">
+                      Research Track
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="w-2 h-2 rounded-full bg-[#8C1B2E]"></span>
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-400">Academic Excellence</span>
+                  </div>
+                  <h4 className="text-lg font-black text-zinc-800 leading-tight group-hover:text-[#8C1B2E] transition-colors">
+                    Advanced Data Analytics &amp; Research
+                  </h4>
+                  <p className="text-sm text-zinc-500 font-medium mt-2 leading-relaxed">
+                    Recognizes operational completion of comprehensive scientific manuscript plotting, data mining, and thesis methodology schemas.
+                  </p>
+                </div>
+                <div className="mt-6 pt-4 border-t border-zinc-100 flex items-center justify-between text-xs font-bold text-zinc-400">
+                  <span className="font-mono text-[11px]">ID: CERT-RSRCH-2026</span>
+                  <span className="text-emerald-600 font-extrabold flex items-center gap-1 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100 text-[10px]">
+                    Verifiable
+                  </span>
+                </div>
+              </div>
+
+              {/* Certificate Card 4: Graphic Designing */}
+              <div className="group bg-white rounded-2xl border border-zinc-200/80 p-5 shadow-sm hover:shadow-xl hover:border-[#8C1B2E]/30 transition-all duration-300 flex flex-col justify-between">
+                <div>
+                  <div className="w-full h-48 bg-zinc-900 rounded-xl overflow-hidden relative border border-zinc-200 shadow-md mb-5">
+                    <img
+                      src="/images/Graphic.jpg"
+                      alt="Graphic Design and Creative Visuals Certificate"
+                      className="w-full h-full object-cover opacity-95 group-hover:scale-105 transition-transform duration-500 group-hover:opacity-100"
+                    />
+                    <div className="absolute bottom-3 left-3 bg-zinc-900/90 backdrop-blur-md px-2.5 py-1 rounded-md text-[10px] font-black text-white uppercase tracking-wider border border-white/10">
+                      Creative Track
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="w-2 h-2 rounded-full bg-rose-500"></span>
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-400">Design Arts Faculty</span>
+                  </div>
+                  <h4 className="text-lg font-black text-zinc-800 leading-tight group-hover:text-[#8C1B2E] transition-colors">
+                    Graphic Design &amp; Brand Identity
+                  </h4>
+                  <p className="text-sm text-zinc-500 font-medium mt-2 leading-relaxed">
+                    Honors technical expertise across advanced design systems, UI frameworks, corporate typography layouts, and rasterized vector pipelines.
+                  </p>
+                </div>
+                <div className="mt-6 pt-4 border-t border-zinc-100 flex items-center justify-between text-xs font-bold text-zinc-400">
+                  <span className="font-mono text-[11px]">ID: CERT-DSGN-2026</span>
+                  <span className="text-emerald-600 font-extrabold flex items-center gap-1 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100 text-[10px]">
+                    Verifiable
+                  </span>
+                </div>
+              </div>
+
+              {/* Certificate Card 5: Holy Quran */}
+              <div className="group bg-white rounded-2xl border border-zinc-200/80 p-5 shadow-sm hover:shadow-xl hover:border-[#8C1B2E]/30 transition-all duration-300 flex flex-col justify-between">
+                <div>
+                  <div className="w-full h-48 bg-zinc-900 rounded-xl overflow-hidden relative border border-zinc-200 shadow-md mb-5">
+                    <img
+                      src="/images/Holy.jpg"
+                      alt="Holy Quran Learning and Tajweed Recitation Certificate"
+                      className="w-full h-full object-cover opacity-95 group-hover:scale-105 transition-transform duration-500 group-hover:opacity-100"
+                    />
+                    <div className="absolute bottom-3 left-3 bg-zinc-900/90 backdrop-blur-md px-2.5 py-1 rounded-md text-[10px] font-black text-white uppercase tracking-wider border border-white/10">
+                      Islamic Studies Track
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="w-2 h-2 rounded-full bg-emerald-600"></span>
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-400">Spiritual Completion</span>
+                  </div>
+                  <h4 className="text-lg font-black text-zinc-800 leading-tight group-hover:text-[#8C1B2E] transition-colors">
+                    Holy Quran Recitation &amp; Tajweed
+                  </h4>
+                  <p className="text-sm text-zinc-500 font-medium mt-2 leading-relaxed">
+                    Recognizes complete performance benchmarks in standard phonetics, accurate pronunciation patterns, and comprehensive Tajweed rules.
+                  </p>
+                </div>
+                <div className="mt-6 pt-4 border-t border-zinc-100 flex items-center justify-between text-xs font-bold text-zinc-400">
+                  <span className="font-mono text-[11px]">ID: CERT-QRN-2026</span>
+                  <span className="text-emerald-600 font-extrabold flex items-center gap-1 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100 text-[10px]">
+                    Verifiable
+                  </span>
+                </div>
+              </div>
+
+            </div>
           </div>
         </section>
 

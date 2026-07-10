@@ -179,7 +179,7 @@ interface ZoomMeeting {
 /* Top-level dashboard view */
 type DashboardView = 'enrollments' | 'research-orders' | 'zoom-meetings';
 
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = 'https://terrific-light-production-94ae.up.railway.app/api';
 
 /* ═══════════════════════════════════════════════════════════════
    SHARED UI BITS
@@ -1091,7 +1091,7 @@ function ZoomMeetingRow({
       onClick={async () => {
         try {
           const response = await fetch(
-            `http://localhost:5000/api/zoom/approve/${meeting.id}`,
+            `https://terrific-light-production-94ae.up.railway.app/api/zoom/approve/${meeting.id}`,
             {
               method: "PUT",
               headers: {
@@ -1573,7 +1573,7 @@ export default function AdminDashboard() {
     }
   }, []);
 
-  /* New: fetch zoom meetings — GET http://localhost:5000/api/zoom/all */
+  /* New: fetch zoom meetings — GET http://https://terrific-light-production-94ae.up.railway.app/api/zoom/all */
   const fetchZoomMeetings = useCallback(async (silent = false) => {
     if (!silent) setZoomLoading(true);
     setZoomRefreshing(true);

@@ -39,7 +39,7 @@ export default function EnrollmentModal({ isOpen, onClose, courseName }: Enrollm
     setErrorMsg('');
 
     try {
-      const response = await fetch("http://localhost:5000/api/enroll", {
+      const response = await fetch("https://terrific-light-production-94ae.up.railway.app/api/enroll", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

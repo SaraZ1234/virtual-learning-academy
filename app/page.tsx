@@ -242,7 +242,7 @@ function EnrollmentModal({ isOpen, onClose, courseName }: EnrollmentModalProps) 
     setErrorMsg('');
 
     try {
-      const response = await fetch("http://localhost:5000/api/enroll", {
+      const response = await fetch("https://terrific-light-production-94ae.up.railway.app/api/enroll", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -568,7 +568,7 @@ function ResearchOrderModal({ isOpen, onClose, serviceName }: ResearchOrderModal
     setErrorMsg('');
 
     try {
-      const response = await fetch("http://localhost:5000/api/research-order", {
+      const response = await fetch("https://terrific-light-production-94ae.up.railway.app/api/research-order", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -892,7 +892,7 @@ function ZoomBookingModal({ isOpen, onClose }: ZoomBookingModalProps) {
     setErrorMsg('');
 
     try {
-      const response = await fetch("http://localhost:5000/api/zoom/book", {
+      const response = await fetch("https://terrific-light-production-94ae.up.railway.app/api/zoom/book", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

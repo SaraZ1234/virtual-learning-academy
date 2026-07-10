@@ -85,7 +85,7 @@ function ScrollProgress() {
   );
 }
 
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = 'https://virtual-learning-api-production.up.railway.app/api';
 type LoginStatus = 'idle' | 'submitting' | 'error';
 
 export default function StudentLogin() {

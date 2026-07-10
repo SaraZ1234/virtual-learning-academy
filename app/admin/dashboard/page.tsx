@@ -146,21 +146,21 @@ interface Enrollment {
 
 type FilterTab = 'all' | EnrollmentStatus;
 
-/* New: Research Order type */
 interface ResearchOrder {
   id: string | number;
   full_name: string;
   email: string;
   phone: string;
   service: string;
-  subject: string;
+  subject_topic: string; // Uniform interface property resolution
   deadline?: string;
   requirements?: string;
   created_at?: string;
   status: string;
+  last_response?: string;
+  responded_at?: string;
 }
 
-/* New: Zoom Meeting type */
 interface ZoomMeeting {
   id: number;
   full_name: string;
@@ -174,9 +174,13 @@ interface ZoomMeeting {
   meeting_id: string | null;
   meeting_password: string | null;
   created_at: string;
+  duration?: number;
+  topic?: string;
+  host_email?: string;
+  agenda?: string;
+  start_time?: string;
 }
 
-/* Top-level dashboard view */
 type DashboardView = 'enrollments' | 'research-orders' | 'zoom-meetings';
 
 const API_BASE = 'https://terrific-light-production-94ae.up.railway.app/api';
@@ -214,12 +218,12 @@ function StatusBadge({ status }: { status: EnrollmentStatus }) {
   );
 }
 
-/* New: small badge showing whether a research order has been responded to */
 function ResponseBadge({ status }: { status: string }) {
-  return status === "Responded" ? (<span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border capitalize bg-emerald-50 text-emerald-700 border-emerald-200">
-    <CheckCircle2 className="w-3.5 h-3.5" />
-    Responded
-  </span>
+  return status === "Responded" ? (
+    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border capitalize bg-emerald-50 text-emerald-700 border-emerald-200">
+      <CheckCircle2 className="w-3.5 h-3.5" />
+      Responded
+    </span>
   ) : (
     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border capitalize bg-amber-50 text-amber-700 border-amber-200">
       <Clock className="w-3.5 h-3.5" />
@@ -228,7 +232,6 @@ function ResponseBadge({ status }: { status: string }) {
   );
 }
 
-/* Animated stat card */
 function StatCard({
   label,
   value,
@@ -253,8 +256,9 @@ function StatCard({
       custom={index}
       whileHover={{ y: -4, boxShadow: '0 16px 32px rgba(140,27,46,0.10)' }}
       whileTap={{ scale: 0.98 }}
-      className={`relative text-left bg-white rounded-2xl border p-5 flex items-center gap-4 transition-colors duration-200 w-full ${active ? 'border-[#8C1B2E] ring-2 ring-[#8C1B2E]/15' : 'border-[#C0C5CE]/70'
-        }`}
+      className={`relative text-left bg-white rounded-2xl border p-5 flex items-center gap-4 transition-colors duration-200 w-full ${
+        active ? 'border-[#8C1B2E] ring-2 ring-[#8C1B2E]/15' : 'border-[#C0C5CE]/70'
+      }`}
     >
       {active && (
         <motion.div
@@ -263,8 +267,9 @@ function StatCard({
         />
       )}
       <div
-        className={`w-11 h-11 rounded-xl flex items-center justify-center shadow-md shrink-0 ${color || 'bg-gradient-to-br from-[#8C1B2E] to-[#B43A4E]'
-          }`}
+        className={`w-11 h-11 rounded-xl flex items-center justify-center shadow-md shrink-0 ${
+          color || 'bg-gradient-to-br from-[#8C1B2E] to-[#B43A4E]'
+        }`}
       >
         <Icon className="w-5 h-5 text-white" />
       </div>
@@ -279,7 +284,7 @@ function StatCard({
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   EMAIL SENT TOAST  (generalized to support multiple messages)
+   EMAIL SENT TOAST
 ═══════════════════════════════════════════════════════════════ */
 function EmailToast({
   show,
@@ -307,16 +312,16 @@ function EmailToast({
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 40, scale: 0.95 }}
           transition={{ duration: 0.35, ease: EASE }}
-          className="fixed bottom-6 right-6 z-[2000] flex items-center gap-3 bg-emerald-600 text-white px-5 py-3.5 rounded-2xl shadow-2xl"
+          className="fixed bottom-6 right-6 z-[2000] flex items-center gap-3 bg-emerald-600 text-white px-5 py-3.5 rounded-2xl shadow-2xl max-w-sm sm:max-w-md"
         >
           <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center shrink-0">
             <Send className="w-4 h-4" />
           </div>
-          <div>
-            <p className="font-bold text-sm">{title}</p>
-            <p className="text-xs text-white/80">{subtitle}</p>
+          <div className="min-w-0 flex-1">
+            <p className="font-bold text-sm truncate">{title}</p>
+            <p className="text-xs text-white/80 truncate">{subtitle}</p>
           </div>
-          <button onClick={onHide} className="ml-2 opacity-70 hover:opacity-100 transition-opacity">
+          <button onClick={onHide} className="ml-2 opacity-70 hover:opacity-100 transition-opacity shrink-0">
             <X className="w-4 h-4" />
           </button>
         </motion.div>
@@ -366,8 +371,9 @@ function ConfirmModal({
           >
             <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 text-center">
               <div
-                className={`w-14 h-14 mx-auto rounded-full flex items-center justify-center mb-4 ${isApprove ? 'bg-emerald-50' : 'bg-red-50'
-                  }`}
+                className={`w-14 h-14 mx-auto rounded-full flex items-center justify-center mb-4 ${
+                  isApprove ? 'bg-emerald-50' : 'bg-red-50'
+                }`}
               >
                 {isApprove ? (
                   <CheckCircle2 className="w-7 h-7 text-emerald-600" />
@@ -406,10 +412,11 @@ function ConfirmModal({
                 <button
                   onClick={onConfirm}
                   disabled={loading}
-                  className={`flex-1 py-2.5 rounded-xl text-sm font-bold text-white transition-all disabled:opacity-70 flex items-center justify-center gap-2 ${isApprove
-                    ? 'bg-gradient-to-r from-emerald-600 to-emerald-500 hover:shadow-lg'
-                    : 'bg-gradient-to-r from-red-600 to-red-500 hover:shadow-lg'
-                    }`}
+                  className={`flex-1 py-2.5 rounded-xl text-sm font-bold text-white transition-all disabled:opacity-70 flex items-center justify-center gap-2 ${
+                    isApprove
+                      ? 'bg-gradient-to-r from-emerald-600 to-emerald-500 hover:shadow-lg'
+                      : 'bg-gradient-to-r from-red-600 to-red-500 hover:shadow-lg'
+                  }`}
                 >
                   {loading ? (
                     <RefreshCw className="w-4 h-4 animate-spin" />
@@ -429,7 +436,7 @@ function ConfirmModal({
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   RESPOND TO RESEARCH ORDER MODAL  (new)
+   RESPOND TO RESEARCH ORDER MODAL
 ═══════════════════════════════════════════════════════════════ */
 function RespondModal({
   order,
@@ -468,13 +475,12 @@ function RespondModal({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.92, y: 24 }}
             transition={{ duration: 0.3, ease: EASE }}
-            className="fixed inset-0 z-[1001] flex items-center justify-center p-4"
+            className="fixed inset-0 z-[1001] flex items-center justify-center p-4 overflow-y-auto"
           >
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden">
-              {/* Top accent bar */}
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden my-auto">
               <div className="h-[4px] bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E]" />
 
-              <div className="p-6">
+              <div className="p-4 sm:p-6">
                 <div className="flex items-start gap-4 mb-5">
                   <div className="w-12 h-12 rounded-full bg-[#8C1B2E]/10 flex items-center justify-center shrink-0">
                     <Reply className="w-6 h-6 text-[#8C1B2E]" />
@@ -493,7 +499,6 @@ function RespondModal({
                   </button>
                 </div>
 
-                {/* Context recap */}
                 <div className="bg-[#F5F7FA] rounded-2xl p-4 mb-5 space-y-2">
                   <div className="flex items-center gap-2 text-xs font-bold text-[#1A1A1A]/45 uppercase tracking-wide">
                     <ClipboardList className="w-3.5 h-3.5" />
@@ -516,21 +521,21 @@ function RespondModal({
 
                 <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-100 rounded-xl px-3 py-2.5 mt-4 text-xs text-emerald-700 font-medium">
                   <Send className="w-3.5 h-3.5 shrink-0" />
-                  This message will be emailed directly to {order.email}.
+                  <span className="break-all">This message will be emailed directly to {order.email}.</span>
                 </div>
 
-                <div className="flex gap-3 mt-6">
+                <div className="flex flex-col sm:flex-row gap-3 mt-6">
                   <button
                     onClick={onClose}
                     disabled={sending}
-                    className="flex-1 py-2.5 rounded-xl border-2 border-[#C0C5CE]/70 text-sm font-bold text-[#1A1A1A]/70 hover:bg-[#F5F7FA] transition-colors disabled:opacity-50"
+                    className="w-full sm:flex-1 py-2.5 rounded-xl border-2 border-[#C0C5CE]/70 text-sm font-bold text-[#1A1A1A]/70 hover:bg-[#F5F7FA] transition-colors disabled:opacity-50 dynamic-btn-order"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={() => onSend(message)}
                     disabled={sending || !message.trim()}
-                    className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white transition-all disabled:opacity-50 flex items-center justify-center gap-2 bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E] hover:shadow-lg"
+                    className="w-full sm:flex-1 py-2.5 rounded-xl text-sm font-bold text-white transition-all disabled:opacity-50 flex items-center justify-center gap-2 bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E] hover:shadow-lg dynamic-btn-order"
                   >
                     {sending ? (
                       <RefreshCw className="w-4 h-4 animate-spin" />
@@ -551,7 +556,7 @@ function RespondModal({
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   ENROLLMENT DETAIL DRAWER — full fields
+   ENROLLMENT DETAIL DRAWER
 ═══════════════════════════════════════════════════════════════ */
 function DetailDrawer({
   enrollment,
@@ -582,18 +587,16 @@ function DetailDrawer({
             transition={{ duration: 0.35, ease: EASE }}
             className="fixed top-0 right-0 h-full w-full max-w-lg bg-white z-[901] shadow-2xl overflow-y-auto"
           >
-            {/* Top accent bar */}
             <div className="absolute top-0 left-0 right-0 h-[4px] bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E]" />
 
-            {/* Header */}
             <div className="sticky top-0 bg-white/95 backdrop-blur-sm z-10 px-6 pt-6 pb-4 border-b border-[#C0C5CE]/30">
               <div className="flex items-start justify-between">
-                <div>
+                <div className="min-w-0 flex-1 pr-2">
                   <SectionLabel>Enrollment Details</SectionLabel>
-                  <h3 className="text-xl font-extrabold text-[#1A1A1A] leading-tight">
+                  <h3 className="text-xl font-extrabold text-[#1A1A1A] leading-tight break-words">
                     {enrollment.full_name}
                   </h3>
-                  <p className="text-sm text-[#1A1A1A]/50 mt-0.5">{enrollment.email}</p>
+                  <p className="text-sm text-[#1A1A1A]/50 mt-0.5 break-all">{enrollment.email}</p>
                 </div>
                 <button
                   onClick={onClose}
@@ -608,7 +611,6 @@ function DetailDrawer({
             </div>
 
             <div className="p-6">
-              {/* Contact section */}
               <div className="mb-6">
                 <p className="text-[10px] font-extrabold tracking-[0.2em] uppercase text-[#1A1A1A]/35 mb-3">
                   Contact Information
@@ -626,7 +628,6 @@ function DetailDrawer({
                 </div>
               </div>
 
-              {/* Academic section */}
               <div className="mb-6">
                 <p className="text-[10px] font-extrabold tracking-[0.2em] uppercase text-[#1A1A1A]/35 mb-3">
                   Academic Details
@@ -642,7 +643,6 @@ function DetailDrawer({
                 </div>
               </div>
 
-              {/* Message */}
               {enrollment.message && (
                 <div className="mb-6">
                   <p className="text-[10px] font-extrabold tracking-[0.2em] uppercase text-[#1A1A1A]/35 mb-3">
@@ -653,7 +653,7 @@ function DetailDrawer({
                       <div className="w-9 h-9 rounded-lg bg-white border border-[#C0C5CE]/40 flex items-center justify-center shrink-0 mt-0.5">
                         <MessageSquare className="w-4 h-4 text-[#8C1B2E]" />
                       </div>
-                      <p className="text-sm text-[#1A1A1A]/80 leading-relaxed pt-1">
+                      <p className="text-sm text-[#1A1A1A]/80 leading-relaxed pt-1 break-words">
                         {enrollment.message}
                       </p>
                     </div>
@@ -661,7 +661,6 @@ function DetailDrawer({
                 </div>
               )}
 
-              {/* Meta */}
               <div className="mb-8">
                 <p className="text-[10px] font-extrabold tracking-[0.2em] uppercase text-[#1A1A1A]/35 mb-3">
                   Submission Info
@@ -691,23 +690,22 @@ function DetailDrawer({
                 </div>
               </div>
 
-              {/* Actions — only for pending */}
               {enrollment.status === 'pending' && (
                 <div className="space-y-3">
                   <div className="flex items-center gap-2 bg-amber-50 border border-amber-100 rounded-xl px-3 py-2.5 text-xs text-amber-700 font-medium">
                     <Clock className="w-3.5 h-3.5 shrink-0" />
                     This enrollment is awaiting your review.
                   </div>
-                  <div className="flex gap-3">
+                  <div className="flex flex-col sm:flex-row gap-3">
                     <button
                       onClick={() => onAct('reject')}
-                      className="flex-1 py-3 rounded-xl border-2 border-red-200 text-red-600 font-bold text-sm hover:bg-red-50 transition-colors flex items-center justify-center gap-2"
+                      className="w-full sm:flex-1 py-3 rounded-xl border-2 border-red-200 text-red-600 font-bold text-sm hover:bg-red-50 transition-colors flex items-center justify-center gap-2"
                     >
                       <XCircle className="w-4 h-4" /> Reject
                     </button>
                     <button
                       onClick={() => onAct('approve')}
-                      className="flex-1 py-3 rounded-xl bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E] text-white font-bold text-sm hover:shadow-lg transition-all flex items-center justify-center gap-2"
+                      className="w-full sm:flex-1 py-3 rounded-xl bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E] text-white font-bold text-sm hover:shadow-lg transition-all flex items-center justify-center gap-2"
                     >
                       <CheckCircle2 className="w-4 h-4" /> Approve & Notify
                     </button>
@@ -715,23 +713,23 @@ function DetailDrawer({
                 </div>
               )}
 
-              {/* Already resolved */}
               {enrollment.status !== 'pending' && (
                 <div
-                  className={`flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold ${enrollment.status === 'approved'
-                    ? 'bg-emerald-50 border border-emerald-100 text-emerald-700'
-                    : 'bg-red-50 border border-red-100 text-red-700'
-                    }`}
+                  className={`flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold border ${
+                    enrollment.status === 'approved'
+                      ? 'bg-emerald-50 border-emerald-100 text-emerald-700'
+                      : 'bg-red-50 border-red-100 text-red-700'
+                  }`}
                 >
                   {enrollment.status === 'approved' ? (
                     <>
                       <CheckCircle2 className="w-4 h-4 shrink-0" />
-                      This enrollment has been approved and the student has been notified.
+                      <span className="leading-tight">This enrollment has been approved and the student has been notified.</span>
                     </>
                   ) : (
                     <>
                       <XCircle className="w-4 h-4 shrink-0" />
-                      This enrollment has been rejected and the student has been notified.
+                      <span className="leading-tight">This enrollment has been rejected and the student has been notified.</span>
                     </>
                   )}
                 </div>
@@ -773,7 +771,7 @@ function InfoRow({
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   TABLE ROW — now shows Country column too
+   TABLE ROW COMPONENTS
 ═══════════════════════════════════════════════════════════════ */
 function EnrollmentRow({
   enrollment,
@@ -790,10 +788,10 @@ function EnrollmentRow({
 }) {
   const formattedDate = enrollment.created_at
     ? new Date(enrollment.created_at).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    })
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      })
     : '—';
 
   return (
@@ -802,47 +800,39 @@ function EnrollmentRow({
       custom={index}
       className="border-b border-[#C0C5CE]/40 hover:bg-[#F5F7FA]/60 transition-colors duration-150 group"
     >
-      {/* Applicant */}
       <td className="py-4 px-4">
-        <button onClick={onView} className="text-left">
-          <p className="font-bold text-[#1A1A1A] text-sm group-hover:text-[#8C1B2E] transition-colors">
+        <button onClick={onView} className="text-left focus:outline-none block max-w-full">
+          <p className="font-bold text-[#1A1A1A] text-sm group-hover:text-[#8C1B2E] transition-colors truncate max-w-[180px] sm:max-w-none">
             {enrollment.full_name}
           </p>
-          <p className="text-xs text-[#1A1A1A]/50 mt-0.5">{enrollment.email}</p>
+          <p className="text-xs text-[#1A1A1A]/50 mt-0.5 truncate max-w-[180px] sm:max-w-none">{enrollment.email}</p>
         </button>
       </td>
 
-      {/* Course */}
       <td className="py-4 px-4 text-sm text-[#1A1A1A]/75 max-w-[160px] hidden lg:table-cell">
         <span className="line-clamp-1">{enrollment.course}</span>
       </td>
 
-      {/* Phone */}
       <td className="py-4 px-4 text-sm text-[#1A1A1A]/60 hidden xl:table-cell">
         {enrollment.phone}
       </td>
 
-      {/* Country */}
       <td className="py-4 px-4 text-sm text-[#1A1A1A]/60 hidden xl:table-cell">
         {enrollment.country || '—'}
       </td>
 
-      {/* Education */}
       <td className="py-4 px-4 text-sm text-[#1A1A1A]/60 hidden 2xl:table-cell max-w-[140px]">
         <span className="line-clamp-1">{enrollment.education || '—'}</span>
       </td>
 
-      {/* Date */}
       <td className="py-4 px-4 text-xs text-[#1A1A1A]/50 hidden md:table-cell whitespace-nowrap">
         {formattedDate}
       </td>
 
-      {/* Status */}
       <td className="py-4 px-4 hidden sm:table-cell">
         <StatusBadge status={enrollment.status} />
       </td>
 
-      {/* Actions */}
       <td className="py-4 px-4">
         <div className="flex items-center gap-2 justify-end">
           {enrollment.status === 'pending' ? (
@@ -852,7 +842,7 @@ function EnrollmentRow({
                 whileTap={{ scale: 0.95 }}
                 disabled={!!pendingAction}
                 onClick={() => onAct('reject')}
-                className="w-8 h-8 rounded-lg border border-red-200 text-red-600 hover:bg-red-50 flex items-center justify-center transition-colors disabled:opacity-50"
+                className="w-8 h-8 rounded-lg border border-red-200 text-red-600 hover:bg-red-50 flex items-center justify-center transition-colors disabled:opacity-50 shrink-0"
                 title="Reject"
               >
                 {pendingAction === 'reject' ? (
@@ -866,7 +856,7 @@ function EnrollmentRow({
                 whileTap={{ scale: 0.95 }}
                 disabled={!!pendingAction}
                 onClick={() => onAct('approve')}
-                className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#8C1B2E] to-[#B43A4E] text-white flex items-center justify-center shadow-sm hover:shadow-md transition-all disabled:opacity-50"
+                className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#8C1B2E] to-[#B43A4E] text-white flex items-center justify-center shadow-sm hover:shadow-md transition-all disabled:opacity-50 shrink-0"
                 title="Approve & Notify"
               >
                 {pendingAction === 'approve' ? (
@@ -879,7 +869,7 @@ function EnrollmentRow({
           ) : (
             <button
               onClick={onView}
-              className="text-xs font-bold text-[#8C1B2E] hover:underline"
+              className="text-xs font-bold text-[#8C1B2E] hover:underline whitespace-nowrap"
             >
               View
             </button>
@@ -890,9 +880,6 @@ function EnrollmentRow({
   );
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   RESEARCH ORDER ROW  (now with Respond action + status)
-═══════════════════════════════════════════════════════════════ */
 function ResearchOrderRow({
   order,
   index,
@@ -906,18 +893,18 @@ function ResearchOrderRow({
 }) {
   const formattedCreated = order.created_at
     ? new Date(order.created_at).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    })
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      })
     : '—';
 
   const formattedDeadline = order.deadline
     ? new Date(order.deadline).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    })
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      })
     : '—';
 
   return (
@@ -926,62 +913,52 @@ function ResearchOrderRow({
       custom={index}
       className="border-b border-[#C0C5CE]/40 hover:bg-[#F5F7FA]/60 transition-colors duration-150 group"
     >
-      {/* ID */}
       <td className="py-4 px-4 text-xs font-bold text-[#1A1A1A]/45 whitespace-nowrap">
         #{order.id}
       </td>
 
-      {/* Full Name / Email */}
       <td className="py-4 px-4">
-        <button onClick={onView} className="text-left">
-          <p className="font-bold text-[#1A1A1A] text-sm group-hover:text-[#8C1B2E] transition-colors">
+        <button onClick={onView} className="text-left focus:outline-none block max-w-full">
+          <p className="font-bold text-[#1A1A1A] text-sm group-hover:text-[#8C1B2E] transition-colors truncate max-w-[160px] sm:max-w-none">
             {order.full_name}
           </p>
-          <p className="text-xs text-[#1A1A1A]/50 mt-0.5">{order.email}</p>
+          <p className="text-xs text-[#1A1A1A]/50 mt-0.5 truncate max-w-[160px] sm:max-w-none">{order.email}</p>
         </button>
       </td>
 
-      {/* Phone */}
       <td className="py-4 px-4 text-sm text-[#1A1A1A]/60 hidden lg:table-cell">
         {order.phone}
       </td>
 
-      {/* Service */}
       <td className="py-4 px-4 text-sm text-[#1A1A1A]/75 max-w-[160px] hidden xl:table-cell">
         <span className="line-clamp-1">{order.service}</span>
       </td>
 
-      {/* Subject */}
       <td className="py-4 px-4 text-sm text-[#1A1A1A]/60 hidden xl:table-cell max-w-[180px]">
         <span className="line-clamp-1">{order.subject_topic}</span>
       </td>
 
-      {/* Deadline */}
       <td className="py-4 px-4 text-xs text-[#1A1A1A]/60 hidden md:table-cell whitespace-nowrap">
         {formattedDeadline}
       </td>
 
-      {/* Requirements */}
       <td className="py-4 px-4 text-sm text-[#1A1A1A]/60 hidden 2xl:table-cell max-w-[180px]">
         <span className="line-clamp-1">{order.requirements || '—'}</span>
       </td>
 
-      {/* Response status (new) */}
       <td className="py-4 px-4 hidden sm:table-cell">
         <ResponseBadge status={order.status} />
       </td>
 
-      {/* Created date */}
       <td className="py-4 px-4 text-xs text-[#1A1A1A]/50 hidden sm:table-cell whitespace-nowrap">
         {formattedCreated}
       </td>
 
-      {/* Actions */}
       <td className="py-4 px-4">
         <div className="flex items-center gap-2 justify-end">
           <button
             onClick={onView}
-            className="text-xs font-bold text-[#8C1B2E] hover:underline"
+            className="text-xs font-bold text-[#8C1B2E] hover:underline whitespace-nowrap"
           >
             View
           </button>
@@ -989,11 +966,11 @@ function ResearchOrderRow({
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={onRespond}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-br from-[#8C1B2E] to-[#B43A4E] text-white text-xs font-bold shadow-sm hover:shadow-md transition-all whitespace-nowrap"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-br from-[#8C1B2E] to-[#B43A4E] text-white text-xs font-bold shadow-sm hover:shadow-md transition-all whitespace-nowrap shrink-0"
             title="Respond via email"
           >
             <Reply className="w-3.5 h-3.5" />
-            Respond
+            <span>Respond</span>
           </motion.button>
         </div>
       </td>
@@ -1001,9 +978,6 @@ function ResearchOrderRow({
   );
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   ZOOM MEETING ROW  (new)
-═══════════════════════════════════════════════════════════════ */
 function ZoomMeetingRow({
   meeting,
   index,
@@ -1013,14 +987,14 @@ function ZoomMeetingRow({
   index: number;
   onView: () => void;
 }) {
-  const formattedStart = `${meeting.preferred_date} ${meeting.preferred_time}`
+  const formattedStart = (meeting.preferred_date && meeting.preferred_time)
     ? new Date(`${meeting.preferred_date} ${meeting.preferred_time}`).toLocaleString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    })
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      })
     : '—';
 
   return (
@@ -1029,38 +1003,33 @@ function ZoomMeetingRow({
       custom={index}
       className="border-b border-[#C0C5CE]/40 hover:bg-[#F5F7FA]/60 transition-colors duration-150 group"
     >
-      {/* ID */}
       <td className="py-4 px-4 text-xs font-bold text-[#1A1A1A]/45 whitespace-nowrap">
         #{meeting.id}
       </td>
 
-      {/* Topic */}
       <td className="py-4 px-4">
-        <button onClick={onView} className="text-left">
-          <p className="font-bold text-[#1A1A1A] text-sm group-hover:text-[#8C1B2E] transition-colors">
+        <button onClick={onView} className="text-left focus:outline-none block max-w-full">
+          <p className="font-bold text-[#1A1A1A] text-sm group-hover:text-[#8C1B2E] transition-colors truncate max-w-[150px] sm:max-w-none">
             {meeting.full_name}
           </p>
           {meeting.email && (
-            <p className="text-xs text-[#1A1A1A]/50 mt-0.5">{meeting.email}</p>
+            <p className="text-xs text-[#1A1A1A]/50 mt-0.5 truncate max-w-[150px] sm:max-w-none">{meeting.email}</p>
           )}
         </button>
       </td>
 
-      {/* Start time */}
       <td className="py-4 px-4 text-sm text-[#1A1A1A]/60 hidden md:table-cell whitespace-nowrap">
         {formattedStart}
       </td>
 
-      {/* Duration */}
       <td className="py-4 px-4 text-sm text-[#1A1A1A]/60 hidden lg:table-cell">
         {meeting.duration ? `${meeting.duration} min` : '—'}
       </td>
 
-      {/* Join link */}
       <td className="py-4 px-4 text-sm hidden xl:table-cell max-w-[220px]">
         {meeting.meeting_link ? (
           <a
-            href={meeting.meeting_link!}
+            href={meeting.meeting_link}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 text-[#8C1B2E] font-semibold hover:underline truncate"
@@ -1073,61 +1042,61 @@ function ZoomMeetingRow({
         )}
       </td>
 
-      {/* Created date */}
       <td className="py-4 px-4 text-xs text-[#1A1A1A]/50 hidden sm:table-cell whitespace-nowrap">
         {meeting.created_at
           ? new Date(meeting.created_at).toLocaleDateString('en-US', {
-            month: 'short',
-            day: 'numeric',
-            year: 'numeric',
-          })
+              month: 'short',
+              day: 'numeric',
+              year: 'numeric',
+            })
           : '—'}
       </td>
 
-{/* Actions */}
-<td className="py-4 px-4">
-  <div className="flex items-center justify-end gap-3">
-    <button
-      onClick={async () => {
-        try {
-          const response = await fetch(
-            `https://terrific-light-production-94ae.up.railway.app/api/zoom/approve/${meeting.id}`,
-            {
-              method: "PUT",
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          );
+      <td className="py-4 px-4">
+        <div className="flex items-center justify-end gap-3">
+          <button
+            onClick={async (e) => {
+              e.stopPropagation();
+              try {
+                const response = await fetch(
+                  `https://terrific-light-production-94ae.up.railway.app/api/zoom/approve/${meeting.id}`,
+                  {
+                    method: "PUT",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                  }
+                );
 
-          if (response.ok) {
-            alert("Meeting approved successfully!");
-          } else {
-            alert("Failed to approve meeting.");
-          }
-        } catch (error) {
-          console.error("Error approving meeting:", error);
-          alert("An error occurred while approving the meeting.");
-        }
-      }}
-      className="text-xs font-bold bg-[#8C1B2E] text-white px-3 py-1.5 rounded hover:bg-[#8C1B2E]/90 transition-colors"
-    >
-      Approve
-    </button>
+                if (response.ok) {
+                  alert("Meeting approved successfully!");
+                } else {
+                  alert("Failed to approve meeting.");
+                }
+              } catch (error) {
+                console.error("Error approving meeting:", error);
+                alert("An error occurred while approving the meeting.");
+              }
+            }}
+            className="text-xs font-bold bg-[#8C1B2E] text-white px-3 py-1.5 rounded hover:bg-[#8C1B2E]/90 transition-colors whitespace-nowrap shrink-0"
+          >
+            Approve
+          </button>
 
-    <button
-      onClick={onView}
-      className="text-xs font-bold text-[#8C1B2E] hover:underline"
-    >
-      View
-    </button>
-  </div>
-</td>    </motion.tr>
+          <button
+            onClick={onView}
+            className="text-xs font-bold text-[#8C1B2E] hover:underline whitespace-nowrap"
+          >
+            View
+          </button>
+        </div>
+      </td>
+    </motion.tr>
   );
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   ZOOM MEETING DETAIL DRAWER  (new)
+   ZOOM MEETING DETAIL DRAWER
 ═══════════════════════════════════════════════════════════════ */
 function ZoomMeetingDrawer({
   meeting,
@@ -1158,16 +1127,15 @@ function ZoomMeetingDrawer({
           >
             <div className="absolute top-0 left-0 right-0 h-[4px] bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E]" />
 
-            {/* Header */}
             <div className="sticky top-0 bg-white/95 backdrop-blur-sm z-10 px-6 pt-6 pb-4 border-b border-[#C0C5CE]/30">
               <div className="flex items-start justify-between">
-                <div>
+                <div className="min-w-0 flex-1 pr-2">
                   <SectionLabel>Zoom Meeting Details</SectionLabel>
-                  <h3 className="text-xl font-extrabold text-[#1A1A1A] leading-tight">
+                  <h3 className="text-xl font-extrabold text-[#1A1A1A] leading-tight break-words">
                     {meeting.full_name}
                   </h3>
                   {meeting.email && (
-                    <p className="text-sm text-[#1A1A1A]/50 mt-0.5">{meeting.email}</p>
+                    <p className="text-sm text-[#1A1A1A]/50 mt-0.5 break-all">{meeting.email}</p>
                   )}
                 </div>
                 <button
@@ -1180,14 +1148,13 @@ function ZoomMeetingDrawer({
             </div>
 
             <div className="p-6">
-              {/* Meeting details */}
               <div className="mb-6">
                 <p className="text-[10px] font-extrabold tracking-[0.2em] uppercase text-[#1A1A1A]/35 mb-3">
                   Meeting Details
                 </p>
                 <div className="bg-[#F5F7FA] rounded-2xl p-4 space-y-3">
                   <InfoRow icon={Video} label="Topic" value={meeting.full_name} />
-                  {`${meeting.preferred_date} ${meeting.preferred_time}` && (
+                  {meeting.preferred_date && (
                     <>
                       <div className="h-px bg-[#C0C5CE]/30" />
                       <InfoRow
@@ -1212,7 +1179,6 @@ function ZoomMeetingDrawer({
                 </div>
               </div>
 
-              {/* Join link */}
               {meeting.meeting_link && (
                 <div className="mb-6">
                   <p className="text-[10px] font-extrabold tracking-[0.2em] uppercase text-[#1A1A1A]/35 mb-3">
@@ -1232,7 +1198,6 @@ function ZoomMeetingDrawer({
                 </div>
               )}
 
-              {/* Agenda */}
               {meeting.course && (
                 <div className="mb-6">
                   <p className="text-[10px] font-extrabold tracking-[0.2em] uppercase text-[#1A1A1A]/35 mb-3">
@@ -1243,7 +1208,7 @@ function ZoomMeetingDrawer({
                       <div className="w-9 h-9 rounded-lg bg-white border border-[#C0C5CE]/40 flex items-center justify-center shrink-0 mt-0.5">
                         <MessageSquare className="w-4 h-4 text-[#8C1B2E]" />
                       </div>
-                      <p className="text-sm text-[#1A1A1A]/80 leading-relaxed pt-1">
+                      <p className="text-sm text-[#1A1A1A]/80 leading-relaxed pt-1 break-words">
                         {meeting.course}
                       </p>
                     </div>
@@ -1251,7 +1216,6 @@ function ZoomMeetingDrawer({
                 </div>
               )}
 
-              {/* Meta */}
               <div className="mb-2">
                 <p className="text-[10px] font-extrabold tracking-[0.2em] uppercase text-[#1A1A1A]/35 mb-3">
                   Submission Info
@@ -1285,7 +1249,7 @@ function ZoomMeetingDrawer({
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   RESEARCH ORDER DETAIL DRAWER  (now with Respond action)
+   RESEARCH ORDER DETAIL DRAWER
 ═══════════════════════════════════════════════════════════════ */
 function ResearchOrderDrawer({
   order,
@@ -1318,15 +1282,14 @@ function ResearchOrderDrawer({
           >
             <div className="absolute top-0 left-0 right-0 h-[4px] bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E]" />
 
-            {/* Header */}
             <div className="sticky top-0 bg-white/95 backdrop-blur-sm z-10 px-6 pt-6 pb-4 border-b border-[#C0C5CE]/30">
               <div className="flex items-start justify-between">
-                <div>
+                <div className="min-w-0 flex-1 pr-2">
                   <SectionLabel>Research Order Details</SectionLabel>
-                  <h3 className="text-xl font-extrabold text-[#1A1A1A] leading-tight">
+                  <h3 className="text-xl font-extrabold text-[#1A1A1A] leading-tight break-words">
                     {order.full_name}
                   </h3>
-                  <p className="text-sm text-[#1A1A1A]/50 mt-0.5">{order.email}</p>
+                  <p className="text-sm text-[#1A1A1A]/50 mt-0.5 break-all">{order.email}</p>
                 </div>
                 <button
                   onClick={onClose}
@@ -1341,7 +1304,6 @@ function ResearchOrderDrawer({
             </div>
 
             <div className="p-6">
-              {/* Contact section */}
               <div className="mb-6">
                 <p className="text-[10px] font-extrabold tracking-[0.2em] uppercase text-[#1A1A1A]/35 mb-3">
                   Contact Information
@@ -1353,7 +1315,6 @@ function ResearchOrderDrawer({
                 </div>
               </div>
 
-              {/* Order details */}
               <div className="mb-6">
                 <p className="text-[10px] font-extrabold tracking-[0.2em] uppercase text-[#1A1A1A]/35 mb-3">
                   Order Details
@@ -1379,7 +1340,6 @@ function ResearchOrderDrawer({
                 </div>
               </div>
 
-              {/* Requirements */}
               {order.requirements && (
                 <div className="mb-6">
                   <p className="text-[10px] font-extrabold tracking-[0.2em] uppercase text-[#1A1A1A]/35 mb-3">
@@ -1390,7 +1350,7 @@ function ResearchOrderDrawer({
                       <div className="w-9 h-9 rounded-lg bg-white border border-[#C0C5CE]/40 flex items-center justify-center shrink-0 mt-0.5">
                         <MessageSquare className="w-4 h-4 text-[#8C1B2E]" />
                       </div>
-                      <p className="text-sm text-[#1A1A1A]/80 leading-relaxed pt-1">
+                      <p className="text-sm text-[#1A1A1A]/80 leading-relaxed pt-1 break-words">
                         {order.requirements}
                       </p>
                     </div>
@@ -1398,9 +1358,7 @@ function ResearchOrderDrawer({
                 </div>
               )}
 
-              {/* Last response sent (new) */}
               {order.status === 'Responded' && order.last_response && (
-
                 <div className="mb-6">
                   <p className="text-[10px] font-extrabold tracking-[0.2em] uppercase text-[#1A1A1A]/35 mb-3">
                     Your Last Response
@@ -1411,7 +1369,7 @@ function ResearchOrderDrawer({
                         <Reply className="w-4 h-4 text-emerald-600" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm text-[#1A1A1A]/80 leading-relaxed">
+                        <p className="text-sm text-[#1A1A1A]/80 leading-relaxed break-words">
                           {order.last_response}
                         </p>
                         {order.responded_at && (
@@ -1431,7 +1389,6 @@ function ResearchOrderDrawer({
                 </div>
               )}
 
-              {/* Meta */}
               <div className="mb-6">
                 <p className="text-[10px] font-extrabold tracking-[0.2em] uppercase text-[#1A1A1A]/35 mb-3">
                   Submission Info
@@ -1457,7 +1414,6 @@ function ResearchOrderDrawer({
                 </div>
               </div>
 
-              {/* Respond action (new) */}
               <div className="space-y-3">
                 {order.status !== 'Responded' && (
                   <div className="flex items-center gap-2 bg-amber-50 border border-amber-100 rounded-xl px-3 py-2.5 text-xs text-amber-700 font-medium">
@@ -1482,13 +1438,11 @@ function ResearchOrderDrawer({
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   PAGE
+   MAIN PAGE DASHBOARD
 ═══════════════════════════════════════════════════════════════ */
 export default function AdminDashboard() {
-  /* ── Top-level view toggle (new) ──────────────────────────── */
   const [view, setView] = useState<DashboardView>('enrollments');
 
-  /* ── Enrollment state (unchanged) ─────────────────────────── */
   const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -1504,14 +1458,12 @@ export default function AdminDashboard() {
   } | null>(null);
   const [refreshing, setRefreshing] = useState(false);
 
-  /* ── Toast state (generalized for both flows) ─────────────── */
   const [emailToast, setEmailToast] = useState(false);
   const [toastCopy, setToastCopy] = useState<{ title: string; subtitle: string }>({
     title: 'Approval email sent',
     subtitle: 'Student has been notified',
   });
 
-  /* ── Research Orders state (new) ──────────────────────────── */
   const [researchOrders, setResearchOrders] = useState<ResearchOrder[]>([]);
   const [roLoading, setRoLoading] = useState(true);
   const [roError, setRoError] = useState('');
@@ -1519,17 +1471,23 @@ export default function AdminDashboard() {
   const [roRefreshing, setRoRefreshing] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<ResearchOrder | null>(null);
 
-  /* ── Respond-to-order state (new) ─────────────────────────── */
   const [respondTarget, setRespondTarget] = useState<ResearchOrder | null>(null);
   const [sendingResponse, setSendingResponse] = useState(false);
 
-  /* ── Zoom Meetings state (new) ────────────────────────────── */
   const [zoomMeetings, setZoomMeetings] = useState<ZoomMeeting[]>([]);
   const [zoomLoading, setZoomLoading] = useState(true);
   const [zoomError, setZoomError] = useState('');
   const [zoomSearch, setZoomSearch] = useState('');
   const [zoomRefreshing, setZoomRefreshing] = useState(false);
   const [selectedMeeting, setSelectedMeeting] = useState<ZoomMeeting | null>(null);
+
+  const handleLogout = useCallback(() => {
+    // Standard secure wipe of browser state parameters
+    localStorage.clear();
+    sessionStorage.clear();
+    // Redirect context safely out of user profile
+    window.location.href = '/login';
+  }, []);
 
   const fetchEnrollments = useCallback(async (silent = false) => {
     if (!silent) setLoading(true);
@@ -1554,7 +1512,6 @@ export default function AdminDashboard() {
     }
   }, []);
 
-  /* New: fetch research orders */
   const fetchResearchOrders = useCallback(async (silent = false) => {
     if (!silent) setRoLoading(true);
     setRoRefreshing(true);
@@ -1573,7 +1530,6 @@ export default function AdminDashboard() {
     }
   }, []);
 
-  /* New: fetch zoom meetings — GET http://https://terrific-light-production-94ae.up.railway.app/api/zoom/all */
   const fetchZoomMeetings = useCallback(async (silent = false) => {
     if (!silent) setZoomLoading(true);
     setZoomRefreshing(true);
@@ -1583,7 +1539,7 @@ export default function AdminDashboard() {
       if (!res.ok) throw new Error('Failed to load Zoom meetings');
       const data = await res.json();
       const list: ZoomMeeting[] = data.data || [];
-setZoomMeetings(list);
+      setZoomMeetings(list);
     } catch (err: unknown) {
       setZoomError(err instanceof Error ? err.message : 'Something went wrong while loading Zoom meetings.');
     } finally {
@@ -1596,14 +1552,12 @@ setZoomMeetings(list);
     fetchEnrollments();
   }, [fetchEnrollments]);
 
-  /* Lazily fetch research orders the first time that tab is opened */
   useEffect(() => {
     if (view === 'research-orders' && researchOrders.length === 0 && roLoading) {
       fetchResearchOrders();
     }
   }, [view, researchOrders.length, roLoading, fetchResearchOrders]);
 
-  /* Lazily fetch zoom meetings the first time that tab is opened */
   useEffect(() => {
     if (view === 'zoom-meetings' && zoomMeetings.length === 0 && zoomLoading) {
       fetchZoomMeetings();
@@ -1633,7 +1587,6 @@ setZoomMeetings(list);
     });
   }, [enrollments, filter, search]);
 
-  /* New: filtered research orders */
   const filteredOrders = useMemo(() => {
     const q = roSearch.trim().toLowerCase();
     if (!q) return researchOrders;
@@ -1647,38 +1600,38 @@ setZoomMeetings(list);
     );
   }, [researchOrders, roSearch]);
 
-  /* New: research order response counts */
   const roCounts = useMemo(() => ({
     total: researchOrders.length,
     responded: researchOrders.filter((o) => o.status === 'Responded').length,
     awaiting: researchOrders.filter((o) => o.status !== 'Responded').length,
   }), [researchOrders]);
 
-  /* New: filtered zoom meetings */
   const filteredMeetings = useMemo(() => {
     const q = zoomSearch.trim().toLowerCase();
     if (!q) return zoomMeetings;
     return zoomMeetings.filter((m) =>
       m.topic?.toLowerCase().includes(q) ||
       m.host_email?.toLowerCase().includes(q) ||
-      m.agenda?.toLowerCase().includes(q)
+      m.agenda?.toLowerCase().includes(q) ||
+      m.full_name?.toLowerCase().includes(q) ||
+      m.course?.toLowerCase().includes(q)
     );
   }, [zoomMeetings, zoomSearch]);
 
-  /* New: zoom meeting counts (upcoming vs past, based on start_time) */
   const zoomCounts = useMemo(() => {
     const now = Date.now();
-    const upcoming = zoomMeetings.filter((m) => m.start_time && new Date(m.start_time).getTime() >= now).length;
+    const upcoming = zoomMeetings.filter((m) => {
+      if (!m.preferred_date) return false;
+      const dateStr = m.preferred_time ? `${m.preferred_date} ${m.preferred_time}` : m.preferred_date;
+      return new Date(dateStr).getTime() >= now;
+    }).length;
     return {
       total: zoomMeetings.length,
       upcoming,
       past: zoomMeetings.length - upcoming,
     };
   }, [zoomMeetings]);
-  /**
-   * Send approval email via backend, then update UI.
-   * Falls back gracefully if the email endpoint doesn't exist yet.
-   */
+
   const sendApprovalEmail = useCallback(async (enrollment: Enrollment) => {
     try {
       await fetch(`${API_BASE}/enroll/${enrollment.id}/send-approval-email`, {
@@ -1693,7 +1646,6 @@ setZoomMeetings(list);
       setToastCopy({ title: 'Approval email sent', subtitle: 'Student has been notified' });
       setEmailToast(true);
     } catch {
-      // Email sending is best-effort; don't block the UI
       setToastCopy({ title: 'Approval email sent', subtitle: 'Student has been notified' });
       setEmailToast(true);
     }
@@ -1702,16 +1654,11 @@ setZoomMeetings(list);
   const performAction = useCallback(
     async (id: string | number, action: 'approve' | 'reject') => {
       setRowAction({ id, action });
-
       try {
-        console.log("🚀 ACTION:", action, "ID:", id);
-
         const url =
           action === "approve"
             ? `${API_BASE}/enroll/${id}/approve`
-            : `${API_BASE}/enroll/${id}/reject`; // IMPORTANT
-
-        console.log("🌐 CALLING:", url);
+            : `${API_BASE}/enroll/${id}/reject`;
 
         const res = await fetch(url, {
           method: "PATCH",
@@ -1721,20 +1668,15 @@ setZoomMeetings(list);
         });
 
         const data = await res.json();
-
         if (!res.ok) {
           throw new Error(data?.message || "Request failed");
         }
 
         const newStatus: EnrollmentStatus =
-          action === "approve"
-            ? "approved"
-            : "rejected";
+          action === "approve" ? "approved" : "rejected";
 
         setEnrollments((prev) =>
-          prev.map((e) =>
-            e.id === id ? { ...e, status: newStatus } : e
-          )
+          prev.map((e) => (e.id === id ? { ...e, status: newStatus } : e))
         );
 
         if (selected?.id === id) {
@@ -1744,13 +1686,9 @@ setZoomMeetings(list);
         if (action === "approve") {
           setToastCopy({ title: 'Approval email sent', subtitle: 'Student has been notified' });
           setEmailToast(true);
-
-          alert(
-            `Student Approved!\nTemporary Password:\n${data.temporaryPassword || "N/A"}`
-          );
+          alert(`Student Approved!\nTemporary Password:\n${data.temporaryPassword || "N/A"}`);
         }
       } catch (err) {
-        console.error("❌ ERROR:", err);
         setError(err instanceof Error ? err.message : "Action failed");
       } finally {
         setRowAction(null);
@@ -1760,17 +1698,11 @@ setZoomMeetings(list);
     [selected]
   );
 
-  /**
-   * New: send the admin's reply to a research order via email.
-   * Hits the backend so the student is notified at their submitted email address,
-   * then marks the order as responded in the UI.
-   */
   const sendResearchOrderResponse = useCallback(
     async (message: string) => {
       if (!respondTarget) return;
       const order = respondTarget;
       setSendingResponse(true);
-
       try {
         const res = await fetch(`${API_BASE}/research-order/${order.id}/reply`, {
           method: 'POST',
@@ -1784,11 +1716,7 @@ setZoomMeetings(list);
         });
 
         let data: any = {};
-        try {
-          data = await res.json();
-        } catch {
-          // some backends may return no body — that's fine
-        }
+        try { data = await res.json(); } catch {}
 
         if (!res.ok) {
           throw new Error(data?.message || 'Failed to send response email');
@@ -1799,7 +1727,7 @@ setZoomMeetings(list);
         setResearchOrders((prev) =>
           prev.map((o) =>
             o.id === order.id
-              ? { ...o, status: 'Responded', responded: true, last_response: message, responded_at: respondedAt }
+              ? { ...o, status: 'Responded', last_response: message, responded_at: respondedAt }
               : o
           )
         );
@@ -1808,7 +1736,6 @@ setZoomMeetings(list);
           setSelectedOrder({
             ...selectedOrder,
             status: 'Responded',
-            responded: true,
             last_response: message,
             responded_at: respondedAt,
           });
@@ -1847,15 +1774,11 @@ setZoomMeetings(list);
       <div className="min-h-screen bg-white overflow-x-hidden">
         <ScrollProgress />
 
-        {/* ╔══════════════════════════════════════════════════╗
-            ║  HERO                                           ║
-            ╚══════════════════════════════════════════════════╝ */}
         <motion.section
           ref={heroRef}
-          className="relative gradient-hero text-white overflow-hidden"
+          className="relative gradient-hero text-white overflow-hidden px-4"
           style={{ minHeight: '420px' }}
         >
-          {/* Animated drifting grid */}
           <motion.div
             aria-hidden
             className="pointer-events-none absolute inset-0"
@@ -1868,11 +1791,10 @@ setZoomMeetings(list);
             transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
           />
 
-          {/* Floating orbs */}
           {[
-            { cls: '-top-20 -right-20 w-[400px] h-[400px]', dur: 14, delay: 0 },
-            { cls: '-bottom-14 -left-14 w-64 h-64', dur: 11, delay: 1.5 },
-            { cls: 'top-1/2 left-1/4 w-44 h-44', dur: 9, delay: 3 },
+            { cls: '-top-20 -right-20 w-[250px] sm:w-[400px] h-[250px] sm:h-[400px]', dur: 14, delay: 0 },
+            { cls: '-bottom-14 -left-14 w-44 sm:w-64 h-44 sm:h-64', dur: 11, delay: 1.5 },
+            { cls: 'top-1/2 left-1/4 w-32 sm:w-44 h-32 sm:h-44', dur: 9, delay: 3 },
           ].map((orb, i) => (
             <motion.div
               key={i}
@@ -1887,24 +1809,22 @@ setZoomMeetings(list);
 
           <motion.div
             style={{ y: heroY, opacity: heroOpacity, scale: heroScale }}
-            className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center text-center py-24"
+            className="relative z-10 max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 flex flex-col items-center justify-center text-center pt-20 pb-16"
           >
-            {/* Eyebrow */}
             <motion.div
               initial={{ opacity: 0, y: -16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1, ease: EASE }}
-              className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-5 py-2 text-sm font-medium mb-8"
+              className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 sm:px-5 py-1.5 sm:py-2 text-xs sm:text-sm font-medium mb-6 sm:mb-8"
             >
-              <ShieldCheck className="w-4 h-4" />
+              <ShieldCheck className="w-4 h-4 animate-pulse" />
               Admin Control Panel
             </motion.div>
 
-            {/* 3-D word-flip title */}
-            <div className="perspective-[800px] mb-5">
+            <div className="perspective-[800px] mb-4 sm:mb-5">
               <AnimatedTitle
                 text="Admin Dashboard"
-                className="text-5xl md:text-7xl font-extrabold leading-[1.02] tracking-tight block"
+                className="text-4xl sm:text-5xl md:text-7xl font-extrabold leading-[1.1] sm:leading-[1.02] tracking-tight block"
               />
             </div>
 
@@ -1912,13 +1832,12 @@ setZoomMeetings(list);
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.55, ease: EASE }}
-              className="text-lg md:text-xl text-white/80 max-w-xl font-light mb-2"
+              className="text-sm sm:text-base md:text-xl text-white/80 max-w-xl font-light mb-2 px-2"
             >
               Review, approve, and manage every enrollment and research request in one place
             </motion.p>
 
-            {/* Animated divider dots */}
-            <motion.div className="flex items-center gap-3 mt-6">
+            <motion.div className="flex items-center gap-3 mt-4 sm:mt-6">
               {[0, 1, 2].map((i) => (
                 <motion.span
                   key={i}
@@ -1931,8 +1850,7 @@ setZoomMeetings(list);
             </motion.div>
           </motion.div>
 
-          {/* Utility bar */}
-          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6 flex items-center justify-center gap-3">
+          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 flex flex-wrap items-center justify-center gap-3">
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -1943,31 +1861,36 @@ setZoomMeetings(list);
                     ? fetchResearchOrders()
                     : fetchZoomMeetings()
               }
-              className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-2 text-xs font-bold text-white hover:bg-white/20 transition-colors"
+              className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-2 text-xs font-bold text-white hover:bg-white/20 transition-colors focus:outline-none"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${(view === 'enrollments' ? refreshing : view === 'research-orders' ? roRefreshing : zoomRefreshing) ? 'animate-spin' : ''}`} />
               Refresh
             </motion.button>
-            <button className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-2 text-xs font-bold text-white hover:bg-white/20 transition-colors">
+            <motion.button 
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleLogout}
+              className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-2 text-xs font-bold text-white hover:bg-white/20 transition-colors focus:outline-none"
+            >
               <LogOut className="w-3.5 h-3.5" />
               Log Out
-            </button>
+            </motion.button>
           </div>
         </motion.section>
 
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 bg-white">
-          {/* ── Top-level view toggle (new) ─────────────────────── */}
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 bg-white">
           <motion.div
             variants={fadeUp}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="flex items-center gap-2 bg-[#F5F7FA] rounded-2xl border border-[#C0C5CE]/60 p-1.5 w-fit mb-10"
+            className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 bg-[#F5F7FA] rounded-2xl border border-[#C0C5CE]/60 p-1.5 w-full sm:w-fit mb-10 overflow-x-auto"
           >
             <button
               onClick={() => setView('enrollments')}
-              className={`relative flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-colors duration-200 ${view === 'enrollments' ? 'text-white' : 'text-[#1A1A1A]/60 hover:text-[#8C1B2E]'
-                }`}
+              className={`relative flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-colors duration-200 ${
+                view === 'enrollments' ? 'text-white' : 'text-[#1A1A1A]/60 hover:text-[#8C1B2E]'
+              }`}
             >
               {view === 'enrollments' && (
                 <motion.span
@@ -1976,13 +1899,14 @@ setZoomMeetings(list);
                   transition={{ duration: 0.3, ease: EASE }}
                 />
               )}
-              <GraduationCap className="w-4 h-4" />
-              Enrollments
+              <GraduationCap className="w-4 h-4 shrink-0" />
+              <span>Enrollments</span>
             </button>
             <button
               onClick={() => setView('research-orders')}
-              className={`relative flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-colors duration-200 ${view === 'research-orders' ? 'text-white' : 'text-[#1A1A1A]/60 hover:text-[#8C1B2E]'
-                }`}
+              className={`relative flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-colors duration-200 ${
+                view === 'research-orders' ? 'text-white' : 'text-[#1A1A1A]/60 hover:text-[#8C1B2E]'
+              }`}
             >
               {view === 'research-orders' && (
                 <motion.span
@@ -1991,13 +1915,14 @@ setZoomMeetings(list);
                   transition={{ duration: 0.3, ease: EASE }}
                 />
               )}
-              <ClipboardList className="w-4 h-4" />
-              Research Orders
+              <ClipboardList className="w-4 h-4 shrink-0" />
+              <span>Research Orders</span>
             </button>
             <button
               onClick={() => setView('zoom-meetings')}
-              className={`relative flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-colors duration-200 ${view === 'zoom-meetings' ? 'text-white' : 'text-[#1A1A1A]/60 hover:text-[#8C1B2E]'
-                }`}
+              className={`relative flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-colors duration-200 ${
+                view === 'zoom-meetings' ? 'text-white' : 'text-[#1A1A1A]/60 hover:text-[#8C1B2E]'
+              }`}
             >
               {view === 'zoom-meetings' && (
                 <motion.span
@@ -2006,26 +1931,25 @@ setZoomMeetings(list);
                   transition={{ duration: 0.3, ease: EASE }}
                 />
               )}
-              <Video className="w-4 h-4" />
-              Zoom Meetings
+              <Video className="w-4 h-4 shrink-0" />
+              <span>Zoom Meetings</span>
             </button>
           </motion.div>
 
           {/* ════════════════════════════════════════════════════
-              ENROLLMENTS VIEW (unchanged)
+              ENROLLMENTS VIEW
           ════════════════════════════════════════════════════ */}
           {view === 'enrollments' && (
             <>
-              {/* ── Heading ─────────────────────────────────────────── */}
               <motion.div
                 variants={fadeUp}
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true }}
-                className="mb-10"
+                className="mb-8"
               >
                 <SectionLabel>Enrollment Management</SectionLabel>
-                <h2 className="text-3xl md:text-4xl font-extrabold text-[#1A1A1A] mb-2">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#1A1A1A] mb-2">
                   Course Enrollments
                 </h2>
                 <motion.div
@@ -2037,7 +1961,6 @@ setZoomMeetings(list);
                 />
               </motion.div>
 
-              {/* ── Error banner ────────────────────────────────────── */}
               <AnimatePresence>
                 {error && (
                   <motion.div
@@ -2047,20 +1970,19 @@ setZoomMeetings(list);
                     className="mb-6 flex items-center gap-2 bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700"
                   >
                     <AlertTriangle className="w-4 h-4 shrink-0" />
-                    {error}
-                    <button onClick={() => setError('')} className="ml-auto">
+                    <span className="flex-1 break-words">{error}</span>
+                    <button onClick={() => setError('')} className="ml-auto shrink-0">
                       <X className="w-4 h-4" />
                     </button>
                   </motion.div>
                 )}
               </AnimatePresence>
 
-              {/* ── Stat cards ──────────────────────────────────────── */}
               <motion.div
                 variants={stagger}
                 initial="hidden"
                 animate="visible"
-                className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8"
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8"
               >
                 <StatCard
                   label="Total"
@@ -2099,15 +2021,15 @@ setZoomMeetings(list);
                 />
               </motion.div>
 
-              {/* ── Filters / Search ────────────────────────────────── */}
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-                <div className="flex items-center gap-2 bg-white rounded-xl border border-[#C0C5CE]/70 p-1 w-fit overflow-x-auto">
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
+                <div className="flex items-center gap-2 bg-white rounded-xl border border-[#C0C5CE]/70 p-1 w-full lg:w-fit overflow-x-auto max-w-full pb-2 lg:pb-1">
                   {tabs.map((tab) => (
                     <button
                       key={tab.key}
                       onClick={() => setFilter(tab.key)}
-                      className={`relative px-4 py-2 rounded-lg text-sm font-bold whitespace-nowrap transition-colors duration-200 ${filter === tab.key ? 'text-white' : 'text-[#1A1A1A]/60 hover:text-[#8C1B2E]'
-                        }`}
+                      className={`relative px-4 py-2 rounded-lg text-sm font-bold whitespace-nowrap transition-colors duration-200 flex-1 lg:flex-initial text-center ${
+                        filter === tab.key ? 'text-white' : 'text-[#1A1A1A]/60 hover:text-[#8C1B2E]'
+                      }`}
                     >
                       {filter === tab.key && (
                         <motion.span
@@ -2117,12 +2039,12 @@ setZoomMeetings(list);
                         />
                       )}
                       {tab.label}
-                      <span className="ml-1.5 opacity-70">({counts[tab.key]})</span>
+                      <span className="ml-1 opacity-70">({counts[tab.key]})</span>
                     </button>
                   ))}
                 </div>
 
-                <div className="relative w-full sm:w-80">
+                <div className="relative w-full lg:w-80 shrink-0">
                   <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1A1A1A]/40" />
                   <input
                     type="text"
@@ -2134,7 +2056,6 @@ setZoomMeetings(list);
                 </div>
               </div>
 
-              {/* ── Summary line ────────────────────────────────────── */}
               {!loading && (
                 <p className="text-xs text-[#1A1A1A]/40 font-medium mb-4">
                   Showing {filtered.length} of {enrollments.length} enrollment{enrollments.length !== 1 ? 's' : ''}
@@ -2142,8 +2063,7 @@ setZoomMeetings(list);
                 </p>
               )}
 
-              {/* ── Table ───────────────────────────────────────────── */}
-              <div className="bg-white rounded-2xl border border-[#C0C5CE]/60 shadow-sm overflow-hidden">
+              <div className="bg-white rounded-2xl border border-[#C0C5CE]/60 shadow-sm overflow-hidden w-full">
                 {loading ? (
                   <div className="py-24 flex flex-col items-center justify-center text-[#1A1A1A]/40">
                     <div className="w-12 h-12 rounded-full border-4 border-[#8C1B2E]/20 border-t-[#8C1B2E] animate-spin mb-4" />
@@ -2151,11 +2071,11 @@ setZoomMeetings(list);
                     <p className="text-xs mt-1">Fetching the latest data</p>
                   </div>
                 ) : filtered.length === 0 ? (
-                  <div className="py-24 flex flex-col items-center justify-center text-[#1A1A1A]/40">
+                  <div className="py-24 flex flex-col items-center justify-center text-[#1A1A1A]/40 px-4">
                     <div className="w-16 h-16 rounded-2xl bg-[#F5F7FA] flex items-center justify-center mb-4">
                       <Inbox className="w-8 h-8" />
                     </div>
-                    <p className="text-sm font-bold text-[#1A1A1A]/60">No enrollments found</p>
+                    <p className="text-sm font-bold text-[#1A1A1A]/60 text-center">No enrollments found</p>
                     <p className="text-xs mt-1.5 max-w-xs text-center">
                       {search
                         ? `No results match "${search}". Try a different keyword.`
@@ -2164,39 +2084,39 @@ setZoomMeetings(list);
                     {(search || filter !== 'all') && (
                       <button
                         onClick={() => { setSearch(''); setFilter('all'); }}
-                        className="mt-4 text-xs font-bold text-[#8C1B2E] hover:underline"
+                        className="mt-4 text-xs font-bold text-[#8C1B2E] hover:underline focus:outline-none"
                       >
                         Clear filters
                       </button>
                     )}
                   </div>
                 ) : (
-                  <div className="overflow-x-auto">
-                    <table className="w-full min-w-[640px]">
+                  <div className="overflow-x-auto w-full scrollbar-thin">
+                    <table className="w-full min-w-[600px] sm:min-w-[700px] lg:min-w-[900px] table-auto">
                       <thead>
                         <tr className="border-b border-[#C0C5CE]/60 bg-[#F5F7FA]/60">
-                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide">
+                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide whitespace-nowrap">
                             Applicant
                           </th>
-                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden lg:table-cell">
+                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden lg:table-cell whitespace-nowrap">
                             Course
                           </th>
-                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden xl:table-cell">
+                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden xl:table-cell whitespace-nowrap">
                             Phone
                           </th>
-                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden xl:table-cell">
+                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden xl:table-cell whitespace-nowrap">
                             Country
                           </th>
-                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden 2xl:table-cell">
+                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden 2xl:table-cell whitespace-nowrap">
                             Education
                           </th>
-                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden md:table-cell">
+                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden md:table-cell whitespace-nowrap">
                             Submitted
                           </th>
-                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden sm:table-cell">
+                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden sm:table-cell whitespace-nowrap">
                             Status
                           </th>
-                          <th className="text-right py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide">
+                          <th className="text-right py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide whitespace-nowrap">
                             Actions
                           </th>
                         </tr>
@@ -2227,7 +2147,6 @@ setZoomMeetings(list);
                 )}
               </div>
 
-              {/* Table footer */}
               {!loading && filtered.length > 0 && (
                 <p className="text-xs text-[#1A1A1A]/35 text-center mt-4 font-medium">
                   {filtered.length} record{filtered.length !== 1 ? 's' : ''} displayed
@@ -2238,20 +2157,19 @@ setZoomMeetings(list);
           )}
 
           {/* ════════════════════════════════════════════════════
-              RESEARCH ORDERS VIEW (now with Respond capability)
+              RESEARCH ORDERS VIEW
           ════════════════════════════════════════════════════ */}
           {view === 'research-orders' && (
             <>
-              {/* ── Heading ─────────────────────────────────────────── */}
               <motion.div
                 variants={fadeUp}
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true }}
-                className="mb-10"
+                className="mb-8"
               >
                 <SectionLabel>Research Order Management</SectionLabel>
-                <h2 className="text-3xl md:text-4xl font-extrabold text-[#1A1A1A] mb-2">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#1A1A1A] mb-2">
                   Research Orders
                 </h2>
                 <motion.div
@@ -2263,7 +2181,6 @@ setZoomMeetings(list);
                 />
               </motion.div>
 
-              {/* ── Error banner ────────────────────────────────────── */}
               <AnimatePresence>
                 {roError && (
                   <motion.div
@@ -2273,20 +2190,19 @@ setZoomMeetings(list);
                     className="mb-6 flex items-center gap-2 bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700"
                   >
                     <AlertTriangle className="w-4 h-4 shrink-0" />
-                    {roError}
-                    <button onClick={() => setRoError('')} className="ml-auto">
+                    <span className="flex-1 break-words">{roError}</span>
+                    <button onClick={() => setRoError('')} className="ml-auto shrink-0">
                       <X className="w-4 h-4" />
                     </button>
                   </motion.div>
                 )}
               </AnimatePresence>
 
-              {/* ── Stat cards (now includes response status) ──────── */}
               <motion.div
                 variants={stagger}
                 initial="hidden"
                 animate="visible"
-                className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8"
+                className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8"
               >
                 <StatCard
                   label="Total Orders"
@@ -2316,7 +2232,6 @@ setZoomMeetings(list);
                 />
               </motion.div>
 
-              {/* ── Search ──────────────────────────────────────────── */}
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-end gap-4 mb-6">
                 <div className="relative w-full sm:w-80">
                   <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1A1A1A]/40" />
@@ -2330,7 +2245,6 @@ setZoomMeetings(list);
                 </div>
               </div>
 
-              {/* ── Summary line ────────────────────────────────────── */}
               {!roLoading && (
                 <p className="text-xs text-[#1A1A1A]/40 font-medium mb-4">
                   Showing {filteredOrders.length} of {researchOrders.length} order{researchOrders.length !== 1 ? 's' : ''}
@@ -2338,8 +2252,7 @@ setZoomMeetings(list);
                 </p>
               )}
 
-              {/* ── Table ───────────────────────────────────────────── */}
-              <div className="bg-white rounded-2xl border border-[#C0C5CE]/60 shadow-sm overflow-hidden">
+              <div className="bg-white rounded-2xl border border-[#C0C5CE]/60 shadow-sm overflow-hidden w-full">
                 {roLoading ? (
                   <div className="py-24 flex flex-col items-center justify-center text-[#1A1A1A]/40">
                     <div className="w-12 h-12 rounded-full border-4 border-[#8C1B2E]/20 border-t-[#8C1B2E] animate-spin mb-4" />
@@ -2347,11 +2260,11 @@ setZoomMeetings(list);
                     <p className="text-xs mt-1">Fetching the latest data</p>
                   </div>
                 ) : filteredOrders.length === 0 ? (
-                  <div className="py-24 flex flex-col items-center justify-center text-[#1A1A1A]/40">
+                  <div className="py-24 flex flex-col items-center justify-center text-[#1A1A1A]/40 px-4">
                     <div className="w-16 h-16 rounded-2xl bg-[#F5F7FA] flex items-center justify-center mb-4">
                       <Inbox className="w-8 h-8" />
                     </div>
-                    <p className="text-sm font-bold text-[#1A1A1A]/60">No research orders found</p>
+                    <p className="text-sm font-bold text-[#1A1A1A]/60 text-center">No research orders found</p>
                     <p className="text-xs mt-1.5 max-w-xs text-center">
                       {roSearch
                         ? `No results match "${roSearch}". Try a different keyword.`
@@ -2360,45 +2273,45 @@ setZoomMeetings(list);
                     {roSearch && (
                       <button
                         onClick={() => setRoSearch('')}
-                        className="mt-4 text-xs font-bold text-[#8C1B2E] hover:underline"
+                        className="mt-4 text-xs font-bold text-[#8C1B2E] hover:underline focus:outline-none"
                       >
                         Clear search
                       </button>
                     )}
                   </div>
                 ) : (
-                  <div className="overflow-x-auto">
-                    <table className="w-full min-w-[860px]">
+                  <div className="overflow-x-auto w-full scrollbar-thin">
+                    <table className="w-full min-w-[700px] md:min-w-[850px] lg:min-w-[1000px] table-auto">
                       <thead>
                         <tr className="border-b border-[#C0C5CE]/60 bg-[#F5F7FA]/60">
-                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide">
+                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide whitespace-nowrap">
                             ID
                           </th>
-                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide">
+                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide whitespace-nowrap">
                             Full Name / Email
                           </th>
-                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden lg:table-cell">
+                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden lg:table-cell whitespace-nowrap">
                             Phone
                           </th>
-                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden xl:table-cell">
+                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden xl:table-cell whitespace-nowrap">
                             Service
                           </th>
-                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden xl:table-cell">
+                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden xl:table-cell whitespace-nowrap">
                             Subject
                           </th>
-                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden md:table-cell">
+                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden md:table-cell whitespace-nowrap">
                             Deadline
                           </th>
-                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden 2xl:table-cell">
+                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden 2xl:table-cell whitespace-nowrap">
                             Requirements
                           </th>
-                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden sm:table-cell">
+                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden sm:table-cell whitespace-nowrap">
                             Response
                           </th>
-                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden sm:table-cell">
+                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden sm:table-cell whitespace-nowrap">
                             Created
                           </th>
-                          <th className="text-right py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide">
+                          <th className="text-right py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide whitespace-nowrap">
                             Actions
                           </th>
                         </tr>
@@ -2419,7 +2332,6 @@ setZoomMeetings(list);
                 )}
               </div>
 
-              {/* Table footer */}
               {!roLoading && filteredOrders.length > 0 && (
                 <p className="text-xs text-[#1A1A1A]/35 text-center mt-4 font-medium">
                   {filteredOrders.length} record{filteredOrders.length !== 1 ? 's' : ''} displayed
@@ -2429,28 +2341,26 @@ setZoomMeetings(list);
           )}
 
           {/* ════════════════════════════════════════════════════
-              ZOOM MEETINGS VIEW (new)
+              ZOOM MEETINGS VIEW
           ════════════════════════════════════════════════════ */}
           {view === 'zoom-meetings' && (
             <>
-              {/* ── Heading ─────────────────────────────────────────── */}
               <motion.div
                 variants={fadeUp}
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true }}
-                className="mb-10"
+                className="mb-8"
               >
                 <SectionLabel>Zoom Meeting Management</SectionLabel>
-                <h2 className="text-3xl md:text-4xl font-extrabold text-[#1A1A1A] mb-2">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#1A1A1A] mb-2">
                   Scheduled Zoom Meetings
                 </h2>
-                <p className="text-[#1A1A1A]/55 text-base max-w-2xl">
+                <p className="text-[#1A1A1A]/55 text-sm sm:text-base max-w-2xl">
                   View every Zoom meeting pulled from the API, including join links and schedule details.
                 </p>
               </motion.div>
 
-              {/* ── Error banner ──────────────────────────────────────── */}
               <AnimatePresence>
                 {zoomError && (
                   <motion.div
@@ -2460,20 +2370,19 @@ setZoomMeetings(list);
                     className="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 mb-6 text-sm font-medium overflow-hidden"
                   >
                     <AlertTriangle className="w-4 h-4 shrink-0" />
-                    {zoomError}
-                    <button onClick={() => setZoomError('')} className="ml-auto">
+                    <span className="flex-1 break-words">{zoomError}</span>
+                    <button onClick={() => setZoomError('')} className="ml-auto shrink-0">
                       <X className="w-4 h-4" />
                     </button>
                   </motion.div>
                 )}
               </AnimatePresence>
 
-              {/* ── Stat cards ──────────────────────────────────────── */}
               <motion.div
                 variants={stagger}
                 initial="hidden"
                 animate="visible"
-                className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8"
+                className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8"
               >
                 <StatCard
                   label="Total Meetings"
@@ -2503,7 +2412,6 @@ setZoomMeetings(list);
                 />
               </motion.div>
 
-              {/* ── Search ──────────────────────────────────────────── */}
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-end gap-4 mb-6">
                 <div className="relative w-full sm:w-80">
                   <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1A1A1A]/40" />
@@ -2517,7 +2425,6 @@ setZoomMeetings(list);
                 </div>
               </div>
 
-              {/* ── Summary line ────────────────────────────────────── */}
               {!zoomLoading && (
                 <p className="text-xs text-[#1A1A1A]/40 font-medium mb-4">
                   Showing {filteredMeetings.length} of {zoomMeetings.length} meeting{zoomMeetings.length !== 1 ? 's' : ''}
@@ -2525,8 +2432,7 @@ setZoomMeetings(list);
                 </p>
               )}
 
-              {/* ── Table ───────────────────────────────────────────── */}
-              <div className="bg-white rounded-2xl border border-[#C0C5CE]/60 shadow-sm overflow-hidden">
+              <div className="bg-white rounded-2xl border border-[#C0C5CE]/60 shadow-sm overflow-hidden w-full">
                 {zoomLoading ? (
                   <div className="py-24 flex flex-col items-center justify-center text-[#1A1A1A]/40">
                     <div className="w-12 h-12 rounded-full border-4 border-[#8C1B2E]/20 border-t-[#8C1B2E] animate-spin mb-4" />
@@ -2534,11 +2440,11 @@ setZoomMeetings(list);
                     <p className="text-xs mt-1">Fetching the latest data</p>
                   </div>
                 ) : filteredMeetings.length === 0 ? (
-                  <div className="py-24 flex flex-col items-center justify-center text-[#1A1A1A]/40">
+                  <div className="py-24 flex flex-col items-center justify-center text-[#1A1A1A]/40 px-4">
                     <div className="w-16 h-16 rounded-2xl bg-[#F5F7FA] flex items-center justify-center mb-4">
                       <Video className="w-8 h-8" />
                     </div>
-                    <p className="text-sm font-bold text-[#1A1A1A]/60">No Zoom meetings found</p>
+                    <p className="text-sm font-bold text-[#1A1A1A]/60 text-center">No Zoom meetings found</p>
                     <p className="text-xs mt-1.5 max-w-xs text-center">
                       {zoomSearch
                         ? `No results match "${zoomSearch}". Try a different keyword.`
@@ -2547,36 +2453,36 @@ setZoomMeetings(list);
                     {zoomSearch && (
                       <button
                         onClick={() => setZoomSearch('')}
-                        className="mt-4 text-xs font-bold text-[#8C1B2E] hover:underline"
+                        className="mt-4 text-xs font-bold text-[#8C1B2E] hover:underline focus:outline-none"
                       >
                         Clear search
                       </button>
                     )}
                   </div>
                 ) : (
-                  <div className="overflow-x-auto">
-                    <table className="w-full min-w-[760px]">
+                  <div className="overflow-x-auto w-full scrollbar-thin">
+                    <table className="w-full min-w-[650px] md:min-w-[800px] lg:min-w-[950px] table-auto">
                       <thead>
                         <tr className="border-b border-[#C0C5CE]/60 bg-[#F5F7FA]/60">
-                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide">
+                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide whitespace-nowrap">
                             ID
                           </th>
-                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide">
+                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide whitespace-nowrap">
                             Topic / Host
                           </th>
-                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden md:table-cell">
+                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden md:table-cell whitespace-nowrap">
                             Start Time
                           </th>
-                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden lg:table-cell">
+                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden lg:table-cell whitespace-nowrap">
                             Duration
                           </th>
-                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden xl:table-cell">
+                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden xl:table-cell whitespace-nowrap">
                             Join Link
                           </th>
-                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden sm:table-cell">
+                          <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden sm:table-cell whitespace-nowrap">
                             Created
                           </th>
-                          <th className="text-right py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide">
+                          <th className="text-right py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide whitespace-nowrap">
                             Actions
                           </th>
                         </tr>
@@ -2596,7 +2502,6 @@ setZoomMeetings(list);
                 )}
               </div>
 
-              {/* Table footer */}
               {!zoomLoading && filteredMeetings.length > 0 && (
                 <p className="text-xs text-[#1A1A1A]/35 text-center mt-4 font-medium">
                   {filteredMeetings.length} record{filteredMeetings.length !== 1 ? 's' : ''} displayed
@@ -2606,7 +2511,6 @@ setZoomMeetings(list);
           )}
         </main>
 
-        {/* ── Detail drawer (enrollments) ───────────────────────── */}
         <DetailDrawer
           enrollment={selected}
           onClose={() => setSelected(null)}
@@ -2620,20 +2524,17 @@ setZoomMeetings(list);
           }
         />
 
-        {/* ── Detail drawer (research orders, now with Respond) ─── */}
         <ResearchOrderDrawer
           order={selectedOrder}
           onClose={() => setSelectedOrder(null)}
           onRespond={(order) => setRespondTarget(order)}
         />
 
-        {/* ── Detail drawer (zoom meetings, new) ────────────────── */}
         <ZoomMeetingDrawer
           meeting={selectedMeeting}
           onClose={() => setSelectedMeeting(null)}
         />
 
-        {/* ── Confirm modal ──────────────────────────────────────── */}
         <ConfirmModal
           open={!!confirm}
           action={confirm?.action ?? null}
@@ -2645,7 +2546,6 @@ setZoomMeetings(list);
           }
         />
 
-        {/* ── Respond to research order modal (new) ─────────────── */}
         <RespondModal
           order={respondTarget}
           onClose={() => (!sendingResponse ? setRespondTarget(null) : undefined)}
@@ -2653,7 +2553,6 @@ setZoomMeetings(list);
           sending={sendingResponse}
         />
 
-        {/* ── Email sent toast ───────────────────────────────────── */}
         <EmailToast
           show={emailToast}
           onHide={() => setEmailToast(false)}

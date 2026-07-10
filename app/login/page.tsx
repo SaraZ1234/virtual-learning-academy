@@ -85,7 +85,7 @@ function ScrollProgress() {
   );
 }
 
-const API_BASE = 'https://terrific-light-production-94ae.up.railway.app/api';
+const API_BASE = 'https://terrific-light-production-94ae.up.railway.app';
 type LoginStatus = 'idle' | 'submitting' | 'error';
 
 export default function StudentLogin() {

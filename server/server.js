@@ -1,7 +1,9 @@
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
+
 const db = require("./config/db");
+
 const enrollmentRoutes = require("./routes/enrollmentRoutes");
 const authRoutes = require("./routes/authRoutes");
 const adminRoutes = require("./routes/adminRoutes");
@@ -11,38 +13,100 @@ const zoomRoutes = require("./routes/zoomRoutes");
 
 const app = express();
 
-// Middleware
+
+// ===============================
+// CORS CONFIGURATION
+// ===============================
 app.use(cors({
-  origin: [
-    "https://virtual-learning-academy-production.up.railway.app",
-    "http://localhost:5173",
-    "http://localhost:3000"
-  ],
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true
+    origin: [
+        "https://virtual-learning-academy-production.up.railway.app",
+        "http://localhost:5173",
+        "http://localhost:3000"
+    ],
+    credentials: true,
+    methods: [
+        "GET",
+        "POST",
+        "PUT",
+        "PATCH",
+        "DELETE",
+        "OPTIONS"
+    ],
+    allowedHeaders: [
+        "Content-Type",
+        "Authorization"
+    ]
 }));
 
-// app.options("*", cors());
+
+// ===============================
+// BODY PARSER
+// ===============================
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/api", enrollmentRoutes);
-app.use("/api/auth", authRoutes);
-app.use("/api/admin", adminRoutes);
-app.use("/api", contactRoutes);
-app.use("/api", researchOrderRoutes);
-app.use("/api/zoom", zoomRoutes);
 
-// Test Route
+// ===============================
+// DEBUG REQUEST LOGGER
+// ===============================
+app.use((req, res, next) => {
+    console.log(`${req.method} ${req.url}`);
+    next();
+});
+
+
+// ===============================
+// TEST ROUTE
+// ===============================
 app.get("/", (req, res) => {
     res.send("Backend is running successfully!");
 });
 
-// Port
+
+// ===============================
+// API ROUTES
+// ===============================
+app.use("/api", enrollmentRoutes);
+
+app.use("/api/auth", authRoutes);
+
+app.use("/api/admin", adminRoutes);
+
+app.use("/api", contactRoutes);
+
+app.use("/api", researchOrderRoutes);
+
+app.use("/api/zoom", zoomRoutes);
+
+
+// ===============================
+// 404 HANDLER
+// ===============================
+app.use((req, res) => {
+    res.status(404).json({
+        message: "Route not found",
+        path: req.originalUrl
+    });
+});
+
+
+// ===============================
+// ERROR HANDLER
+// ===============================
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+
+    res.status(500).json({
+        message: "Internal Server Error"
+    });
+});
+
+
+// ===============================
+// SERVER START
+// ===============================
 const PORT = process.env.PORT || 5000;
 
-// Start Server
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });

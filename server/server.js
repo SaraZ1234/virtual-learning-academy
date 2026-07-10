@@ -78,6 +78,10 @@ app.use("/api", researchOrderRoutes);
 
 app.use("/api/zoom", zoomRoutes);
 
+app.get("/api/test", (req, res) => {
+    res.json({ message: "API is working" });
+});
+
 
 // ===============================
 // 404 HANDLER

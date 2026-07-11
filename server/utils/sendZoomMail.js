@@ -1,6 +1,9 @@
 const axios = require("axios");
 require("dotenv").config();
 
+const axios = require("axios");
+require("dotenv").config();
+
 const sendZoomMail = async ({
   full_name,
   email,
@@ -12,11 +15,13 @@ const sendZoomMail = async ({
   meeting_password,
 }) => {
   try {
-    console.log("========== BREVO API DEBUG ==========");
-    console.log("EMAIL_USER:", process.env.EMAIL_USER);
-    console.log("BREVO_API_KEY exists:", !!process.env.BREVO_API_KEY);
-    console.log("=====================================");
-
+    console.log("========== BREVO DEBUG ==========");
+    console.log(
+      "BREVO KEY EXISTS:",
+      process.env.BREVO_API_KEY ? "YES" : "NO"
+    );
+    console.log("Sending email to:", email);
+    console.log("=================================");
 
     const emailData = {
       sender: {
@@ -38,13 +43,23 @@ const sendZoomMail = async ({
 
         <p>Your Zoom session has been approved.</p>
 
-        <p><strong>Course:</strong> ${course}</p>
-        <p><strong>Date:</strong> ${preferred_date}</p>
-        <p><strong>Time:</strong> ${preferred_time}</p>
+        <p>
+          <strong>Course:</strong> ${course}
+        </p>
+
+        <p>
+          <strong>Date:</strong> ${new Date(preferred_date).toDateString()}
+        </p>
+
+        <p>
+          <strong>Time:</strong> ${preferred_time}
+        </p>
 
         <hr>
 
-        <p><strong>Meeting Link:</strong></p>
+        <p>
+          <strong>Meeting Link:</strong>
+        </p>
 
         <a href="${meeting_link}">
           ${meeting_link}
@@ -69,39 +84,36 @@ const sendZoomMail = async ({
     };
 
 
-    console.log("Sending email through Brevo API...");
-
-
     const response = await axios.post(
       "https://api.brevo.com/v3/smtp/email",
       emailData,
       {
         headers: {
-          "accept": "application/json",
           "api-key": process.env.BREVO_API_KEY,
-          "content-type": "application/json",
+          "Content-Type": "application/json",
         },
       }
     );
 
 
-    console.log("✅ Email sent successfully");
-    console.log("Brevo Message Response:", response.data);
-
+    console.log("Brevo Email Sent Successfully:");
+    console.log(response.data);
 
     return response.data;
 
 
   } catch (error) {
 
-    console.error("❌ BREVO EMAIL ERROR");
+    console.log("========== BREVO ERROR ==========");
 
     if (error.response) {
-      console.error("Status:", error.response.status);
-      console.error("Response:", error.response.data);
+      console.log("Status:", error.response.status);
+      console.log("Data:", error.response.data);
     } else {
-      console.error("Message:", error.message);
+      console.log(error.message);
     }
+
+    console.log("=================================");
 
     throw error;
   }
@@ -109,3 +121,5 @@ const sendZoomMail = async ({
 
 
 module.exports = sendZoomMail;
+
+

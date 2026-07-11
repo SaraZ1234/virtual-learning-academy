@@ -1,7 +1,4 @@
-const axios = require("axios");
-require("dotenv").config();
-
-const axios = require("axios");
+const nodemailer = require("nodemailer");
 require("dotenv").config();
 
 const sendZoomMail = async ({
@@ -15,111 +12,86 @@ const sendZoomMail = async ({
   meeting_password,
 }) => {
   try {
-    console.log("========== BREVO DEBUG ==========");
-    console.log(
-      "BREVO KEY EXISTS:",
-      process.env.BREVO_API_KEY ? "YES" : "NO"
-    );
-    console.log("Sending email to:", email);
-    console.log("=================================");
+    // ==========================
+    // DEBUG LOGS
+    // ==========================
+    console.log("========== SMTP DEBUG ==========");
+    console.log("EMAIL_USER:", process.env.EMAIL_USER);
+    console.log("EMAIL_PASS exists:", !!process.env.EMAIL_PASS);
+    console.log("SMTP HOST: smtp-relay.brevo.com");
+    console.log("SMTP PORT: 587");
+    console.log("================================");
 
-    const emailData = {
-      sender: {
-        name: "Hafsa Institute of International Learning and Research",
-        email: process.env.EMAIL_USER,
+    // ==========================
+    // SMTP TRANSPORT
+    // ==========================
+    const transporter = nodemailer.createTransport({
+      host: "smtp-relay.brevo.com",
+      port: 587,
+      secure: false,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
       },
+    });
 
-      to: [
-        {
-          email: email,
-          name: full_name,
-        },
-      ],
+    // ==========================
+    // VERIFY CONNECTION
+    // ==========================
+    console.log("Verifying SMTP connection...");
 
+    await transporter.verify();
+
+    console.log("✅ Brevo SMTP Connected Successfully");
+
+    // ==========================
+    // SEND EMAIL
+    // ==========================
+    const info = await transporter.sendMail({
+      from: `"Hafsa Institute of International Learning and Research" <${process.env.EMAIL_USER}>`,
+      to: email,
       subject: "Your Zoom Session Has Been Approved",
 
-      htmlContent: `
+      html: `
         <h2>Hello ${full_name},</h2>
 
         <p>Your Zoom session has been approved.</p>
 
-        <p>
-          <strong>Course:</strong> ${course}
-        </p>
-
-        <p>
-          <strong>Date:</strong> ${new Date(preferred_date).toDateString()}
-        </p>
-
-        <p>
-          <strong>Time:</strong> ${preferred_time}
-        </p>
+        <p><strong>Course:</strong> ${course}</p>
+        <p><strong>Date:</strong> ${preferred_date}</p>
+        <p><strong>Time:</strong> ${preferred_time}</p>
 
         <hr>
 
-        <p>
-          <strong>Meeting Link:</strong>
-        </p>
+        <p><strong>Meeting Link:</strong></p>
+        <a href="${meeting_link}">${meeting_link}</a>
 
-        <a href="${meeting_link}">
-          ${meeting_link}
-        </a>
-
-        <p>
-          <strong>Meeting ID:</strong> ${meeting_id}
-        </p>
-
-        <p>
-          <strong>Password:</strong> ${meeting_password}
-        </p>
+        <p><strong>Meeting ID:</strong> ${meeting_id}</p>
+        <p><strong>Password:</strong> ${meeting_password}</p>
 
         <br>
 
         <p>Regards,</p>
 
-        <h3>
-          Hafsa Institute of International Learning and Research
-        </h3>
+        <h3>Hafsa Institute of International Learning and Research</h3>
       `,
-    };
+    });
 
+    console.log("✅ Email sent successfully.");
+    console.log("Message ID:", info.messageId);
 
-    const response = await axios.post(
-      "https://api.brevo.com/v3/smtp/email",
-      emailData,
-      {
-        headers: {
-          "api-key": process.env.BREVO_API_KEY,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-
-    console.log("Brevo Email Sent Successfully:");
-    console.log(response.data);
-
-    return response.data;
-
+    return info;
 
   } catch (error) {
-
-    console.log("========== BREVO ERROR ==========");
-
-    if (error.response) {
-      console.log("Status:", error.response.status);
-      console.log("Data:", error.response.data);
-    } else {
-      console.log(error.message);
-    }
-
-    console.log("=================================");
+    console.error("❌ EMAIL ERROR");
+    console.error("Name:", error.name);
+    console.error("Code:", error.code);
+    console.error("Command:", error.command);
+    console.error("Message:", error.message);
+    console.error(error);
 
     throw error;
   }
 };
 
-
 module.exports = sendZoomMail;
-
-

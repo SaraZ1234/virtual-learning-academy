@@ -863,9 +863,9 @@ export default function AcademicServiceDetailView({ params }: DynamicPageProps) 
                 </div>
 
                 <div className="space-y-3 font-bold text-xs sm:text-sm">
-                  <a href="mailto:Researchcraft.sol@gmail.com" className="flex items-center gap-3 p-3 bg-white hover:bg-white rounded-xl transition-all shadow-sm border-2 border-transparent hover:border-[#8C1B2E]">
+                  <a href="mailto:hafsaakbar071@gmail.com" className="flex items-center gap-3 p-3 bg-white hover:bg-white rounded-xl transition-all shadow-sm border-2 border-transparent hover:border-[#8C1B2E]">
                     <Mail className="w-5 h-5 text-[#8C1B2E] shrink-0" />
-                    <span className="truncate text-[#1A1A1A] font-bold">Researchcraft.sol@gmail.com</span>
+                    <span className="truncate text-[#1A1A1A] font-bold">hafsaakbar071@gmail.com</span>
                   </a>
                   
                   <a href="https://wa.me/923147998354" target="_blank" rel="noreferrer" className="flex items-center gap-3 p-3 bg-white hover:bg-white rounded-xl transition-all shadow-sm border-2 border-transparent hover:border-[#8C1B2E]">

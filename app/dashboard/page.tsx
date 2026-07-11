@@ -143,7 +143,7 @@ function StatusBadge({ status }: { status: EnrollmentStatus }) {
   };
   return (
     <span
-      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border capitalize ${styles[status]}`}
+      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border capitalize whitespace-nowrap ${styles[status]}`}
     >
       {icons[status]}
       {status}
@@ -178,15 +178,15 @@ function StatCard({
       custom={index}
       whileHover={{ y: -4, boxShadow: '0 16px 32px rgba(140,27,46,0.10)' }}
       whileTap={{ scale: 0.98 }}
-      className={`relative text-left bg-white rounded-2xl border p-5 flex flex-col gap-3 transition-all duration-200 w-full ${active ? 'border-[#8C1B2E] ring-2 ring-[#8C1B2E]/15' : 'border-[#C0C5CE]/70'
+      className={`relative text-left bg-white rounded-2xl border p-4 sm:p-5 flex flex-col gap-2 sm:gap-3 transition-all duration-200 w-full ${active ? 'border-[#8C1B2E] ring-2 ring-[#8C1B2E]/15' : 'border-[#C0C5CE]/70'
         }`}
     >
-      <div className={`w-10 h-10 rounded-xl ${color} flex items-center justify-center shadow-md shrink-0`}>
-        <Icon className="w-4.5 h-4.5 text-white" />
+      <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl ${color} flex items-center justify-center shadow-md shrink-0`}>
+        <Icon className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-white" />
       </div>
       <div>
-        <p className="text-2xl font-extrabold text-[#1A1A1A] leading-none">{value}</p>
-        <p className="text-xs font-semibold text-[#1A1A1A]/50 uppercase tracking-wide mt-1">{label}</p>
+        <p className="text-xl sm:text-2xl font-extrabold text-[#1A1A1A] leading-none">{value}</p>
+        <p className="text-[10px] sm:text-xs font-semibold text-[#1A1A1A]/50 uppercase tracking-wide mt-1">{label}</p>
       </div>
     </motion.button>
   );
@@ -213,23 +213,23 @@ function StudentInfoCard({
     >
       {/* Accent bar */}
       <div className="h-[4px] bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E]" />
-      <div className="p-6">
+      <div className="p-4 sm:p-6">
         <div className="flex items-start gap-4">
           {/* Avatar */}
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#8C1B2E] to-[#B43A4E] flex items-center justify-center shadow-lg shrink-0">
-            <span className="text-white font-extrabold text-2xl">
+          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-[#8C1B2E] to-[#B43A4E] flex items-center justify-center shadow-lg shrink-0">
+            <span className="text-white font-extrabold text-xl sm:text-2xl">
               {(user?.full_name || user?.name || 'S').charAt(0).toUpperCase()}
             </span>
           </div>
           <div className="flex-1 min-w-0">
             <SectionLabel>Student Profile</SectionLabel>
-            <h3 className="text-xl font-extrabold text-[#1A1A1A] truncate">
+            <h3 className="text-lg sm:text-xl font-extrabold text-[#1A1A1A] truncate">
               {user?.full_name || user?.name || 'Student'}
             </h3>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mt-5 sm:mt-6">
           <ProfileField icon={User} label="Full Name" value={user?.full_name || user?.name || '—'} />
           <ProfileField icon={Mail} label="Email" value={user?.email || '—'} />
           <ProfileField icon={Phone} label="Phone" value={user?.phone || '—'} />
@@ -242,7 +242,7 @@ function StudentInfoCard({
 
 function ProfileField({ icon: Icon, label, value }: { icon: any; label: string; value: string }) {
   return (
-    <div className="flex items-start gap-3 bg-[#F5F7FA] rounded-xl px-4 py-3">
+    <div className="flex items-start gap-3 bg-[#F5F7FA] rounded-xl px-3 sm:px-4 py-3 min-w-0">
       <div className="w-8 h-8 rounded-lg bg-white border border-[#C0C5CE]/60 flex items-center justify-center shrink-0 mt-0.5">
         <Icon className="w-3.5 h-3.5 text-[#8C1B2E]" />
       </div>
@@ -294,14 +294,14 @@ function RecentActivity({ enrollments }: { enrollments: Enrollment[] }) {
       viewport={{ once: true }}
       className="bg-white rounded-2xl border border-[#C0C5CE]/60 shadow-sm overflow-hidden"
     >
-      <div className="p-6 border-b border-[#C0C5CE]/40">
+      <div className="p-4 sm:p-6 border-b border-[#C0C5CE]/40">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#8C1B2E] to-[#B43A4E] flex items-center justify-center shadow-md">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#8C1B2E] to-[#B43A4E] flex items-center justify-center shadow-md shrink-0">
             <Activity className="w-4 h-4 text-white" />
           </div>
-          <div>
+          <div className="min-w-0">
             <SectionLabel>Activity</SectionLabel>
-            <h3 className="text-lg font-extrabold text-[#1A1A1A] -mt-1">Recent Activity</h3>
+            <h3 className="text-base sm:text-lg font-extrabold text-[#1A1A1A] -mt-1">Recent Activity</h3>
           </div>
         </div>
       </div>
@@ -320,7 +320,7 @@ function RecentActivity({ enrollments }: { enrollments: Enrollment[] }) {
                 key={act.id}
                 variants={fadeUp}
                 custom={i}
-                className="flex items-start gap-4 px-6 py-4 hover:bg-[#F5F7FA]/60 transition-colors"
+                className="flex flex-wrap sm:flex-nowrap items-start gap-3 sm:gap-4 px-4 sm:px-6 py-4 hover:bg-[#F5F7FA]/60 transition-colors"
               >
                 <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 mt-0.5 ${act.color}`}>
                   <Icon className="w-4 h-4" />
@@ -394,9 +394,9 @@ function Notifications({ enrollments }: { enrollments: Enrollment[] }) {
       viewport={{ once: true }}
       className="bg-white rounded-2xl border border-[#C0C5CE]/60 shadow-sm overflow-hidden"
     >
-      <div className="p-6 border-b border-[#C0C5CE]/40">
+      <div className="p-4 sm:p-6 border-b border-[#C0C5CE]/40">
         <div className="flex items-center gap-3">
-          <div className="relative">
+          <div className="relative shrink-0">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#8C1B2E] to-[#B43A4E] flex items-center justify-center shadow-md">
               <Bell className="w-4 h-4 text-white" />
             </div>
@@ -406,14 +406,14 @@ function Notifications({ enrollments }: { enrollments: Enrollment[] }) {
               </span>
             )}
           </div>
-          <div>
+          <div className="min-w-0">
             <SectionLabel>Alerts</SectionLabel>
-            <h3 className="text-lg font-extrabold text-[#1A1A1A] -mt-1">Notifications</h3>
+            <h3 className="text-base sm:text-lg font-extrabold text-[#1A1A1A] -mt-1">Notifications</h3>
           </div>
         </div>
       </div>
 
-      <div className="p-4 space-y-3">
+      <div className="p-3 sm:p-4 space-y-3">
         {notifications.map((n, i) => {
           const s = styles[n.type];
           return (
@@ -421,10 +421,10 @@ function Notifications({ enrollments }: { enrollments: Enrollment[] }) {
               key={n.id}
               variants={fadeUp}
               custom={i}
-              className={`flex items-start gap-3 border rounded-xl px-4 py-3 ${s.wrap}`}
+              className={`flex items-start gap-3 border rounded-xl px-3 sm:px-4 py-3 ${s.wrap}`}
             >
               <span className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${s.dot}`} />
-              <p className={`text-sm font-medium leading-relaxed ${s.icon}`}>{n.message}</p>
+              <p className={`text-sm font-medium leading-relaxed break-words ${s.icon}`}>{n.message}</p>
             </motion.div>
           );
         })}
@@ -455,14 +455,14 @@ function DetailDrawer({ enrollment, onClose }: { enrollment: Enrollment | null; 
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ duration: 0.35, ease: EASE }}
-            className="fixed top-0 right-0 h-full w-full max-w-md bg-white z-[901] shadow-2xl overflow-y-auto"
+            className="fixed top-0 right-0 h-full w-full sm:max-w-md bg-white z-[901] shadow-2xl overflow-y-auto"
           >
             <div className="absolute top-0 left-0 right-0 h-[4px] bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E]" />
-            <div className="p-6">
-              <div className="flex items-start justify-between mb-6">
-                <div>
+            <div className="p-5 sm:p-6">
+              <div className="flex items-start justify-between gap-3 mb-6">
+                <div className="min-w-0">
                   <SectionLabel>Enrollment Details</SectionLabel>
-                  <h3 className="text-xl font-extrabold text-[#1A1A1A]">{enrollment.course}</h3>
+                  <h3 className="text-lg sm:text-xl font-extrabold text-[#1A1A1A] break-words">{enrollment.course}</h3>
                 </div>
                 <button
                   onClick={onClose}
@@ -523,9 +523,9 @@ function InfoRow({ icon: Icon, label, value, multiline }: { icon: any; label: st
       <div className="w-9 h-9 rounded-lg bg-[#F5F7FA] flex items-center justify-center shrink-0 mt-0.5">
         <Icon className="w-4 h-4 text-[#8C1B2E]" />
       </div>
-      <div className="flex-1">
+      <div className="flex-1 min-w-0">
         <p className="text-xs font-bold text-[#1A1A1A]/45 uppercase tracking-wide mb-0.5">{label}</p>
-        <p className={`text-sm text-[#1A1A1A] ${multiline ? 'leading-relaxed' : ''}`}>{value}</p>
+        <p className={`text-sm text-[#1A1A1A] break-words ${multiline ? 'leading-relaxed' : ''}`}>{value}</p>
       </div>
     </div>
   );
@@ -542,24 +542,24 @@ function EnrollmentRow({ enrollment, index, onView }: { enrollment: Enrollment; 
       className="border-b border-[#C0C5CE]/40 hover:bg-[#F5F7FA]/60 transition-colors duration-150 group cursor-pointer"
       onClick={onView}
     >
-      <td className="py-4 px-4">
+      <td className="py-4 px-3 sm:px-4">
         <p className="font-bold text-[#1A1A1A] text-sm group-hover:text-[#8C1B2E] transition-colors">
           {enrollment.course}
         </p>
       </td>
-      <td className="py-4 px-4 text-sm text-[#1A1A1A]/60 hidden md:table-cell">
-        <span className="inline-flex items-center gap-1.5">
+      <td className="py-4 px-3 sm:px-4 text-sm text-[#1A1A1A]/60 hidden md:table-cell">
+        <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
           <Calendar className="w-3.5 h-3.5 text-[#8C1B2E]/60" />
           {enrollment.created_at ? new Date(enrollment.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'}
         </span>
       </td>
-      <td className="py-4 px-4">
+      <td className="py-4 px-3 sm:px-4">
         <StatusBadge status={enrollment.status} />
       </td>
-      <td className="py-4 px-4 text-right">
+      <td className="py-4 px-3 sm:px-4 text-right">
         <button
           onClick={(e) => { e.stopPropagation(); onView(); }}
-          className="inline-flex items-center gap-1 text-xs font-bold text-[#8C1B2E] hover:underline"
+          className="inline-flex items-center gap-1 text-xs font-bold text-[#8C1B2E] hover:underline whitespace-nowrap"
         >
           View <ChevronRight className="w-3 h-3" />
         </button>
@@ -685,9 +685,9 @@ export default function StudentDashboard() {
           ))}
           <Particles />
 
-          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
             {/* Left: Welcome */}
-            <div>
+            <div className="min-w-0">
               <motion.p
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -700,7 +700,7 @@ export default function StudentDashboard() {
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.1, ease: EASE }}
-                className="text-3xl md:text-4xl font-extrabold tracking-tight"
+                className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight break-words"
               >
                 Welcome Back,{' '}
                 <span className="text-white/90">{displayName}</span> 👋
@@ -720,18 +720,18 @@ export default function StudentDashboard() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.3, ease: EASE }}
-              className="flex items-center gap-3 shrink-0"
+              className="flex flex-wrap items-center gap-3 shrink-0"
             >
               <button
                 onClick={() => fetchEnrollments()}
-                className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl px-4 py-2.5 text-xs font-bold text-white hover:bg-white/20 transition-colors"
+                className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl px-3.5 sm:px-4 py-2.5 text-xs font-bold text-white hover:bg-white/20 transition-colors whitespace-nowrap"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
                 Refresh
               </button>
               <button
                 onClick={handleLogout}
-                className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl px-4 py-2.5 text-xs font-bold text-white hover:bg-white/20 transition-colors"
+                className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl px-3.5 sm:px-4 py-2.5 text-xs font-bold text-white hover:bg-white/20 transition-colors whitespace-nowrap"
               >
                 <LogOut className="w-3.5 h-3.5" />
                 Log Out
@@ -740,7 +740,7 @@ export default function StudentDashboard() {
           </div>
         </section>
 
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-8">
 
           {/* ── Error banner ────────────────────────────────── */}
           <AnimatePresence>
@@ -749,11 +749,11 @@ export default function StudentDashboard() {
                 initial={{ opacity: 0, y: -8, height: 0 }}
                 animate={{ opacity: 1, y: 0, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
-                className="flex items-center gap-2 bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700"
+                className="flex items-start sm:items-center gap-2 bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700"
               >
-                <AlertTriangle className="w-4 h-4 shrink-0" />
-                {error}
-                <button onClick={() => setError('')} className="ml-auto"><X className="w-4 h-4" /></button>
+                <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 sm:mt-0" />
+                <span className="flex-1 break-words">{error}</span>
+                <button onClick={() => setError('')} className="ml-auto shrink-0"><X className="w-4 h-4" /></button>
               </motion.div>
             )}
           </AnimatePresence>
@@ -765,14 +765,14 @@ export default function StudentDashboard() {
           <div>
             <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="mb-4">
               <SectionLabel>Overview</SectionLabel>
-              <h2 className="text-2xl font-extrabold text-[#1A1A1A]">Statistics</h2>
+              <h2 className="text-xl sm:text-2xl font-extrabold text-[#1A1A1A]">Statistics</h2>
             </motion.div>
 
             <motion.div
               variants={stagger}
               initial="hidden"
               animate="visible"
-              className="grid grid-cols-2 md:grid-cols-4 gap-4"
+              className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4"
             >
               <StatCard label="Total" value={counts.all} icon={Inbox} index={0} active={filter === 'all'} onClick={() => setFilter('all')} color="bg-gradient-to-br from-[#8C1B2E] to-[#B43A4E]" />
               <StatCard label="Pending" value={counts.pending} icon={Clock} index={1} active={filter === 'pending'} onClick={() => setFilter('pending')} color="bg-gradient-to-br from-amber-500 to-amber-600" />
@@ -785,7 +785,7 @@ export default function StudentDashboard() {
           <div>
             <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="mb-5">
               <SectionLabel>Applications</SectionLabel>
-              <h2 className="text-2xl font-extrabold text-[#1A1A1A] mb-1">My Enrollments</h2>
+              <h2 className="text-xl sm:text-2xl font-extrabold text-[#1A1A1A] mb-1">My Enrollments</h2>
               <motion.div
                 className="h-[3px] bg-[#8C1B2E] rounded-full"
                 initial={{ width: 0 }}
@@ -810,13 +810,13 @@ export default function StudentDashboard() {
               </div>
 
               {/* Filter tabs */}
-              <div className="flex items-center gap-2 bg-white rounded-xl border border-[#C0C5CE]/70 p-1 w-fit overflow-x-auto shadow-sm">
+              <div className="flex items-center gap-2 bg-white rounded-xl border border-[#C0C5CE]/70 p-1 w-full sm:w-fit overflow-x-auto shadow-sm">
                 <SlidersHorizontal className="w-3.5 h-3.5 text-[#1A1A1A]/40 ml-1 shrink-0" />
                 {tabs.map((tab) => (
                   <button
                     key={tab.key}
                     onClick={() => setFilter(tab.key)}
-                    className={`relative px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-colors duration-200 ${filter === tab.key ? 'text-white' : 'text-[#1A1A1A]/60 hover:text-[#8C1B2E]'
+                    className={`relative px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-colors duration-200 shrink-0 ${filter === tab.key ? 'text-white' : 'text-[#1A1A1A]/60 hover:text-[#8C1B2E]'
                       }`}
                   >
                     {filter === tab.key && (
@@ -841,7 +841,7 @@ export default function StudentDashboard() {
                   <p className="text-sm font-semibold">Loading your enrollments...</p>
                 </div>
               ) : filtered.length === 0 ? (
-                <div className="py-20 flex flex-col items-center justify-center text-[#1A1A1A]/40">
+                <div className="py-20 flex flex-col items-center justify-center text-[#1A1A1A]/40 px-4 text-center">
                   <Inbox className="w-10 h-10 mb-3" />
                   <p className="text-sm font-semibold">No enrollments found</p>
                   <p className="text-xs mt-1">
@@ -850,19 +850,19 @@ export default function StudentDashboard() {
                 </div>
               ) : (
                 <div className="overflow-x-auto">
-                  <table className="w-full">
+                  <table className="w-full min-w-[520px]">
                     <thead>
                       <tr className="border-b border-[#C0C5CE]/60 bg-[#F5F7FA]/80">
-                        <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide">
+                        <th className="text-left py-3 px-3 sm:px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide">
                           Course
                         </th>
-                        <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden md:table-cell">
+                        <th className="text-left py-3 px-3 sm:px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide hidden md:table-cell">
                           Applied Date
                         </th>
-                        <th className="text-left py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide">
+                        <th className="text-left py-3 px-3 sm:px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide">
                           Status
                         </th>
-                        <th className="text-right py-3 px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide">
+                        <th className="text-right py-3 px-3 sm:px-4 text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-wide">
                           View
                         </th>
                       </tr>

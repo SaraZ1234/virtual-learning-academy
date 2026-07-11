@@ -12,6 +12,19 @@ const sendZoomMail = async ({
   meeting_password,
 }) => {
   try {
+    // ==========================
+    // DEBUG LOGS
+    // ==========================
+    console.log("========== SMTP DEBUG ==========");
+    console.log("EMAIL_USER:", process.env.EMAIL_USER);
+    console.log("EMAIL_PASS exists:", !!process.env.EMAIL_PASS);
+    console.log("SMTP HOST: smtp-relay.brevo.com");
+    console.log("SMTP PORT: 587");
+    console.log("================================");
+
+    // ==========================
+    // SMTP TRANSPORT
+    // ==========================
     const transporter = nodemailer.createTransport({
       host: "smtp-relay.brevo.com",
       port: 587,
@@ -22,12 +35,19 @@ const sendZoomMail = async ({
       },
     });
 
-    // Verify SMTP connection
+    // ==========================
+    // VERIFY CONNECTION
+    // ==========================
+    console.log("Verifying SMTP connection...");
+
     await transporter.verify();
+
     console.log("✅ Brevo SMTP Connected Successfully");
 
-    // Send Email
-    await transporter.sendMail({
+    // ==========================
+    // SEND EMAIL
+    // ==========================
+    const info = await transporter.sendMail({
       from: `"Hafsa Institute of International Learning and Research" <${process.env.EMAIL_USER}>`,
       to: email,
       subject: "Your Zoom Session Has Been Approved",
@@ -57,9 +77,19 @@ const sendZoomMail = async ({
       `,
     });
 
-    console.log("✅ Zoom email sent successfully.");
+    console.log("✅ Email sent successfully.");
+    console.log("Message ID:", info.messageId);
+
+    return info;
+
   } catch (error) {
-    console.error("❌ Email Error:", error);
+    console.error("❌ EMAIL ERROR");
+    console.error("Name:", error.name);
+    console.error("Code:", error.code);
+    console.error("Command:", error.command);
+    console.error("Message:", error.message);
+    console.error(error);
+
     throw error;
   }
 };

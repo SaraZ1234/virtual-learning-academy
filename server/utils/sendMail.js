@@ -1,29 +1,51 @@
-const nodemailer = require("nodemailer");
+const axios = require("axios");
 require("dotenv").config();
 
 const sendMail = async (formData) => {
   try {
-    // Create transporter
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
+
+    console.log("========== BREVO ENROLLMENT MAIL ==========");
+    console.log("SENDER:", process.env.EMAIL_USER);
+    console.log(
+      "BREVO KEY:",
+      process.env.BREVO_API_KEY ? "AVAILABLE" : "MISSING"
+    );
+    console.log("===========================================");
+
 
     // ===========================================
     // EMAIL TO ADMIN
     // ===========================================
 
     const adminMail = {
-      from: `"Hafsa Institute of International Learning and Research" <${process.env.EMAIL_USER}>`,
-      to: process.env.EMAIL_RECEIVER,
-      replyTo: formData.email,
+
+      sender: {
+        name: "Hafsa Institute of International Learning and Research",
+        email: process.env.EMAIL_USER,
+      },
+
+
+      to: [
+        {
+          email: process.env.EMAIL_RECEIVER,
+          name: "Admin",
+        },
+      ],
+
+
+      replyTo: {
+        email: formData.email,
+        name: formData.full_name,
+      },
+
+
       subject: "New Course Enrollment Received",
 
-      html: `
+
+      htmlContent: `
+
         <h2>New Enrollment Details</h2>
+
 
         <p><strong>Name:</strong> ${formData.full_name}</p>
 
@@ -36,36 +58,72 @@ const sendMail = async (formData) => {
         <p><strong>Education:</strong> ${formData.education}</p>
 
         <p><strong>Message:</strong> ${formData.message}</p>
+
       `,
     };
 
-    await transporter.sendMail(adminMail);
 
-    console.log("Admin email sent.");
+    await axios.post(
+      "https://api.brevo.com/v3/smtp/email",
+      adminMail,
+      {
+        headers:{
+          "api-key": process.env.BREVO_API_KEY,
+          "Content-Type":"application/json",
+        },
+      }
+    );
+
+
+    console.log("✅ Admin enrollment email sent");
+
 
     // ===========================================
     // EMAIL TO STUDENT
     // ===========================================
 
-    const studentMail = {
-      from: `"Virtual Learning Academy" <${process.env.EMAIL_USER}>`,
-      to: formData.email,
-      subject: "Enrollment Request Received",
 
-      html: `
+    const studentMail = {
+
+      sender:{
+        name:"Virtual Learning Academy",
+        email:process.env.EMAIL_USER,
+      },
+
+
+      to:[
+        {
+          email:formData.email,
+          name:formData.full_name,
+        },
+      ],
+
+
+      subject:"Enrollment Request Received",
+
+
+      htmlContent:`
+
+
         <h2>Thank You for Your Enrollment!</h2>
 
-        <p>Dear <strong>${formData.full_name}</strong>,</p>
+
+        <p>
+          Dear <strong>${formData.full_name}</strong>,
+        </p>
+
 
         <p>
           We have successfully received your enrollment request for
           <strong>${formData.course}</strong>.
         </p>
 
+
         <p>
           Our admissions team will review your application within
           <strong>24 hours</strong>.
         </p>
+
 
         <p>
           Once your enrollment is approved, you will receive another
@@ -73,25 +131,69 @@ const sendMail = async (formData) => {
           your student dashboard.
         </p>
 
-        <br>
-
-        <p>Thank you for choosing Virtual Learning Academy.</p>
 
         <br>
+
+
+        <p>
+          Thank you for choosing Virtual Learning Academy.
+        </p>
+
+
+        <br>
+
 
         <p>Regards,</p>
 
-        <h3>Hafsa Institute of International Learning and Research</h3>
+
+        <h3>
+          Hafsa Institute of International Learning and Research
+        </h3>
+
+
       `,
     };
 
-    await transporter.sendMail(studentMail);
 
-    console.log("Student confirmation email sent.");
 
-  } catch (error) {
-    console.log("EMAIL ERROR:", error);
+    await axios.post(
+      "https://api.brevo.com/v3/smtp/email",
+      studentMail,
+      {
+        headers:{
+          "api-key":process.env.BREVO_API_KEY,
+          "Content-Type":"application/json",
+        },
+      }
+    );
+
+
+
+    console.log("✅ Student confirmation email sent");
+
+
+
+  } catch(error){
+
+
+    console.log("========== BREVO ENROLLMENT ERROR ==========");
+
+
+    if(error.response){
+      console.log("Status:", error.response.status);
+      console.log("Response:", error.response.data);
+    }
+    else{
+      console.log(error.message);
+    }
+
+
+    console.log("============================================");
+
+    throw error;
+
   }
 };
+
 
 module.exports = sendMail;

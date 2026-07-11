@@ -1,4 +1,4 @@
-const nodemailer = require("nodemailer");
+const axios = require("axios");
 require("dotenv").config();
 
 const sendApprovalMail = async ({
@@ -7,9 +7,10 @@ const sendApprovalMail = async ({
   course,
   temporaryPassword,
 }) => {
+
   console.log("==================================================");
   console.log("📩 sendApprovalMail() CALLED");
-  console.log("INPUT DATA:", {
+  console.log({
     full_name,
     email,
     course,
@@ -17,69 +18,105 @@ const sendApprovalMail = async ({
   });
   console.log("==================================================");
 
-  // 🔴 INPUT VALIDATION DEBUG
+
   if (!email || !temporaryPassword) {
-    console.log("❌ VALIDATION FAILED: Missing required fields");
-    console.log({ email, temporaryPassword });
+    console.log("❌ Missing email or password");
     return;
   }
 
+
   try {
-    console.log("🔧 Creating transporter...");
 
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+    const emailData = {
+
+      sender: {
+        name: "Hafsa Institute of International Learning and Research",
+        email: process.env.EMAIL_USER,
       },
-    });
 
-    // 🔴 VERIFY SMTP CONNECTION
-    await transporter.verify();
-    console.log("✅ SMTP connection verified");
 
-    console.log("📤 Sending email to:", email);
+      to: [
+        {
+          email,
+          name: full_name,
+        },
+      ],
 
-    const info = await transporter.sendMail({
-      from: `"Hafsa Institute of International Learning and Research" <${process.env.EMAIL_USER}>`,
-      to: email,
+
       subject: "🎉 Your Enrollment Has Been Approved",
 
-      html: `
+
+      htmlContent: `
+
         <h2>Account Approved</h2>
 
+
         <p><b>Name:</b> ${full_name}</p>
+
         <p><b>Email:</b> ${email}</p>
+
         <p><b>Course:</b> ${course}</p>
-        <p><b>Temporary Password:</b> ${temporaryPassword}</p>
+
+
+        <p>
+          <b>Temporary Password:</b>
+          ${temporaryPassword}
+        </p>
+
 
         <hr/>
-        <p>Please login and change your password immediately.</p>
 
-        <h3>Virtual Learning Academy</h3>
+
+        <p>
+          Please login and change your password immediately.
+        </p>
+
+
+        <h3>
+          Virtual Learning Academy
+        </h3>
+
       `,
-    });
+    };
 
-    // 🔴 EMAIL RESPONSE DEBUG
-    console.log("📬 EMAIL RESPONSE:");
-    console.log("Message ID:", info.messageId);
-    console.log("Accepted:", info.accepted);
-    console.log("Rejected:", info.rejected);
 
-    if (info.rejected.length > 0) {
-      console.log("❌ EMAIL REJECTED:", info.rejected);
-    }
+    const response = await axios.post(
+      "https://api.brevo.com/v3/smtp/email",
+      emailData,
+      {
+        headers:{
+          "api-key": process.env.BREVO_API_KEY,
+          "Content-Type":"application/json",
+        },
+      }
+    );
+
 
     console.log("✅ Approval email sent successfully");
-    console.log("==================================================");
+    console.log(response.data);
 
-  } catch (error) {
-    console.log("❌ APPROVAL EMAIL ERROR:");
-    console.log(error);
-    console.log("==================================================");
+
+    return response.data;
+
+
+  } catch(error){
+
+
+    console.log("❌ APPROVAL EMAIL ERROR");
+
+
+    if(error.response){
+      console.log(error.response.data);
+    }
+    else{
+      console.log(error.message);
+    }
+
+
     throw error;
   }
+
 };
+
 
 module.exports = sendApprovalMail;

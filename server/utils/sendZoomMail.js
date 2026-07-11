@@ -1,5 +1,7 @@
-const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
 require("dotenv").config();
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const sendZoomMail = async ({
   full_name,
@@ -11,54 +13,45 @@ const sendZoomMail = async ({
   meeting_id,
   meeting_password,
 }) => {
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-  requireTLS: true,
-  connectionTimeout: 30000,
-  greetingTimeout: 30000,
-  socketTimeout: 30000,
-});
+  try {
+    const { data, error } = await resend.emails.send({
+      from: "Hafsa Institute <onboarding@resend.dev>",
+      to: email,
+      subject: "Your Zoom Session Has Been Approved",
+      html: `
+        <h2>Hello ${full_name},</h2>
 
-await transporter.verify();
-console.log("SMTP Connected Successfully");
+        <p>Your Zoom session has been approved.</p>
 
-  await transporter.sendMail({
-    from: `"Hafsa Institute of International Learning and Research" <${process.env.EMAIL_USER}>`,
-    to: email,
-    subject: "Your Zoom Session Has Been Approved",
+        <p><strong>Course:</strong> ${course}</p>
+        <p><strong>Date:</strong> ${preferred_date}</p>
+        <p><strong>Time:</strong> ${preferred_time}</p>
 
-    html: `
-      <h2>Hello ${full_name},</h2>
+        <hr>
 
-      <p>Your Zoom session has been approved.</p>
+        <p><strong>Meeting Link:</strong></p>
+        <a href="${meeting_link}">${meeting_link}</a>
 
-      <p><strong>Course:</strong> ${course}</p>
-      <p><strong>Date:</strong> ${preferred_date}</p>
-      <p><strong>Time:</strong> ${preferred_time}</p>
+        <p><strong>Meeting ID:</strong> ${meeting_id}</p>
+        <p><strong>Password:</strong> ${meeting_password}</p>
 
-      <hr>
+        <br>
 
-      <p><strong>Meeting Link:</strong></p>
-      <a href="${meeting_link}">${meeting_link}</a>
+        <p>Regards,</p>
+        <h3>Hafsa Institute of International Learning and Research</h3>
+      `,
+    });
 
-      <p><strong>Meeting ID:</strong> ${meeting_id}</p>
-      <p><strong>Password:</strong> ${meeting_password}</p>
+    if (error) {
+      console.error("Resend Error:", error);
+      throw error;
+    }
 
-      <br>
-
-      <p>Regards,</p>
-
-      <h3>Hafsa Institute of International Learning and Research</h3>
-    `,
-  });
-
-  console.log("Zoom email sent successfully.");
+    console.log("Email sent successfully:", data);
+  } catch (err) {
+    console.error("Email sending failed:", err);
+    throw err;
+  }
 };
 
 module.exports = sendZoomMail;

@@ -1,4 +1,4 @@
-const nodemailer = require("nodemailer");
+const axios = require("axios");
 require("dotenv").config();
 
 const sendZoomMail = async ({
@@ -12,47 +12,28 @@ const sendZoomMail = async ({
   meeting_password,
 }) => {
   try {
-    // ==========================
-    // DEBUG LOGS
-    // ==========================
-    console.log("========== SMTP DEBUG ==========");
+    console.log("========== BREVO API DEBUG ==========");
     console.log("EMAIL_USER:", process.env.EMAIL_USER);
-    console.log("EMAIL_PASS exists:", !!process.env.EMAIL_PASS);
-    console.log("SMTP HOST: smtp-relay.brevo.com");
-    console.log("SMTP PORT: 587");
-    console.log("================================");
+    console.log("BREVO_API_KEY exists:", !!process.env.BREVO_API_KEY);
+    console.log("=====================================");
 
-    // ==========================
-    // SMTP TRANSPORT
-    // ==========================
-    const transporter = nodemailer.createTransport({
-      host: "smtp-relay.brevo.com",
-      port: 2525,
-      secure: false,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+
+    const emailData = {
+      sender: {
+        name: "Hafsa Institute of International Learning and Research",
+        email: process.env.EMAIL_USER,
       },
-    });
 
-    // ==========================
-    // VERIFY CONNECTION
-    // ==========================
-    console.log("Verifying SMTP connection...");
+      to: [
+        {
+          email: email,
+          name: full_name,
+        },
+      ],
 
-    await transporter.verify();
-
-    console.log("✅ Brevo SMTP Connected Successfully");
-
-    // ==========================
-    // SEND EMAIL
-    // ==========================
-    const info = await transporter.sendMail({
-      from: `"Hafsa Institute of International Learning and Research" <${process.env.EMAIL_USER}>`,
-      to: email,
       subject: "Your Zoom Session Has Been Approved",
 
-      html: `
+      htmlContent: `
         <h2>Hello ${full_name},</h2>
 
         <p>Your Zoom session has been approved.</p>
@@ -64,34 +45,67 @@ const sendZoomMail = async ({
         <hr>
 
         <p><strong>Meeting Link:</strong></p>
-        <a href="${meeting_link}">${meeting_link}</a>
 
-        <p><strong>Meeting ID:</strong> ${meeting_id}</p>
-        <p><strong>Password:</strong> ${meeting_password}</p>
+        <a href="${meeting_link}">
+          ${meeting_link}
+        </a>
+
+        <p>
+          <strong>Meeting ID:</strong> ${meeting_id}
+        </p>
+
+        <p>
+          <strong>Password:</strong> ${meeting_password}
+        </p>
 
         <br>
 
         <p>Regards,</p>
 
-        <h3>Hafsa Institute of International Learning and Research</h3>
+        <h3>
+          Hafsa Institute of International Learning and Research
+        </h3>
       `,
-    });
+    };
 
-    console.log("✅ Email sent successfully.");
-    console.log("Message ID:", info.messageId);
 
-    return info;
+    console.log("Sending email through Brevo API...");
+
+
+    const response = await axios.post(
+      "https://api.brevo.com/v3/smtp/email",
+      emailData,
+      {
+        headers: {
+          "accept": "application/json",
+          "api-key": process.env.BREVO_API_KEY,
+          "content-type": "application/json",
+        },
+      }
+    );
+
+
+    console.log("✅ Email sent successfully");
+    console.log("Brevo Message Response:", response.data);
+
+
+    return response.data;
+
 
   } catch (error) {
-    console.error("❌ EMAIL ERROR");
-    console.error("Name:", error.name);
-    console.error("Code:", error.code);
-    console.error("Command:", error.command);
-    console.error("Message:", error.message);
-    console.error(error);
+
+    console.error("❌ BREVO EMAIL ERROR");
+
+    if (error.response) {
+      console.error("Status:", error.response.status);
+      console.error("Response:", error.response.data);
+    } else {
+      console.error("Message:", error.message);
+    }
 
     throw error;
   }
 };
+
 
 module.exports = sendZoomMail;

@@ -164,22 +164,32 @@ exports.approveBooking = (req, res) => {
             }
 
             // 4. Send Email
-            await sendZoomMail({
-              full_name: booking.full_name,
-              email: booking.email,
-              course: booking.course,
-              preferred_date: booking.preferred_date,
-              preferred_time: booking.preferred_time,
-              meeting_link: meeting.join_url,
-              meeting_id: meeting.id,
-              meeting_password: meeting.password,
-            });
+            // 4. Send Email
+            try {
+              await sendZoomMail({
+                full_name: booking.full_name,
+                email: booking.email,
+                course: booking.course,
+                preferred_date: booking.preferred_date,
+                preferred_time: booking.preferred_time,
+                meeting_link: meeting.join_url,
+                meeting_id: meeting.id,
+                meeting_password: meeting.password,
+              });
 
-            return res.json({
-              success: true,
-              message:
-                "Zoom meeting created and email sent successfully.",
-            });
+              return res.json({
+                success: true,
+                message: "Zoom meeting created and email sent successfully.",
+              });
+
+            } catch (mailError) {
+              console.error("Email Error:", mailError);
+
+              return res.json({
+                success: true,
+                message: "Zoom meeting created successfully, but email could not be sent.",
+              });
+            }
           }
         );
       } catch (error) {

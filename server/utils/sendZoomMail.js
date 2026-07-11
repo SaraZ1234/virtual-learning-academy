@@ -11,13 +11,15 @@ const sendZoomMail = async ({
   meeting_id,
   meeting_password,
 }) => {
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-  });
+const transporter = nodemailer.createTransport({
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false, // true only for port 465
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
 
   await transporter.sendMail({
     from: `"Hafsa Institute of International Learning and Research" <${process.env.EMAIL_USER}>`,

@@ -1,4 +1,5 @@
 const nodemailer = require("nodemailer");
+const dns = require("dns");
 require("dotenv").config();
 
 const sendZoomMail = async ({
@@ -11,23 +12,35 @@ const sendZoomMail = async ({
   meeting_id,
   meeting_password,
 }) => {
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-  requireTLS: true,
-  connectionTimeout: 30000,
-  greetingTimeout: 30000,
-  socketTimeout: 30000,
-});
+  const transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false,
+    family: 4,
 
-await transporter.verify();
-console.log("SMTP Connected Successfully");
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
 
+    tls: {
+      rejectUnauthorized: false,
+    },
+
+    dnsLookup: (hostname, options, callback) => {
+      dns.lookup(hostname, { family: 4 }, callback);
+    },
+
+    connectionTimeout: 30000,
+    greetingTimeout: 30000,
+    socketTimeout: 30000,
+  });
+
+  // Verify SMTP connection
+  await transporter.verify();
+  console.log("SMTP Connected Successfully");
+
+  // Send email
   await transporter.sendMail({
     from: `"Hafsa Institute of International Learning and Research" <${process.env.EMAIL_USER}>`,
     to: email,

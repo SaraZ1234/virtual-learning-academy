@@ -1264,7 +1264,7 @@ function ProgramCard({ program, index }: { program: typeof programs[0]; index: n
         viewport={{ once: true }}
         transition={{ duration: 0.6, delay: index * 0.08, ease: EASE }}
       />
-      <div className={`bg-gradient-to-br ${program.color} p-6 text-white`}>
+      <div className="bg-gradient-to-br from-[#8C1B2E] to-[#B43A4E] p-6 text-white">
         <motion.div
           animate={hovered ? { rotate: 10, scale: 1.1 } : { rotate: 0, scale: 1 }}
           transition={{ duration: 0.3 }}

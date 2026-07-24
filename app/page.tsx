@@ -1271,7 +1271,7 @@ function ProgramCard({ program, index }: { program: typeof programs[0]; index: n
         boxShadow: '0 25px 50px -12px rgba(140, 27, 46, 0.25)' 
       }}
       transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
-      className="group relative bg-white rounded-2xl sm:rounded-3xl border border-gray-200/60 hover:border-[#8C1B2E]/30 transition-all duration-500 overflow-hidden flex flex-col shadow-lg hover:shadow-2xl"
+      className="group relative bg-[#E8E8E8] rounded-2xl sm:rounded-3xl border border-gray-200/60 hover:border-[#8C1B2E]/30 transition-all duration-500 overflow-hidden flex flex-col shadow-lg hover:shadow-2xl"
     >
       {/* Top Accent Bar */}
       <motion.div

@@ -197,7 +197,7 @@ export default function StudentLogin() {
           <div className="perspective-[800px] mb-3">
             <AnimatedTitle
               text="Login"
-              className="text-4xl md:text-5xl font-extrabold leading-[1.02] tracking-tight block"
+              className="font-heading text-4xl md:text-5xl font-extrabold leading-[1.02] tracking-tight block"
             />
           </div>
 
@@ -205,7 +205,7 @@ export default function StudentLogin() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.5, ease: EASE }}
-            className="text-white/70 text-base font-light"
+            className="text-white/70 text-base font-light italic"
           >
 Sign in to access your dashboard
           </motion.p>

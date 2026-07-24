@@ -82,11 +82,11 @@ const missionCards = [
 
 const coreValues = [
   { icon: TrendingUp, label: 'Excellence in Education' },
-  { icon: Shield,     label: 'Integrity and Professionalism' },
-  { icon: Users,      label: 'Student-Centered Learning' },
-  { icon: Zap,        label: 'Innovation and Technology' },
-  { icon: Globe,      label: 'Inclusivity and Accessibility' },
-  { icon: BookOpen,   label: 'Continuous Improvement' },
+  { icon: Shield, label: 'Integrity and Professionalism' },
+  { icon: Users, label: 'Student-Centered Learning' },
+  { icon: Zap, label: 'Innovation and Technology' },
+  { icon: Globe, label: 'Inclusivity and Accessibility' },
+  { icon: BookOpen, label: 'Continuous Improvement' },
 ];
 
 const whyCards = [
@@ -102,9 +102,9 @@ const whyCards = [
 
 const stats = [
   { value: 10000, suffix: 'K+', display: '10K+', label: 'Students Enrolled' },
-  { value: 200,   suffix: '+',  display: '200+', label: 'Expert Educators' },
-  { value: 50,    suffix: '+',  display: '50+',  label: 'Countries Reached' },
-  { value: 98,    suffix: '%',  display: '98%',  label: 'Satisfaction Rate' },
+  { value: 200, suffix: '+', display: '200+', label: 'Expert Educators' },
+  { value: 50, suffix: '+', display: '50+', label: 'Countries Reached' },
+  { value: 98, suffix: '%', display: '98%', label: 'Satisfaction Rate' },
 ];
 
 const storyParagraphs = [
@@ -198,12 +198,29 @@ function AnimatedTitle({ text, className }: { text: string; className?: string }
       variants={{ visible: { transition: { staggerChildren: 0.08 } } }}
     >
       {words.map((w, i) => (
+        // <motion.span
+        //   key={i}
+        //   className="inline-block mr-[0.25em]"
+        //   variants={{
+        //     hidden: { opacity: 0, y: 24, rotateX: -40 },
+        //     visible: { opacity: 1, y: 0, rotateX: 0, transition: { duration: 0.55, ease: EASE } },
+        //   }}
+        // >
+        //   {w}
+        // </motion.span>
+
         <motion.span
           key={i}
-          className="inline-block mr-[0.25em]"
+          className={`inline-block mr-[0.25em] ${w === "Through" ? "italic text-[#D4AF37]" : ""
+            }`}
           variants={{
             hidden: { opacity: 0, y: 24, rotateX: -40 },
-            visible: { opacity: 1, y: 0, rotateX: 0, transition: { duration: 0.55, ease: EASE } },
+            visible: {
+              opacity: 1,
+              y: 0,
+              rotateX: 0,
+              transition: { duration: 0.55, ease: EASE },
+            },
           }}
         >
           {w}
@@ -274,9 +291,8 @@ function SectionLabel({ children, light = false }: { children: React.ReactNode; 
       whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, ease: EASE }}
-      className={`inline-flex items-center gap-2 text-xs font-bold tracking-[0.22em] uppercase mb-3 ${
-        light ? 'text-white/60' : 'text-[#8C1B2E]'
-      }`}
+      className={`inline-flex items-center gap-2 text-xs font-bold tracking-[0.22em] uppercase mb-3 ${light ? 'text-white/60' : 'text-[#8C1B2E]'
+        }`}
     >
       <span className={`block w-5 h-[2px] rounded-full ${light ? 'bg-white/40' : 'bg-[#8C1B2E]'}`} />
       {children}
@@ -293,9 +309,9 @@ export default function About() {
     target: heroRef,
     offset: ['start start', 'end start'],
   });
-  const heroY       = useTransform(heroProgress, [0, 1], ['0%', '22%']);
+  const heroY = useTransform(heroProgress, [0, 1], ['0%', '22%']);
   const heroOpacity = useTransform(heroProgress, [0, 0.75], [1, 0]);
-  const heroScale   = useTransform(heroProgress, [0, 1], [1, 1.04]);
+  const heroScale = useTransform(heroProgress, [0, 1], [1, 1.04]);
 
   return (
     <>
@@ -365,18 +381,31 @@ export default function About() {
 
             {/* Main title — word reveal + 3D flip */}
             <div className="perspective-[800px] mt-2 sm:mt-4 mb-6">
-              <AnimatedTitle
+              {/* <AnimatedTitle
                 text="About Us"
                 className="text-5xl sm:text-6xl md:text-8xl font-extrabold leading-[1.05] sm:leading-[1.02] tracking-tight block"
+              /> */}
+              <AnimatedTitle
+                text="About Us"
+                className="font-heading text-5xl sm:text-6xl md:text-8xl font-bold leading-[1.1] tracking-[-0.02em] block"
               />
             </div>
 
             {/* Subtitle */}
-            <motion.p
+            {/* <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.55, ease: EASE }}
               className="text-lg sm:text-xl md:text-2xl text-white/80 max-w-xl font-light mb-14 px-2"
+            >
+              Empowering Students Through Quality Online Education
+            </motion.p> */}
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.55, ease: EASE }}
+              className="text-lg sm:text-xl md:text-2xl text-white/80 font-light italic mb-4"
             >
               Empowering Students Through Quality Online Education
             </motion.p>
@@ -430,7 +459,7 @@ export default function About() {
                   initial="hidden"
                   whileInView="visible"
                   viewport={{ once: true }}
-                  className="text-4xl md:text-5xl font-extrabold text-[#1A1A1A] leading-tight"
+                  className="font-heading text-4xl md:text-5xl font-bold text-[#1A1A1A] leading-tight tracking-[-0.02em]"
                 >
                   Our<br />Story
                 </motion.h2>
@@ -449,7 +478,7 @@ export default function About() {
                   initial="hidden"
                   whileInView="visible"
                   viewport={{ once: true }}
-                  className="text-[#8C1B2E] font-semibold mt-5"
+                  className="text-[#8C1B2E] font-light italic text-lg mt-5"
                 >
                   Founded with purpose.<br />Built for students.
                 </motion.p>
@@ -517,7 +546,7 @@ export default function About() {
               className="text-center mb-16"
             >
               <SectionLabel>Foundation</SectionLabel>
-              <h2 className="text-4xl md:text-5xl font-extrabold text-[#1A1A1A]">
+              <h2 className="font-heading text-4xl md:text-5xl font-bold text-[#1A1A1A] tracking-[-0.02em]">
                 Mission, Vision &amp; Values
               </h2>
             </motion.div>
@@ -556,7 +585,7 @@ export default function About() {
                     transition={{ duration: 0.4, ease: EASE }}
                   />
 
-                  <h3 className="relative text-2xl font-bold text-[#8C1B2E] mb-3">{card.title}</h3>
+                  <h3 className="relative font-heading text-2xl font-bold text-[#8C1B2E] mb-3">{card.title}</h3>
                   <p className="relative text-[#1A1A1A]/75 leading-relaxed">{card.body}</p>
 
                   {/* Corner accent */}
@@ -587,7 +616,7 @@ export default function About() {
                   initial="hidden"
                   whileInView="visible"
                   viewport={{ once: true }}
-                  className="text-4xl md:text-5xl font-extrabold text-[#1A1A1A] leading-tight mb-5"
+                  className="font-heading text-4xl md:text-5xl font-bold text-[#1A1A1A] leading-tight tracking-[-0.02em] mb-5"
                 >
                   Our Core Values
                 </motion.h2>
@@ -597,7 +626,7 @@ export default function About() {
                   initial="hidden"
                   whileInView="visible"
                   viewport={{ once: true }}
-                  className="text-[#1A1A1A]/60"
+                  className="text-[#1A1A1A]/60 text-lg font-light italic"
                 >
                   Six principles that guide our commitment to educational excellence
                 </motion.p>
@@ -673,7 +702,7 @@ export default function About() {
               className="text-center mb-16"
             >
               <SectionLabel>Our Purpose</SectionLabel>
-              <h2 className="text-4xl md:text-5xl font-extrabold text-[#1A1A1A]">
+              <h2 className="font-heading text-4xl md:text-5xl font-bold text-[#1A1A1A] tracking-[-0.02em]">
                 Why We Exist
               </h2>
             </motion.div>
@@ -705,7 +734,7 @@ export default function About() {
                     0{i + 1}
                   </motion.div>
 
-                  <h3 className="text-xl font-bold text-[#8C1B2E] mb-4">{card.title}</h3>
+                  <h3 className="font-heading text-xl font-bold text-[#8C1B2E] mb-4">{card.title}</h3>
                   <p className="text-[#1A1A1A]/75 leading-relaxed">{card.body}</p>
 
                   {/* Bottom fill bar */}
@@ -761,7 +790,7 @@ export default function About() {
                     />
                   </motion.svg>
 
-                  <p className="text-4xl font-extrabold text-[#8C1B2E] tracking-tight -mt-16">
+                  <p className="font-heading text-4xl font-bold text-[#8C1B2E] tracking-tight -mt-16">
                     <AnimatedCounter target={s.value} suffix={s.suffix} />
                   </p>
                   <p className="text-xs font-bold text-[#1A1A1A]/50 uppercase tracking-widest mt-12">
@@ -814,7 +843,7 @@ export default function About() {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
-              className="text-4xl md:text-6xl font-extrabold mb-6 leading-tight"
+              className="font-heading text-4xl md:text-6xl font-bold leading-tight tracking-[-0.02em] mb-6"
             >
               Join Our Learning<br />Community
             </motion.h2>
@@ -825,7 +854,7 @@ export default function About() {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
-              className="text-white/70 text-lg mb-12 max-w-md mx-auto"
+              className="text-white/70 text-lg font-light italic mb-12 max-w-md mx-auto"
             >
               Take the first step toward a world-class education — wherever you are.
             </motion.p>

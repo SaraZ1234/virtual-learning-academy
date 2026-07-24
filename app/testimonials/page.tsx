@@ -260,7 +260,7 @@ function StatCard({ stat, index }: { stat: typeof stats[0]; index: number }) {
         whileInView={{ scale: 1 }}
         viewport={{ once: true }}
         transition={{ delay: index * 0.1, type: 'spring', stiffness: 200, damping: 14 }}
-        className="text-4xl md:text-5xl font-extrabold text-[#8C1B2E] mb-2"
+        className="font-heading text-4xl md:text-5xl font-extrabold text-[#8C1B2E] mb-2"
       >
         {stat.number}
       </motion.div>
@@ -323,7 +323,7 @@ function TestimonialCard({ testimonial, index }: { testimonial: typeof testimoni
           {testimonial.image}
         </motion.div>
         <div>
-          <p className="font-bold text-[#8C1B2E]">{testimonial.name}</p>
+          <p className="font-heading font-bold text-[#8C1B2E]">{testimonial.name}</p>
           <p className="text-sm text-[#1A1A1A]/60">{testimonial.role}</p>
         </div>
       </div>
@@ -360,7 +360,7 @@ function FaqItem({ faq, index }: { faq: typeof faqs[0]; index: number }) {
         transition={{ duration: 0.6, delay: index * 0.06, ease: EASE }}
       />
       <div className="pl-3">
-        <h3 className="font-bold text-[#8C1B2E] mb-3 text-lg flex items-center gap-2">
+        <h3 className="font-heading font-bold text-[#8C1B2E] mb-3 text-lg flex items-center gap-2">
           {faq.q}
           <motion.span
             animate={hovered ? { x: 4 } : { x: 0 }}
@@ -450,7 +450,7 @@ export default function Testimonials() {
             <div className="perspective-[800px] mt-2 sm:mt-4 mb-6">
               <AnimatedTitle
                 text="What Families Say About Us"
-                className="text-4xl sm:text-5xl md:text-7xl font-extrabold leading-[1.1] sm:leading-[1.05] tracking-tight block"
+                className="font-heading text-4xl sm:text-5xl md:text-7xl font-extrabold leading-[1.1] sm:leading-[1.05] tracking-tight block"
               />
             </div>
 
@@ -458,7 +458,7 @@ export default function Testimonials() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.55, ease: EASE }}
-              className="text-lg sm:text-xl md:text-2xl text-white/80 max-w-xl font-light mb-14 px-2"
+              className="text-lg sm:text-xl md:text-2xl text-white/80 max-w-xl font-light italic mb-14 px-2"
             >
               Hear from students and parents who have transformed their educational journey
             </motion.p>
@@ -525,7 +525,7 @@ export default function Testimonials() {
               className="text-center mb-16"
             >
               <SectionLabel>Voices Of Our Community</SectionLabel>
-              <h2 className="text-4xl md:text-5xl font-extrabold text-[#1A1A1A]">
+              <h2 className="font-heading text-4xl md:text-5xl font-extrabold text-[#1A1A1A]">
                 Testimonials
               </h2>
               <motion.div
@@ -567,7 +567,7 @@ export default function Testimonials() {
               className="text-center mb-16"
             >
               <SectionLabel>Need To Know</SectionLabel>
-              <h2 className="text-4xl md:text-5xl font-extrabold text-[#1A1A1A]">
+              <h2 className="font-heading text-4xl md:text-5xl font-extrabold text-[#1A1A1A]">
                 Frequently Asked Questions
               </h2>
               <motion.div
@@ -629,7 +629,7 @@ export default function Testimonials() {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
-              className="text-4xl md:text-6xl font-extrabold mb-6 leading-tight"
+              className="font-heading text-4xl md:text-6xl font-extrabold mb-6 leading-tight"
             >
               Join Our Community<br />of Successful Learners
             </motion.h2>

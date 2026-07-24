@@ -82,7 +82,7 @@ export default function Footer() {
           {/* Quick Links */}
           <div>
             <div className="mb-5">
-              <h4 className="text-xl font-bold text-white mb-2">Quick Links</h4>
+              <h4 className="font-heading text-xl font-bold text-white mb-2">Quick Links</h4>
               <div className="w-20 h-1 bg-[#B43A4E]"></div>
             </div>
             <ul className="space-y-2">
@@ -102,7 +102,7 @@ export default function Footer() {
           {/* Admissions */}
           <div>
             <div className="mb-5">
-              <h4 className="text-xl font-bold text-white mb-2">Our Services</h4>
+              <h4 className="font-heading text-xl font-bold text-white mb-2">Our Services</h4>
               <div className="w-20 h-1 bg-[#B43A4E]"></div>
             </div>
             <ul className="space-y-2">
@@ -122,7 +122,7 @@ export default function Footer() {
           {/* Contact Information */}
           <div>
             <div className="mb-5">
-              <h4 className="text-xl font-bold text-white mb-2">Contact Information</h4>
+              <h4 className="font-heading text-xl font-bold text-white mb-2">Contact Information</h4>
               <div className="w-20 h-1 bg-[#B43A4E]"></div>
             </div>
             <div className="space-y-3">
@@ -136,17 +136,17 @@ export default function Footer() {
                 <Mail size={20} className="text-[#B43A4E] mt-0.5 flex-shrink-0" />
                 <div>
                   <a
-                    href="mailto:hafsaakbar071@gmail.com"
+                    href="mailto:hafsainstituteofinternationall@gmail.com"
                     className="text-gray-300 hover:text-[#B43A4E] transition-colors duration-300 text-sm break-all"
                   >
-                    hafsaakbar071@gmail.com
+                    hafsainstituteofinternationall@gmail.com
                   </a>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <Phone size={20} className="text-[#B43A4E] mt-0.5 flex-shrink-0" />
                 <div className="flex flex-col gap-1">
-                  <span className="text-gray-300 text-sm">+92 3252467463</span>
+                  <span className="text-gray-300 text-sm">+92 3176497173</span>
                   <span className="text-gray-300 text-sm">+1 (604) 239-6141</span>
                 </div>              </div>
             </div>

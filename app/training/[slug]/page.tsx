@@ -165,7 +165,7 @@ const skillsData: Record<string, any> = {
   'ai-machine-learning': {
     title: 'AI & Machine Learning Engineering',
     icon: Sparkles,
-    imageUrl: 'https://images.unsplash.com/photo-1677442136019-21780efad99a?q=80&w=1200&auto=format&fit=crop',
+    imageUrl: '/training/ai-machine-learning.avif',
     description: 'Go from Python fundamentals to production ML systems: classical models, deep neural networks, computer vision, transformer-based LLMs, and MLOps deployment.',
     duration: '16 Weeks',
     level: 'Advanced',
@@ -237,7 +237,7 @@ const skillsData: Record<string, any> = {
   'graphic-design': {
     title: 'Graphic Design & UI/UX Strategy',
     icon: Sparkles,
-    imageUrl: 'https://images.unsplash.com/photo-1561070791-26c113006238?q=80&w=1200&auto=format&fit=crop',
+    imageUrl: '/training/graphic-design.avif',
     description: 'Master visual design and product interface work using industry-standard tools, grounded in real user research and usability testing — not just aesthetics.',
     duration: '10 Weeks',
     level: 'Beginner',
@@ -345,7 +345,7 @@ const skillsData: Record<string, any> = {
   'devops-automation': {
     title: 'DevOps Engineering & Automation',
     icon: Cpu,
-    imageUrl: 'https://images.unsplash.com/photo-1618401471353-b98aedd07871?q=80&w=1200&auto=format&fit=crop',
+    imageUrl: 'https://media.istockphoto.com/id/2286061357/photo/software-developer-dev-ops-concept.jpg?s=612x612&w=0&k=20&c=KLNNkMVcjKFcCUcecu8eZfmt2EG_UPNznjMOtrseFII=',
     description: 'Speed up software delivery with CI/CD pipelines, containerization, Kubernetes orchestration, infrastructure as code, and production monitoring.',
     duration: '12 Weeks',
     level: 'Intermediate',
@@ -433,7 +433,7 @@ export default function SkillDetailPage({ params }: { params: Promise<{ slug: st
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#FAFAFB]">
         <div className="text-center space-y-4">
-          <h1 className="text-3xl font-extrabold text-[#1A1A1A] tracking-tight">Course Not Found</h1>
+          <h1 className="font-heading text-3xl font-extrabold text-[#1A1A1A] tracking-tight">Course Not Found</h1>
           <p className="text-sm text-gray-500 max-w-sm">We couldn't find a program matching that link. Please check the URL or browse our full course catalog.</p>
         </div>
       </div>
@@ -504,7 +504,7 @@ export default function SkillDetailPage({ params }: { params: Promise<{ slug: st
             <div className="perspective-[800px] mt-2 mb-6">
               <AnimatedTitle
                 text={skill.title}
-                className="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-[1.1] tracking-tight block max-w-5xl"
+                className="font-heading text-4xl sm:text-5xl md:text-6xl font-extrabold leading-[1.1] tracking-tight block max-w-5xl"
               />
             </div>
 
@@ -512,7 +512,7 @@ export default function SkillDetailPage({ params }: { params: Promise<{ slug: st
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.55, ease: EASE }}
-              className="text-lg sm:text-xl text-white/80 max-w-3xl font-light mb-12 px-2 leading-relaxed"
+              className="text-lg sm:text-xl text-white/80 max-w-3xl font-light italic mb-12 px-2 leading-relaxed"
             >
               {skill.description}
             </motion.p>
@@ -561,7 +561,7 @@ export default function SkillDetailPage({ params }: { params: Promise<{ slug: st
                   className="space-y-6"
                 >
                   <SectionLabel>Program Overview</SectionLabel>
-                  <h2 className="text-3xl md:text-4xl font-extrabold text-[#1A1A1A]">What You'll Actually Learn</h2>
+                 <h2 className="font-heading text-3xl md:text-4xl font-extrabold text-[#1A1A1A]">What You'll Actually Learn</h2>
                   
                   <motion.div variants={fadeUp} className="relative w-full h-[320px] md:h-[420px] rounded-2xl overflow-hidden shadow-2xl border border-gray-200">
                     <Image 
@@ -588,7 +588,7 @@ export default function SkillDetailPage({ params }: { params: Promise<{ slug: st
                   className="space-y-5"
                 >
                   <SectionLabel>Hands-On Toolkit</SectionLabel>
-                  <h3 className="text-2xl font-extrabold text-[#1A1A1A]">Tools & Technologies You'll Use</h3>
+                  <h3 className="font-heading text-2xl font-extrabold text-[#1A1A1A]">Tools & Technologies You'll Use</h3>
                   <div className="flex flex-wrap gap-3">
                     {skill.tools.map((tool: string, i: number) => (
                       <motion.span
@@ -617,7 +617,7 @@ export default function SkillDetailPage({ params }: { params: Promise<{ slug: st
                     <Briefcase className="w-6 h-6" />
                   </div>
                   <div>
-                    <h4 className="font-extrabold text-base text-[#1A1A1A]">Live Sandbox Environment Included</h4>
+                    <h4 className="font-heading font-extrabold text-base text-[#1A1A1A]">Live Sandbox Environment Included</h4>
                     <p className="text-xs text-gray-600 mt-2 leading-relaxed">Every student gets a dedicated cloud sandbox and staging environment for the full length of the program, so you're working with real infrastructure and real tools from day one — no local setup headaches, no shared or simulated access.</p>
                   </div>
                 </motion.div>
@@ -625,8 +625,7 @@ export default function SkillDetailPage({ params }: { params: Promise<{ slug: st
                 {/* Pipeline Registration Sequence */}
                 <div className="space-y-6">
                   <SectionLabel>Admissions Process</SectionLabel>
-                  <h3 className="text-2xl font-extrabold text-[#1A1A1A]">How Enrollment Works</h3>
-                  
+                  <h3 className="font-heading text-2xl font-extrabold text-[#1A1A1A]">How Enrollment Works</h3>                  
                   <motion.div 
                     variants={stagger}
                     initial="hidden"
@@ -648,7 +647,7 @@ export default function SkillDetailPage({ params }: { params: Promise<{ slug: st
                         className="p-6 bg-[#EEEFF1] rounded-2xl border-2 border-[#C0C5CE]/70 relative overflow-hidden group transition-all duration-300"
                       >
                         <span className="absolute -top-2 -right-2 text-5xl font-black text-[#C0C5CE]/30 select-none group-hover:text-[#8C1B2E]/10 transition-colors duration-300">{item.step}</span>
-                        <h5 className="font-bold text-sm text-[#1A1A1A] mb-1.5 relative z-10">{item.title}</h5>
+                        <h5 className="font-heading font-bold text-sm text-[#1A1A1A] mb-1.5 relative z-10">{item.title}</h5>
                         <p className="text-xs text-gray-500 leading-relaxed font-light relative z-10">{item.desc}</p>
                       </motion.div>
                     ))}
@@ -673,8 +672,7 @@ export default function SkillDetailPage({ params }: { params: Promise<{ slug: st
                     viewport={{ once: true }}
                     transition={{ duration: 0.6, ease: EASE }}
                   />
-                  <h3 className="text-xl font-extrabold text-[#1A1A1A] mb-6">Cohort Details</h3>
-                  
+                   <h3 className="font-heading text-xl font-extrabold text-[#1A1A1A] mb-6">Cohort Details</h3>                  
                   <div className="space-y-5 text-sm">
                     <div className="pb-4 border-b border-[#C0C5CE]/50">
                       <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block">Tuition</span>
@@ -706,7 +704,7 @@ export default function SkillDetailPage({ params }: { params: Promise<{ slug: st
                 >
                   <div className="flex items-center gap-2 mb-4">
                     <TrendingUp className="w-4 h-4 text-[#8C1B2E]" />
-                    <h4 className="text-sm font-extrabold text-[#1A1A1A] uppercase tracking-widest">Roles You'll Be Ready For</h4>
+                    <h4 className="font-heading text-sm font-extrabold text-[#1A1A1A] uppercase tracking-widest">Roles You'll Be Ready For</h4>
                   </div>
                   <ul className="space-y-2.5">
                     {skill.careerPaths.map((role: string, i: number) => (
@@ -733,7 +731,7 @@ export default function SkillDetailPage({ params }: { params: Promise<{ slug: st
                 >
                   <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle, white 2px, transparent 2px)', backgroundSize: '16px 16px' }} />
                   <SectionLabel light>Cohort Format</SectionLabel>
-                  <h4 className="text-xl font-extrabold mb-2">Small, Live, Instructor-Led</h4>
+                 <h4 className="font-heading text-xl font-extrabold mb-2">Small, Live, Instructor-Led</h4>
                   <p className="text-xs text-white/80 leading-relaxed">Every session is taught live by a practicing industry professional, with cohort sizes kept small enough for direct feedback on your work every week — not a pre-recorded video library.</p>
                 </motion.div>
               </div>
@@ -749,7 +747,7 @@ export default function SkillDetailPage({ params }: { params: Promise<{ slug: st
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <SectionLabel>Curriculum</SectionLabel>
-              <h2 className="text-3xl md:text-5xl font-extrabold text-[#1A1A1A]">Week-by-Week Syllabus</h2>
+              <h2 className="font-heading text-3xl md:text-5xl font-extrabold text-[#1A1A1A]">Week-by-Week Syllabus</h2>
               <motion.div
                 className="mt-4 h-[3px] bg-[#8C1B2E] rounded-full mx-auto"
                 initial={{ width: 0 }}
@@ -778,7 +776,7 @@ export default function SkillDetailPage({ params }: { params: Promise<{ slug: st
                     W{String(i + 1).padStart(2, '0')}
                   </div>
                   <div className="space-y-1">
-                    <h4 className="text-base font-bold text-[#1A1A1A] leading-snug tracking-tight">{item.split(':')[0]}</h4>
+                    <h4 className="font-heading text-base font-bold text-[#1A1A1A] leading-snug tracking-tight">{item.split(':')[0]}</h4>
                     {item.split(':')[1] && (
                       <p className="text-xs text-gray-500 leading-relaxed font-light pt-0.5">{item.split(':')[1].trim()}</p>
                     )}
@@ -796,7 +794,7 @@ export default function SkillDetailPage({ params }: { params: Promise<{ slug: st
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <SectionLabel>By Graduation</SectionLabel>
-              <h2 className="text-3xl md:text-5xl font-extrabold text-[#1A1A1A]">What You'll Be Able to Do</h2>
+              <h2 className="font-heading text-3xl md:text-5xl font-extrabold text-[#1A1A1A]">What You'll Be Able to Do</h2>
               <motion.div
                 className="mt-4 h-[3px] bg-[#8C1B2E] rounded-full mx-auto"
                 initial={{ width: 0 }}
@@ -836,7 +834,7 @@ export default function SkillDetailPage({ params }: { params: Promise<{ slug: st
               
               <div className="space-y-5">
                 <SectionLabel>What's Included</SectionLabel>
-                <h3 className="text-3xl font-extrabold text-[#1A1A1A] tracking-tight">Full Tuition Coverage</h3>
+                <h3 className="font-heading text-3xl font-extrabold text-[#1A1A1A] tracking-tight">Full Tuition Coverage</h3>
                 <p className="text-sm text-gray-600 leading-relaxed font-light">
                   Your tuition is fully transparent — every tool license, cloud sandbox credit, and lab environment listed on this page is included with no hidden add-on fees.
                 </p>
@@ -869,7 +867,7 @@ export default function SkillDetailPage({ params }: { params: Promise<{ slug: st
                   >
                     <CheckCircle className="w-4 h-4 text-[#8C1B2E] shrink-0 mt-0.5" />
                     <div className="space-y-1">
-                      <h5 className="font-bold text-sm text-[#1A1A1A] tracking-tight">{benefit.title}</h5>
+                      <h5 className="font-heading font-bold text-sm text-[#1A1A1A] tracking-tight">{benefit.title}</h5>
                       <p className="text-xs text-gray-500 leading-relaxed font-light">{benefit.desc}</p>
                     </div>
                   </motion.div>
@@ -887,7 +885,7 @@ export default function SkillDetailPage({ params }: { params: Promise<{ slug: st
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-14">
               <SectionLabel>Common Questions</SectionLabel>
-              <h2 className="text-3xl md:text-4xl font-extrabold text-[#1A1A1A]">Frequently Asked Questions</h2>
+              <h2 className="font-heading text-3xl md:text-4xl font-extrabold text-[#1A1A1A]">Frequently Asked Questions</h2>
             </div>
             <motion.div 
               variants={stagger}
@@ -905,7 +903,7 @@ export default function SkillDetailPage({ params }: { params: Promise<{ slug: st
                 >
                   <FileText className="w-4 h-4 text-[#8C1B2E] shrink-0 mt-1" />
                   <div className="space-y-1.5">
-                    <h5 className="font-bold text-sm text-[#1A1A1A]">{faq.q}</h5>
+                    <h5 className="font-heading font-bold text-sm text-[#1A1A1A]">{faq.q}</h5>
                     <p className="text-xs text-gray-600 leading-relaxed font-light">{faq.a}</p>
                   </div>
                 </motion.div>
@@ -920,7 +918,7 @@ export default function SkillDetailPage({ params }: { params: Promise<{ slug: st
         <section className="bg-[#1A1A1A] text-white py-14 border-t-4 border-[#8C1B2E]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="space-y-2">
-              <h4 className="font-bold text-xs uppercase tracking-widest text-[#8C1B2E] flex items-center gap-2">
+             <h4 className="font-heading font-bold text-xs uppercase tracking-widest text-[#8C1B2E] flex items-center gap-2">
                 <Users className="w-3.5 h-3.5" /> Prerequisites Before You Enroll
               </h4>
               <p className="text-sm text-neutral-400 max-w-5xl font-light leading-relaxed">{skill.prerequisites}</p>

@@ -617,7 +617,7 @@ export default function AcademicServiceDetailView({ params }: DynamicPageProps) 
           <div className="p-4 bg-[#8C1B2E]/10 rounded-full mb-4 border border-[#8C1B2E]/20 animate-bounce">
             <AlertCircle className="w-12 h-12 text-[#8C1B2E]" />
           </div>
-          <h1 className="text-2xl font-black text-[#1A1A1A] mb-2 tracking-tight">Academic Asset Not Found</h1>
+          <h1 className="font-heading text-2xl font-black text-[#1A1A1A] mb-2 tracking-tight">Academic Asset Not Found</h1>
           <p className="text-sm text-[#1A1A1A]/60 mb-6 max-w-sm font-medium">
             The specific scientific writing module you requested is missing. Check our complete catalog index.
           </p>
@@ -694,12 +694,12 @@ export default function AcademicServiceDetailView({ params }: DynamicPageProps) 
             </Link>
 
             <div className="max-w-4xl space-y-4">
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-tight text-white drop-shadow-sm">
+              <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-tight text-white drop-shadow-sm">
                 <TypographyReveal text={targetService.title} />
               </h1>
 
               <div className="flex flex-col sm:flex-row sm:items-center gap-3 pt-1">
-                <p className="text-sm sm:text-base md:text-lg text-white/90 font-light max-w-2xl leading-relaxed">
+                <p className="text-sm sm:text-base md:text-lg text-white/90 font-light italic max-w-2xl leading-relaxed">
                   {targetService.tagline}
                 </p>
                 {/* Embedded dynamic fast-glance budget badge */}
@@ -823,7 +823,7 @@ export default function AcademicServiceDetailView({ params }: DynamicPageProps) 
                       <div className="absolute left-0 top-0 w-8 h-8 rounded-full bg-[#EEEFF1] border-2 border-[#8C1B2E]/40 flex items-center justify-center text-xs font-black text-[#8C1B2E] group-hover:bg-[#8C1B2E] group-hover:text-white group-hover:border-[#8C1B2E] transition-all duration-300">
                         {idx + 1}
                       </div>
-                      <h4 className="font-extrabold text-sm sm:text-base text-[#1A1A1A] group-hover:text-[#8C1B2E] transition-colors pt-1">{milestoneItem.phase}</h4>
+                      <h4 className="font-heading font-extrabold text-sm sm:text-base text-[#1A1A1A] group-hover:text-[#8C1B2E] transition-colors pt-1">{milestoneItem.phase}</h4>
                       <p className="text-xs sm:text-sm text-[#1A1A1A]/60 mt-1 leading-relaxed font-medium">{milestoneItem.focus}</p>
                     </div>
                   ))}
@@ -858,19 +858,19 @@ export default function AcademicServiceDetailView({ params }: DynamicPageProps) 
               {/* Premium Service Desk Contact Module */}
               <div className="bg-[#EEEFF1] p-6 rounded-2xl shadow-md border border-[#C0C5CE] text-[#1A1A1A] space-y-5">
                 <div>
-                  <h3 className="font-black text-xl tracking-tight uppercase text-[#1A1A1A]">Research Craft Solution</h3>
+                   <h3 className="font-heading font-black text-xl tracking-tight uppercase text-[#1A1A1A]">Research Craft Solution</h3>
                   <p className="text-[10px] text-[#1A1A1A]/60 font-black tracking-widest uppercase">Official Thesis Support Desk</p>
                 </div>
 
                 <div className="space-y-3 font-bold text-xs sm:text-sm">
-                  <a href="mailto:hafsaakbar071@gmail.com" className="flex items-center gap-3 p-3 bg-white hover:bg-white rounded-xl transition-all shadow-sm border-2 border-transparent hover:border-[#8C1B2E]">
+                  <a href="mailto:hafsainstituteofinternationall@gmail.com" className="flex items-center gap-3 p-3 bg-white hover:bg-white rounded-xl transition-all shadow-sm border-2 border-transparent hover:border-[#8C1B2E]">
                     <Mail className="w-5 h-5 text-[#8C1B2E] shrink-0" />
-                    <span className="truncate text-[#1A1A1A] font-bold">hafsaakbar071@gmail.com</span>
+                    <span className="truncate text-[#1A1A1A] font-bold">hafsainstituteofinternationall@gmail.com</span>
                   </a>
                   
                   <a href="https://wa.me/923147998354" target="_blank" rel="noreferrer" className="flex items-center gap-3 p-3 bg-white hover:bg-white rounded-xl transition-all shadow-sm border-2 border-transparent hover:border-[#8C1B2E]">
                     <Phone className="w-5 h-5 text-[#B43A4E] shrink-0" />
-                    <span className="text-[#1A1A1A] font-bold">+92 314 7998354</span>
+                    <span className="text-[#1A1A1A] font-bold">+92 317 6497173</span>
                   </a>
 
                   {/* Safely Render Custom Inline Facebook SVG */}
@@ -890,7 +890,7 @@ export default function AcademicServiceDetailView({ params }: DynamicPageProps) 
               {/* Advisor Spotlight */}
               <div className="bg-white p-6 rounded-2xl border-2 border-[#C0C5CE]/70 shadow-sm space-y-3">
                 <p className="text-[10px] uppercase font-black text-[#8C1B2E] tracking-widest">Lead Academic Reviewer</p>
-                <h4 className="text-base font-black text-[#1A1A1A]">{targetService.advisor.name}</h4>
+                <h4 className="font-heading text-base font-black text-[#1A1A1A]">{targetService.advisor.name}</h4>
                 <p className="text-xs text-[#1A1A1A]/60 font-bold -mt-1">{targetService.advisor.role}</p>
                 <blockquote className="text-xs text-[#1A1A1A]/70 font-medium italic border-l-4 border-[#8C1B2E] pl-3 py-1 bg-[#F4F5F6] rounded-r-lg">
                   &ldquo;{targetService.advisor.quote}&rdquo;

@@ -256,9 +256,8 @@ function StatCard({
       custom={index}
       whileHover={{ y: -4, boxShadow: '0 16px 32px rgba(140,27,46,0.10)' }}
       whileTap={{ scale: 0.98 }}
-      className={`relative text-left bg-white rounded-2xl border p-5 flex items-center gap-4 transition-colors duration-200 w-full ${
-        active ? 'border-[#8C1B2E] ring-2 ring-[#8C1B2E]/15' : 'border-[#C0C5CE]/70'
-      }`}
+      className={`relative text-left bg-white rounded-2xl border p-5 flex items-center gap-4 transition-colors duration-200 w-full ${active ? 'border-[#8C1B2E] ring-2 ring-[#8C1B2E]/15' : 'border-[#C0C5CE]/70'
+        }`}
     >
       {active && (
         <motion.div
@@ -267,9 +266,8 @@ function StatCard({
         />
       )}
       <div
-        className={`w-11 h-11 rounded-xl flex items-center justify-center shadow-md shrink-0 ${
-          color || 'bg-gradient-to-br from-[#8C1B2E] to-[#B43A4E]'
-        }`}
+        className={`w-11 h-11 rounded-xl flex items-center justify-center shadow-md shrink-0 ${color || 'bg-gradient-to-br from-[#8C1B2E] to-[#B43A4E]'
+          }`}
       >
         <Icon className="w-5 h-5 text-white" />
       </div>
@@ -371,9 +369,8 @@ function ConfirmModal({
           >
             <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 text-center">
               <div
-                className={`w-14 h-14 mx-auto rounded-full flex items-center justify-center mb-4 ${
-                  isApprove ? 'bg-emerald-50' : 'bg-red-50'
-                }`}
+                className={`w-14 h-14 mx-auto rounded-full flex items-center justify-center mb-4 ${isApprove ? 'bg-emerald-50' : 'bg-red-50'
+                  }`}
               >
                 {isApprove ? (
                   <CheckCircle2 className="w-7 h-7 text-emerald-600" />
@@ -381,7 +378,7 @@ function ConfirmModal({
                   <AlertTriangle className="w-7 h-7 text-red-600" />
                 )}
               </div>
-              <h3 className="text-lg font-extrabold text-[#1A1A1A] mb-1.5">
+              <h3 className="font-heading text-lg font-extrabold text-[#1A1A1A] mb-1.5">
                 {isApprove ? 'Approve Enrollment?' : 'Reject Enrollment?'}
               </h3>
               <p className="text-sm text-[#1A1A1A]/60 mb-2">
@@ -412,11 +409,10 @@ function ConfirmModal({
                 <button
                   onClick={onConfirm}
                   disabled={loading}
-                  className={`flex-1 py-2.5 rounded-xl text-sm font-bold text-white transition-all disabled:opacity-70 flex items-center justify-center gap-2 ${
-                    isApprove
-                      ? 'bg-gradient-to-r from-emerald-600 to-emerald-500 hover:shadow-lg'
-                      : 'bg-gradient-to-r from-red-600 to-red-500 hover:shadow-lg'
-                  }`}
+                  className={`flex-1 py-2.5 rounded-xl text-sm font-bold text-white transition-all disabled:opacity-70 flex items-center justify-center gap-2 ${isApprove
+                    ? 'bg-gradient-to-r from-emerald-600 to-emerald-500 hover:shadow-lg'
+                    : 'bg-gradient-to-r from-red-600 to-red-500 hover:shadow-lg'
+                    }`}
                 >
                   {loading ? (
                     <RefreshCw className="w-4 h-4 animate-spin" />
@@ -486,7 +482,7 @@ function RespondModal({
                     <Reply className="w-6 h-6 text-[#8C1B2E]" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-lg font-extrabold text-[#1A1A1A] leading-tight">
+                    <h3 className="font-heading text-lg font-extrabold text-[#1A1A1A] leading-tight">
                       Respond to {order.full_name}
                     </h3>
                     <p className="text-sm text-[#1A1A1A]/50 mt-0.5 break-all">{order.email}</p>
@@ -593,8 +589,7 @@ function DetailDrawer({
               <div className="flex items-start justify-between">
                 <div className="min-w-0 flex-1 pr-2">
                   <SectionLabel>Enrollment Details</SectionLabel>
-                  <h3 className="text-xl font-extrabold text-[#1A1A1A] leading-tight break-words">
-                    {enrollment.full_name}
+                  <h3 className="font-heading text-xl font-extrabold text-[#1A1A1A] leading-tight break-words">                    {enrollment.full_name}
                   </h3>
                   <p className="text-sm text-[#1A1A1A]/50 mt-0.5 break-all">{enrollment.email}</p>
                 </div>
@@ -715,11 +710,10 @@ function DetailDrawer({
 
               {enrollment.status !== 'pending' && (
                 <div
-                  className={`flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold border ${
-                    enrollment.status === 'approved'
-                      ? 'bg-emerald-50 border-emerald-100 text-emerald-700'
-                      : 'bg-red-50 border-red-100 text-red-700'
-                  }`}
+                  className={`flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold border ${enrollment.status === 'approved'
+                    ? 'bg-emerald-50 border-emerald-100 text-emerald-700'
+                    : 'bg-red-50 border-red-100 text-red-700'
+                    }`}
                 >
                   {enrollment.status === 'approved' ? (
                     <>
@@ -788,10 +782,10 @@ function EnrollmentRow({
 }) {
   const formattedDate = enrollment.created_at
     ? new Date(enrollment.created_at).toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-      })
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    })
     : '—';
 
   return (
@@ -893,18 +887,18 @@ function ResearchOrderRow({
 }) {
   const formattedCreated = order.created_at
     ? new Date(order.created_at).toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-      })
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    })
     : '—';
 
   const formattedDeadline = order.deadline
     ? new Date(order.deadline).toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-      })
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    })
     : '—';
 
   return (
@@ -989,12 +983,12 @@ function ZoomMeetingRow({
 }) {
   const formattedStart = (meeting.preferred_date && meeting.preferred_time)
     ? new Date(`${meeting.preferred_date} ${meeting.preferred_time}`).toLocaleString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-      })
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    })
     : '—';
 
   return (
@@ -1045,10 +1039,10 @@ function ZoomMeetingRow({
       <td className="py-4 px-4 text-xs text-[#1A1A1A]/50 hidden sm:table-cell whitespace-nowrap">
         {meeting.created_at
           ? new Date(meeting.created_at).toLocaleDateString('en-US', {
-              month: 'short',
-              day: 'numeric',
-              year: 'numeric',
-            })
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+          })
           : '—'}
       </td>
 
@@ -1131,8 +1125,7 @@ function ZoomMeetingDrawer({
               <div className="flex items-start justify-between">
                 <div className="min-w-0 flex-1 pr-2">
                   <SectionLabel>Zoom Meeting Details</SectionLabel>
-                  <h3 className="text-xl font-extrabold text-[#1A1A1A] leading-tight break-words">
-                    {meeting.full_name}
+                  <h3 className="font-heading text-xl font-extrabold text-[#1A1A1A] leading-tight break-words">                    {meeting.full_name}
                   </h3>
                   {meeting.email && (
                     <p className="text-sm text-[#1A1A1A]/50 mt-0.5 break-all">{meeting.email}</p>
@@ -1286,8 +1279,7 @@ function ResearchOrderDrawer({
               <div className="flex items-start justify-between">
                 <div className="min-w-0 flex-1 pr-2">
                   <SectionLabel>Research Order Details</SectionLabel>
-                  <h3 className="text-xl font-extrabold text-[#1A1A1A] leading-tight break-words">
-                    {order.full_name}
+                  <h3 className="font-heading text-xl font-extrabold text-[#1A1A1A] leading-tight break-words">                    {order.full_name}
                   </h3>
                   <p className="text-sm text-[#1A1A1A]/50 mt-0.5 break-all">{order.email}</p>
                 </div>
@@ -1716,7 +1708,7 @@ export default function AdminDashboard() {
         });
 
         let data: any = {};
-        try { data = await res.json(); } catch {}
+        try { data = await res.json(); } catch { }
 
         if (!res.ok) {
           throw new Error(data?.message || 'Failed to send response email');
@@ -1824,7 +1816,7 @@ export default function AdminDashboard() {
             <div className="perspective-[800px] mb-4 sm:mb-5">
               <AnimatedTitle
                 text="Admin Dashboard"
-                className="text-4xl sm:text-5xl md:text-7xl font-extrabold leading-[1.1] sm:leading-[1.02] tracking-tight block"
+                className="font-heading text-4xl sm:text-5xl md:text-7xl font-extrabold leading-[1.1] sm:leading-[1.02] tracking-tight block"
               />
             </div>
 
@@ -1832,7 +1824,7 @@ export default function AdminDashboard() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.55, ease: EASE }}
-              className="text-sm sm:text-base md:text-xl text-white/80 max-w-xl font-light mb-2 px-2"
+              className="text-sm sm:text-base md:text-xl text-white/80 max-w-xl font-light italic mb-2 px-2"
             >
               Review, approve, and manage every enrollment and research request in one place
             </motion.p>
@@ -1866,7 +1858,7 @@ export default function AdminDashboard() {
               <RefreshCw className={`w-3.5 h-3.5 ${(view === 'enrollments' ? refreshing : view === 'research-orders' ? roRefreshing : zoomRefreshing) ? 'animate-spin' : ''}`} />
               Refresh
             </motion.button>
-            <motion.button 
+            <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={handleLogout}
@@ -1888,9 +1880,8 @@ export default function AdminDashboard() {
           >
             <button
               onClick={() => setView('enrollments')}
-              className={`relative flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-colors duration-200 ${
-                view === 'enrollments' ? 'text-white' : 'text-[#1A1A1A]/60 hover:text-[#8C1B2E]'
-              }`}
+              className={`relative flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-colors duration-200 ${view === 'enrollments' ? 'text-white' : 'text-[#1A1A1A]/60 hover:text-[#8C1B2E]'
+                }`}
             >
               {view === 'enrollments' && (
                 <motion.span
@@ -1904,9 +1895,8 @@ export default function AdminDashboard() {
             </button>
             <button
               onClick={() => setView('research-orders')}
-              className={`relative flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-colors duration-200 ${
-                view === 'research-orders' ? 'text-white' : 'text-[#1A1A1A]/60 hover:text-[#8C1B2E]'
-              }`}
+              className={`relative flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-colors duration-200 ${view === 'research-orders' ? 'text-white' : 'text-[#1A1A1A]/60 hover:text-[#8C1B2E]'
+                }`}
             >
               {view === 'research-orders' && (
                 <motion.span
@@ -1920,9 +1910,8 @@ export default function AdminDashboard() {
             </button>
             <button
               onClick={() => setView('zoom-meetings')}
-              className={`relative flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-colors duration-200 ${
-                view === 'zoom-meetings' ? 'text-white' : 'text-[#1A1A1A]/60 hover:text-[#8C1B2E]'
-              }`}
+              className={`relative flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-colors duration-200 ${view === 'zoom-meetings' ? 'text-white' : 'text-[#1A1A1A]/60 hover:text-[#8C1B2E]'
+                }`}
             >
               {view === 'zoom-meetings' && (
                 <motion.span
@@ -1949,7 +1938,7 @@ export default function AdminDashboard() {
                 className="mb-8"
               >
                 <SectionLabel>Enrollment Management</SectionLabel>
-                <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#1A1A1A] mb-2">
+                <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#1A1A1A] mb-2">
                   Course Enrollments
                 </h2>
                 <motion.div
@@ -2027,9 +2016,8 @@ export default function AdminDashboard() {
                     <button
                       key={tab.key}
                       onClick={() => setFilter(tab.key)}
-                      className={`relative px-4 py-2 rounded-lg text-sm font-bold whitespace-nowrap transition-colors duration-200 flex-1 lg:flex-initial text-center ${
-                        filter === tab.key ? 'text-white' : 'text-[#1A1A1A]/60 hover:text-[#8C1B2E]'
-                      }`}
+                      className={`relative px-4 py-2 rounded-lg text-sm font-bold whitespace-nowrap transition-colors duration-200 flex-1 lg:flex-initial text-center ${filter === tab.key ? 'text-white' : 'text-[#1A1A1A]/60 hover:text-[#8C1B2E]'
+                        }`}
                     >
                       {filter === tab.key && (
                         <motion.span
@@ -2169,7 +2157,7 @@ export default function AdminDashboard() {
                 className="mb-8"
               >
                 <SectionLabel>Research Order Management</SectionLabel>
-                <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#1A1A1A] mb-2">
+                <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#1A1A1A] mb-2">
                   Research Orders
                 </h2>
                 <motion.div
@@ -2353,7 +2341,7 @@ export default function AdminDashboard() {
                 className="mb-8"
               >
                 <SectionLabel>Zoom Meeting Management</SectionLabel>
-                <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#1A1A1A] mb-2">
+                <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#1A1A1A] mb-2">
                   Scheduled Zoom Meetings
                 </h2>
                 <p className="text-[#1A1A1A]/55 text-sm sm:text-base max-w-2xl">

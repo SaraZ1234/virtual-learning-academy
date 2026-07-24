@@ -296,7 +296,7 @@ function FeatureCard({ feature, index }: { feature: typeof features[0]; index: n
         <Icon className="w-6 h-6 text-white" />
       </motion.div>
 
-      <h3 className="text-lg font-bold text-[#8C1B2E] mb-3">{feature.title}</h3>
+      <h3 className="font-heading text-lg font-bold text-[#8C1B2E] mb-3">{feature.title}</h3>
       <p className="text-[#1A1A1A]/75 text-sm leading-relaxed flex-1">{feature.description}</p>
 
       {/* Corner glow */}
@@ -388,7 +388,7 @@ export default function Page() {
             <div className="perspective-[800px] mt-2 sm:mt-4 mb-6">
               <AnimatedTitle
                 text="Why Choose Us"
-                className="text-5xl sm:text-6xl md:text-8xl font-extrabold leading-[1.05] sm:leading-[1.02] tracking-tight block"
+                className="font-heading text-5xl sm:text-6xl md:text-8xl font-extrabold leading-[1.05] sm:leading-[1.02] tracking-tight block"
               />
             </div>
 
@@ -396,7 +396,7 @@ export default function Page() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.55, ease: EASE }}
-              className="text-lg sm:text-xl md:text-2xl text-white/80 max-w-xl font-light mb-14 px-2"
+              className="text-lg sm:text-xl md:text-2xl text-white/80 max-w-xl font-light italic mb-14 px-2"
             >
               Discover the unique benefits of our Virtual Learning Academy
             </motion.p>
@@ -446,7 +446,7 @@ export default function Page() {
               className="text-center mb-16"
             >
               <SectionLabel>Our Advantages</SectionLabel>
-              <h2 className="text-4xl md:text-5xl font-extrabold text-[#1A1A1A]">
+              <h2 className="font-heading text-4xl md:text-5xl font-extrabold text-[#1A1A1A]">
                 What Sets Us Apart
               </h2>
               <motion.div
@@ -509,7 +509,7 @@ export default function Page() {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
-              className="text-4xl md:text-5xl font-extrabold mb-5 leading-tight"
+              className="font-heading text-4xl md:text-5xl font-extrabold mb-5 leading-tight"
             >
               Live Classes,<br />Not Recorded Lectures
             </motion.h2>
@@ -553,7 +553,7 @@ export default function Page() {
               className="text-center mb-16"
             >
               <SectionLabel>Tailored For You</SectionLabel>
-              <h2 className="text-4xl md:text-5xl font-extrabold text-[#1A1A1A]">
+             <h2 className="font-heading text-4xl md:text-5xl font-extrabold text-[#1A1A1A]">
                 Our Flexible Options
               </h2>
               <motion.div
@@ -606,7 +606,7 @@ export default function Page() {
 
                       {/* Text */}
                       <div className="flex-1">
-                        <h3 className="text-lg font-bold text-[#8C1B2E] mb-2">{benefit.title}</h3>
+                       <h3 className="font-heading text-lg font-bold text-[#8C1B2E] mb-2">{benefit.title}</h3>
                         <p className="text-[#1A1A1A]/70 text-sm leading-relaxed">{benefit.description}</p>
                       </div>
 
@@ -647,7 +647,7 @@ export default function Page() {
               className="text-center mb-16"
             >
               <SectionLabel>Everything Included</SectionLabel>
-              <h2 className="text-4xl md:text-5xl font-extrabold text-[#1A1A1A]">
+              <h2 className="font-heading text-4xl md:text-5xl font-extrabold text-[#1A1A1A]">
                 What We Offer
               </h2>
               <motion.div
@@ -701,7 +701,7 @@ export default function Page() {
                   >
                     {offering.emoji}
                   </motion.div>
-                  <p className="font-bold text-base leading-snug relative z-10">{offering.name}</p>
+                  <p className="font-heading font-bold text-base leading-snug relative z-10">{offering.name}</p>
                 </motion.div>
               ))}
             </motion.div>
@@ -744,7 +744,7 @@ export default function Page() {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
-              className="text-4xl md:text-6xl font-extrabold mb-6 leading-tight"
+              className="font-heading text-4xl md:text-6xl font-extrabold mb-6 leading-tight"
             >
               Start Your<br />Learning Journey
             </motion.h2>

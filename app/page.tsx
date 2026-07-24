@@ -112,10 +112,16 @@ function AnimatedTitle({ text, className }: { text: string; className?: string }
       {words.map((w, i) => (
         <motion.span
           key={i}
-          className="inline-block mr-[0.25em]"
+          className={`inline-block mr-[0.25em] ${w === "Through" ? "italic text-[#D4AF37]" : ""
+            }`}
           variants={{
             hidden: { opacity: 0, y: 28, rotateX: -40 },
-            visible: { opacity: 1, y: 0, rotateX: 0, transition: { duration: 0.55, ease: EASE } },
+            visible: {
+              opacity: 1,
+              y: 0,
+              rotateX: 0,
+              transition: { duration: 0.55, ease: EASE },
+            },
           }}
         >
           {w}
@@ -189,7 +195,8 @@ function SectionHeading({ label, title, subtitle, light = false }: { label: stri
       className="text-center mb-16"
     >
       <SectionLabel light={light}>{label}</SectionLabel>
-      <h2 className={`text-3xl sm:text-4xl md:text-5xl font-extrabold ${light ? 'text-white' : 'text-[#1A1A1A]'}`}>
+      {/* <h2 className={`text-3xl sm:text-4xl md:text-5xl font-extrabold ${light ? 'text-white' : 'text-[#1A1A1A]'}`}> */}
+      <h2 className={`font-heading text-3xl sm:text-4xl md:text-5xl font-extrabold ${light ? 'text-white' : 'text-[#1A1A1A]'}`}>
         {title}
       </h2>
       <motion.div
@@ -1131,14 +1138,14 @@ const testimonials = [
 ];
 
 const trainingPrograms = [
-  { title: 'Cloud Computing', description: 'AWS, Azure & GCP expertise', image: '/training/cloud-computing.png', icon: Globe, color: 'from-blue-500 to-blue-600' },
-  { title: 'AI & Machine Learning', description: 'ML Engineering & AI Research', image: '/training/ai-machine-learning.png', icon: Sparkles, color: 'from-purple-500 to-purple-600' },
-  { title: 'Cybersecurity', description: 'Network & Information Security', image: '/training/cybersecurity.png', icon: Award, color: 'from-red-500 to-red-600' },
-  { title: 'Graphic Design', description: 'UI/UX & Visual Design', image: '/training/graphic-design.png', icon: Sparkles, color: 'from-pink-500 to-pink-600' },
-  { title: 'Full Stack Development', description: 'React, Node.js, Express & More', image: '/training/full-stack-development.png', icon: BookOpen, color: 'from-green-500 to-green-600' },
-  { title: 'Data Science', description: 'Analytics & Big Data', image: '/training/data-science.png', icon: BarChart3, color: 'from-orange-500 to-orange-600' },
-  { title: 'DevOps & Automation', description: 'Docker, Kubernetes & CI/CD', image: '/training/devops.png', icon: Zap, color: 'from-cyan-500 to-cyan-600' },
-  { title: 'Blockchain', description: 'Cryptocurrency & Smart Contracts', image: '/training/blockchain.png', icon: Target, color: 'from-amber-500 to-amber-600' },
+  { title: 'Cloud Computing', description: 'AWS, Azure & GCP expertise', image: '/training/cloud-computing.avif', icon: Globe, color: 'from-blue-500 to-blue-600' },
+  { title: 'AI & Machine Learning', description: 'ML Engineering & AI Research', image: '/training/ai-machine-learning.avif', icon: Sparkles, color: 'from-purple-500 to-purple-600' },
+  { title: 'Cybersecurity', description: 'Network & Information Security', image: '/training/cybersecurity.avif', icon: Award, color: 'from-red-500 to-red-600' },
+  { title: 'Graphic Design', description: 'UI/UX & Visual Design', image: '/training/graphic-design.avif', icon: Sparkles, color: 'from-pink-500 to-pink-600' },
+  { title: 'Full Stack Development', description: 'React, Node.js, Express & More', image: '/training/full-stack-development.avif', icon: BookOpen, color: 'from-green-500 to-green-600' },
+  { title: 'Data Science', description: 'Analytics & Big Data', image: '/training/data-science.avif', icon: BarChart3, color: 'from-orange-500 to-orange-600' },
+  { title: 'DevOps & Automation', description: 'Docker, Kubernetes & CI/CD', image: '/training/devops.webp', icon: Zap, color: 'from-cyan-500 to-cyan-600' },
+  { title: 'Blockchain', description: 'Cryptocurrency & Smart Contracts', image: '/training/blockchain.avif', icon: Target, color: 'from-amber-500 to-amber-600' },
 ];
 
 const researchServices = [
@@ -1146,7 +1153,7 @@ const researchServices = [
     id: "research-paper-writing",
     title: "Research Paper Writing",
     description: "Full paper writing service with expert research and analysis",
-    image: "/services/research-paper-writing.png",
+    image: "/services/research-paper-writing.avif",
     icon: BookOpen,
     color: "from-blue-500 to-blue-600",
   },
@@ -1154,7 +1161,7 @@ const researchServices = [
     id: "literature-review",
     title: "Literature Review",
     description: "Systematic, Scoping, and Meta-analysis literature reviews",
-    image: "/services/literature-review.png",
+    image: "/services/literature-review.avif",
     icon: CheckCircle,
     color: "from-green-500 to-green-600",
   },
@@ -1162,7 +1169,7 @@ const researchServices = [
     id: "graphical-abstract",
     title: "Graphical Abstract",
     description: "Professional BioRender and Illustrator designs",
-    image: "/services/graphical-abstract.png",
+    image: "/services/graphical-abstract.avif",
     icon: Sparkles,
     color: "from-purple-500 to-purple-600",
   },
@@ -1170,7 +1177,7 @@ const researchServices = [
     id: "assignment-coursework-help",
     title: "Assignment & Coursework Help",
     description: "STEM and Business subject expertise",
-    image: "/services/assignment-coursework.png",
+    image: "/services/assignment-coursework.avif",
     icon: Target,
     color: "from-orange-500 to-orange-600",
   },
@@ -1178,7 +1185,7 @@ const researchServices = [
     id: "thesis-dissertation-chapters",
     title: "Thesis & Dissertation Chapters",
     description: "High-ticket service with comprehensive support",
-    image: "/services/thesis-dissertation.png",
+    image: "/services/thesis-dissertation.avif",
     icon: Award,
     color: "from-pink-500 to-pink-600",
   },
@@ -1186,7 +1193,7 @@ const researchServices = [
     id: "journal-paper-editing",
     title: "Journal Paper Editing",
     description: "Native English polishing and professional proofreading",
-    image: "/services/journal-editing.png",
+    image: "/services/journal-editing.webp",
     icon: BarChart3,
     color: "from-red-500 to-red-600",
   },
@@ -1194,7 +1201,7 @@ const researchServices = [
     id: "data-analysis",
     title: "Data Analysis",
     description: "SPSS, R, Python, and Origin expertise",
-    image: "/services/data-analysis.png",
+    image: "/services/data-analysis.avif",
     icon: Zap,
     color: "from-indigo-500 to-indigo-600",
   },
@@ -1202,7 +1209,7 @@ const researchServices = [
     id: "graphs-plotting",
     title: "Graphs & Plotting",
     description: "Professional visualization with Origin, Excel, MATLAB",
-    image: "/services/graphs-plotting.png",
+    image: "/services/graphs-plotting.avif",
     icon: BarChart3,
     color: "from-cyan-500 to-cyan-600",
   },
@@ -1210,7 +1217,7 @@ const researchServices = [
     id: "characterization-graphs",
     title: "Characterization Graphs",
     description: "XRD, SEM, UV, FTIR, TEM, BET, TGA, NMR, XPS, and more",
-    image: "/services/characterization-graphs.png",
+    image: "/services/characterization-graphs.avif",
     icon: Sparkles,
     color: "from-violet-500 to-violet-600",
   },
@@ -1218,7 +1225,7 @@ const researchServices = [
     id: "research-proposal",
     title: "Research Proposal",
     description: "CSC, HEC, PhD, and MS proposals",
-    image: "/services/research-proposal.png",
+    image: "/services/research-proposal.avif",
     icon: Target,
     color: "from-amber-500 to-amber-600",
   },
@@ -1226,7 +1233,7 @@ const researchServices = [
     id: "ppt-presentation",
     title: "PPT Presentation",
     description: "Defense, Viva, and Conference presentations",
-    image: "/services/ppt-presentation.png",
+    image: "/services/ppt-presentation.avif",
     icon: Play,
     color: "from-lime-500 to-lime-600",
   },
@@ -1234,7 +1241,7 @@ const researchServices = [
     id: "plagiarism-removal",
     title: "Plagiarism Removal",
     description: "Professional paraphrasing with Turnitin <5%",
-    image: "/services/plagiarism-removal.png",
+    image: "/services/plagiarism-removal.avif",
     icon: CheckCircle,
     color: "from-teal-500 to-teal-600",
   },
@@ -1271,7 +1278,8 @@ function ProgramCard({ program, index }: { program: typeof programs[0]; index: n
         >
           <Icon className="w-7 h-7 mb-3" />
         </motion.div>
-        <h3 className="text-lg font-bold">{program.title}</h3>
+        {/* <h3 className="text-lg font-bold">{program.title}</h3> */}
+        <h3 className="font-heading text-lg font-bold">{program.title}</h3>
         <p className="text-xs text-white/85 mt-1">{program.grades}</p>
       </div>
       <div className="p-6 flex-1 flex flex-col">
@@ -1345,7 +1353,8 @@ function WhyCard({ reason, index }: { reason: typeof whyChoose[0]; index: number
       >
         {reason.benefit}
       </motion.div>
-      <h3 className="text-base font-bold text-[#1A1A1A] mb-2">{reason.title}</h3>
+      {/* <h3 className="text-base font-bold text-[#1A1A1A] mb-2">{reason.title}</h3> */}
+      <h3 className="font-heading text-base font-bold text-[#1A1A1A] mb-2">{reason.title}</h3>
       <p className="text-[#1A1A1A]/70 text-sm leading-relaxed">{reason.description}</p>
       <motion.div
         className="absolute bottom-0 right-0 w-20 h-20 bg-[#8C1B2E]/5 rounded-tl-full pointer-events-none"
@@ -1465,7 +1474,8 @@ function TrainingCard({
         >
           <Icon className="w-5 h-5 text-white" />
         </motion.div>
-        <h3 className="text-base font-bold text-[#1A1A1A] mb-1">{program.title}</h3>
+        {/* <h3 className="text-base font-bold text-[#1A1A1A] mb-1">{program.title}</h3> */}
+        <h3 className="font-heading text-base font-bold text-[#1A1A1A] mb-1">{program.title}</h3>
         <p className="text-xs text-[#1A1A1A]/70 leading-relaxed flex-1">{program.description}</p>
 
         <div className="grid grid-cols-2 gap-2 mt-4">
@@ -1545,7 +1555,8 @@ function ResearchCard({
         >
           <Icon className="w-6 h-6 text-white" />
         </motion.div>
-        <h3 className="text-base font-bold text-[#1A1A1A] mb-2">{service.title}</h3>
+        {/* <h3 className="text-base font-bold text-[#1A1A1A] mb-2">{service.title}</h3> */}
+        <h3 className="font-heading text-base font-bold text-[#1A1A1A] mb-2">{service.title}</h3>
         <p className="text-sm text-[#1A1A1A]/70 leading-relaxed flex-1 mb-4">{service.description}</p>
 
         {/* Button Wrapper */}
@@ -1604,7 +1615,8 @@ function ProcessStep({ item, index }: { item: typeof processSteps[0]; index: num
       >
         {item.step}
       </motion.div>
-      <h3 className="text-base font-bold text-[#1A1A1A] mb-1">{item.title}</h3>
+      {/* <h3 className="text-base font-bold text-[#1A1A1A] mb-1">{item.title}</h3> */}
+      <h3 className="font-heading text-base font-bold text-[#1A1A1A] mb-1">{item.title}</h3>
       <p className="text-xs text-[#1A1A1A]/65">{item.description}</p>
       {index < processSteps.length - 1 && (
         <motion.div
@@ -1736,9 +1748,13 @@ export default function Page() {
 
             {/* Main Heading */}
             <div className="perspective-[800px] mb-6">
-              <AnimatedTitle
+              {/* <AnimatedTitle
                 text="Transforming Education Through Virtual Learning"
                 className="text-4xl sm:text-5xl md:text-7xl font-extrabold leading-[1.1] sm:leading-[1.05] tracking-tight block"
+              /> */}
+              <AnimatedTitle
+                text="Transforming Education Through Virtual Learning"
+                className="font-heading text-4xl sm:text-5xl md:text-7xl font-bold leading-[1.15] tracking-[-0.02em] block"
               />
             </div>
 
@@ -1747,7 +1763,7 @@ export default function Page() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.55, ease: EASE }}
-              className="text-lg sm:text-xl md:text-2xl text-white/80 font-light mb-4"
+              className="text-lg sm:text-xl md:text-2xl text-white/80 font-light italic mb-4"
             >
               Learn Without Limits. Study From Anywhere.
             </motion.p>
@@ -1886,7 +1902,8 @@ export default function Page() {
                     >
                       <Icon className="w-6 h-6 text-white" />
                     </motion.div>
-                    <h3 className="text-lg font-bold text-[#8C1B2E] mb-3">{item.title}</h3>
+                    {/* <h3 className="text-lg font-bold text-[#8C1B2E] mb-3">{item.title}</h3> */}
+                    <h3 className="font-heading text-lg font-bold text-[#8C1B2E] mb-3">{item.title}</h3>
                     <p className="text-[#1A1A1A]/75 text-sm leading-relaxed">{item.text}</p>
                     <motion.div
                       className="absolute bottom-0 right-0 w-20 h-20 bg-[#8C1B2E]/5 rounded-tl-full pointer-events-none"
@@ -1972,7 +1989,7 @@ export default function Page() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.7, ease: EASE }}
                 />
-                <h3 className="text-xl sm:text-2xl font-extrabold text-[#1A1A1A] mb-6">Flexible Pricing</h3>
+                <h3 className="font-heading text-xl sm:text-2xl font-extrabold text-[#1A1A1A] mb-6">Flexible Pricing</h3>
                 <div className="space-y-4 mb-6">
                   <div className="flex justify-between items-center pb-4 border-b border-[#C0C5CE]/70 gap-2">
                     <span className="text-[#1A1A1A] font-semibold">Enrollment Fee</span>
@@ -2012,7 +2029,8 @@ export default function Page() {
                 <motion.div
                   className="absolute top-0 left-0 right-0 h-[3px] bg-white/30"
                 />
-                <h3 className="text-xl sm:text-2xl font-extrabold mb-6 relative z-10">Live Zoom Consultations</h3>
+                {/* <h3 className="text-xl sm:text-2xl font-extrabold mb-6 relative z-10">Live Zoom Consultations</h3> */}
+                <h3 className="font-heading text-xl sm:text-2xl font-extrabold mb-6 relative z-10">Live Zoom Consultations</h3>
                 <div className="space-y-4 mb-6 relative z-10">
                   {[
                     { title: 'Expert Guidance', desc: 'Get personalized course recommendations' },
@@ -2071,7 +2089,8 @@ export default function Page() {
                 </video>
               </div>
               <div className="p-4 sm:p-6">
-                <h3 className="text-base sm:text-lg font-bold text-[#1A1A1A] mb-2">Watch Our Training Overview</h3>
+                {/* <h3 className="text-base sm:text-lg font-bold text-[#1A1A1A] mb-2">Watch Our Training Overview</h3> */}
+                <h3 className="font-heading text-base sm:text-lg font-bold text-[#1A1A1A] mb-2">Watch Our Training Overview</h3>
                 <p className="text-sm text-[#1A1A1A]/70">Discover how our comprehensive training programs can transform your career and help you excel in the competitive global market.</p>
               </div>
             </motion.div>
@@ -2089,7 +2108,7 @@ export default function Page() {
                   <span className="block w-5 h-[2px] rounded-full bg-[#8C1B2E]" />
                   Live In Session
                 </span>
-                <h3 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-[#1A1A1A]">
+                <h3 className="font-heading text-xl sm:text-2xl md:text-3xl font-extrabold text-[#1A1A1A]">
                   Glimpses From Our Zoom Meetings
                 </h3>
               </motion.div>
@@ -2210,7 +2229,8 @@ export default function Page() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.7, ease: EASE }}
               />
-              <h3 className="text-xl md:text-2xl font-extrabold text-[#1A1A1A] mb-6">Premium Services Bundle</h3>
+              {/* <h3 className="text-xl md:text-2xl font-extrabold text-[#1A1A1A] mb-6">Premium Services Bundle</h3> */}
+              <h3 className="font-heading text-xl md:text-2xl font-extrabold text-[#1A1A1A] mb-6">Premium Services Bundle</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
                 {[
                   { title: 'Characterization Graphs', desc: 'Advanced visualization expertise' },
@@ -2258,7 +2278,8 @@ export default function Page() {
               <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                 <div>
                   <SectionLabel light>Expert Consultations</SectionLabel>
-                  <h3 className="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-4">Live Zoom Consultations</h3>
+                  {/* <h3 className="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-4">Live Zoom Consultations</h3> */}
+                  <h3 className="font-heading text-2xl sm:text-3xl md:text-4xl font-extrabold mb-4">Live Zoom Consultations</h3>
                   <p className="text-white/80 mb-6 leading-relaxed">
                     Get personalized guidance through our live Zoom meetings. Our expert researchers will discuss your project, address concerns, and provide detailed guidance tailored to your needs.
                   </p>
@@ -2357,7 +2378,8 @@ export default function Page() {
               <span className="text-[11px] font-black uppercase tracking-widest text-[#8C1B2E] bg-[#8C1B2E]/5 px-3 py-1 rounded-full border border-[#8C1B2E]/10">
                 Industry Credentials
               </span>
-              <h3 className="text-3xl sm:text-4xl font-black text-zinc-900 tracking-tight mt-3">
+              {/* <h3 className="text-3xl sm:text-4xl font-black text-zinc-900 tracking-tight mt-3"> */}
+              <h3 className="font-heading text-3xl sm:text-4xl font-black text-zinc-900 tracking-tight mt-3">
                 Earn Verifiable Course Certifications
               </h3>
               <p className="text-base text-zinc-500 mt-3 font-medium max-w-xl mx-auto">
@@ -2387,7 +2409,8 @@ export default function Page() {
                     <span className="w-2 h-2 rounded-full bg-amber-500"></span>
                     <span className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-400">Professional Skill Certificate</span>
                   </div>
-                  <h4 className="text-lg font-black text-zinc-800 leading-tight group-hover:text-[#8C1B2E] transition-colors">
+                  {/* <h4 className="text-lg font-black text-zinc-800 leading-tight group-hover:text-[#8C1B2E] transition-colors"> */}
+                  <h4 className="font-heading text-lg font-black text-zinc-800 leading-tight group-hover:text-[#8C1B2E] transition-colors">
                     Full-Stack Web Development
                   </h4>
                   <p className="text-sm text-zinc-500 font-medium mt-2 leading-relaxed">
@@ -2419,7 +2442,7 @@ export default function Page() {
                     <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
                     <span className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-400">Advanced Specialization</span>
                   </div>
-                  <h4 className="text-lg font-black text-zinc-800 leading-tight group-hover:text-[#8C1B2E] transition-colors">
+                  <h4 className="font-heading text-lg font-black text-zinc-800 leading-tight group-hover:text-[#8C1B2E] transition-colors">
                     Cloud Architect &amp; AI Integration
                   </h4>
                   <p className="text-sm text-zinc-500 font-medium mt-2 leading-relaxed">
@@ -2451,7 +2474,7 @@ export default function Page() {
                     <span className="w-2 h-2 rounded-full bg-[#8C1B2E]"></span>
                     <span className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-400">Academic Excellence</span>
                   </div>
-                  <h4 className="text-lg font-black text-zinc-800 leading-tight group-hover:text-[#8C1B2E] transition-colors">
+                  <h4 className="font-heading text-lg font-black text-zinc-800 leading-tight group-hover:text-[#8C1B2E] transition-colors">
                     Advanced Data Analytics &amp; Research
                   </h4>
                   <p className="text-sm text-zinc-500 font-medium mt-2 leading-relaxed">
@@ -2483,7 +2506,7 @@ export default function Page() {
                     <span className="w-2 h-2 rounded-full bg-rose-500"></span>
                     <span className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-400">Design Arts Faculty</span>
                   </div>
-                  <h4 className="text-lg font-black text-zinc-800 leading-tight group-hover:text-[#8C1B2E] transition-colors">
+                  <h4 className="font-heading text-lg font-black text-zinc-800 leading-tight group-hover:text-[#8C1B2E] transition-colors">
                     Graphic Design &amp; Brand Identity
                   </h4>
                   <p className="text-sm text-zinc-500 font-medium mt-2 leading-relaxed">
@@ -2515,7 +2538,7 @@ export default function Page() {
                     <span className="w-2 h-2 rounded-full bg-emerald-600"></span>
                     <span className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-400">Spiritual Completion</span>
                   </div>
-                  <h4 className="text-lg font-black text-zinc-800 leading-tight group-hover:text-[#8C1B2E] transition-colors">
+                  <h4 className="font-heading text-lg font-black text-zinc-800 leading-tight group-hover:text-[#8C1B2E] transition-colors">
                     Holy Quran Recitation &amp; Tajweed
                   </h4>
                   <p className="text-sm text-zinc-500 font-medium mt-2 leading-relaxed">
@@ -2591,7 +2614,7 @@ export default function Page() {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
-              className="text-3xl sm:text-4xl md:text-6xl font-extrabold mb-6 leading-tight"
+              className="font-heading text-3xl sm:text-4xl md:text-6xl font-extrabold mb-6 leading-tight"
             >
               Book Your Free Trial Class
             </motion.h2>

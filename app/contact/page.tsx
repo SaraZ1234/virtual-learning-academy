@@ -149,7 +149,7 @@ function SectionLabel({ children, light = false }: { children: React.ReactNode; 
 ═══════════════════════════════════════════════════════════════ */
 const contactInfo = [
   { icon: Phone, label: 'Phone', value: '+92 3252467463', link: 'tel:+92 3252467463' },
-  { icon: Mail, label: 'Email', value: 'hafsaakbar071@gmail.com ', link: 'mailto:hafsaakbar071@gmail.com ' },
+  { icon: Mail, label: 'Email', value: 'hafsainstituteofinternationall@gmail.com ', link: 'mailto:hafsainstituteofinternationall@gmail.com ' },
   { icon: MapPin, label: 'Address', value: '  Lahore, Bahawalpur, Pakistan', link: '#' },
 ];
 
@@ -184,7 +184,7 @@ function ContactInfoCard({ info, index }: { info: typeof contactInfo[0]; index: 
       >
         <Icon className="w-7 h-7 text-white" />
       </motion.div>
-      <h3 className="text-lg font-bold text-[#8C1B2E] mb-2">{info.label}</h3>
+      <h3 className="font-heading text-lg font-bold text-[#8C1B2E] mb-2">{info.label}</h3>
       <p className="text-[#1A1A1A]/75 group-hover:text-[#8C1B2E] transition-colors duration-200 text-sm">
         {info.value}
       </p>
@@ -330,7 +330,7 @@ export default function Contact() {
             <div className="perspective-[800px] mt-2 sm:mt-4 mb-6">
               <AnimatedTitle
                 text="Get In Touch"
-                className="text-4xl sm:text-5xl md:text-7xl font-extrabold leading-[1.1] sm:leading-[1.05] tracking-tight block"
+                className="font-heading text-4xl sm:text-5xl md:text-7xl font-extrabold leading-[1.1] sm:leading-[1.05] tracking-tight block"
               />
             </div>
 
@@ -338,7 +338,7 @@ export default function Contact() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.55, ease: EASE }}
-              className="text-lg sm:text-xl md:text-2xl text-white/80 max-w-xl font-light mb-14 px-2"
+              className="text-lg sm:text-xl md:text-2xl text-white/80 max-w-xl font-light italic mb-14 px-2"
             >
               Let&apos;s Build Your Child&apos;s Future Together
             </motion.p>
@@ -386,7 +386,7 @@ export default function Contact() {
               className="text-center mb-16"
             >
               <SectionLabel>Reach Out</SectionLabel>
-              <h2 className="text-4xl md:text-5xl font-extrabold text-[#1A1A1A]">Contact Information</h2>
+              <h2 className="font-heading text-4xl md:text-5xl font-extrabold text-[#1A1A1A]">Contact Information</h2>
               <motion.div
                 className="mt-4 h-[3px] bg-[#8C1B2E] rounded-full mx-auto"
                 initial={{ width: 0 }}
@@ -425,7 +425,7 @@ export default function Contact() {
                 viewport={{ once: true }}
               >
                 <SectionLabel>Drop Us A Line</SectionLabel>
-                <h2 className="text-4xl font-extrabold text-[#1A1A1A] mb-2">Send Us a Message</h2>
+                <h2 className="font-heading text-4xl font-extrabold text-[#1A1A1A] mb-2">Send Us a Message</h2>
                 <motion.div
                   className="h-[3px] bg-[#8C1B2E] rounded-full mb-10"
                   initial={{ width: 0 }}
@@ -575,8 +575,7 @@ export default function Contact() {
                     viewport={{ once: true }}
                     transition={{ duration: 0.6, ease: EASE }}
                   />
-                  <h3 className="text-xl font-extrabold text-[#1A1A1A] mb-5">Business Hours</h3>
-                  <div className="space-y-3 text-sm">
+                  <h3 className="font-heading text-xl font-extrabold text-[#1A1A1A] mb-5">Business Hours</h3>                  <div className="space-y-3 text-sm">
                     {[
                       { day: 'Monday - Friday', hours: '9:00 AM - 6:00 PM' },
                       { day: 'Saturday', hours: '10:00 AM - 4:00 PM' },
@@ -605,8 +604,7 @@ export default function Contact() {
                     viewport={{ once: true }}
                     transition={{ duration: 0.6, delay: 0.1, ease: EASE }}
                   />
-                  <h3 className="text-xl font-extrabold text-[#1A1A1A] mb-5">Why Contact Us?</h3>
-                  <ul className="space-y-3">
+                  <h3 className="font-heading text-xl font-extrabold text-[#1A1A1A] mb-5">Why Contact Us?</h3>                  <ul className="space-y-3">
                     {[
                       'Get personalized program recommendations',
                       'Learn about current pricing and offers',
@@ -665,7 +663,7 @@ export default function Contact() {
                   <Particles />
                   <div className="relative z-10">
                     <SectionLabel light>Limited Spots Available</SectionLabel>
-                    <h3 className="text-2xl font-extrabold mb-3">Book Your Free Trial</h3>
+                    <h3 className="font-heading text-2xl font-extrabold mb-3">Book Your Free Trial</h3>
                     <p className="mb-6 text-white/75 text-sm leading-relaxed">
                       Experience our teaching methodology and meet our expert educators — no commitment required.
                     </p>
@@ -716,7 +714,7 @@ export default function Contact() {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
-              className="text-4xl md:text-6xl font-extrabold mb-6 leading-tight"
+              className="font-heading text-4xl md:text-6xl font-extrabold mb-6 leading-tight"
             >
               Start Your Learning<br />Journey Today
             </motion.h2>

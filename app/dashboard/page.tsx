@@ -223,7 +223,7 @@ function StudentInfoCard({
           </div>
           <div className="flex-1 min-w-0">
             <SectionLabel>Student Profile</SectionLabel>
-            <h3 className="text-lg sm:text-xl font-extrabold text-[#1A1A1A] truncate">
+            <h3 className="font-heading text-lg sm:text-xl font-extrabold text-[#1A1A1A] truncate">
               {user?.full_name || user?.name || 'Student'}
             </h3>
           </div>
@@ -301,7 +301,7 @@ function RecentActivity({ enrollments }: { enrollments: Enrollment[] }) {
           </div>
           <div className="min-w-0">
             <SectionLabel>Activity</SectionLabel>
-            <h3 className="text-base sm:text-lg font-extrabold text-[#1A1A1A] -mt-1">Recent Activity</h3>
+            <h3 className="font-heading text-base sm:text-lg font-extrabold text-[#1A1A1A] -mt-1">Recent Activity</h3>
           </div>
         </div>
       </div>
@@ -408,7 +408,7 @@ function Notifications({ enrollments }: { enrollments: Enrollment[] }) {
           </div>
           <div className="min-w-0">
             <SectionLabel>Alerts</SectionLabel>
-            <h3 className="text-base sm:text-lg font-extrabold text-[#1A1A1A] -mt-1">Notifications</h3>
+            <h3 className="font-heading text-base sm:text-lg font-extrabold text-[#1A1A1A] -mt-1">Notifications</h3>
           </div>
         </div>
       </div>
@@ -462,7 +462,7 @@ function DetailDrawer({ enrollment, onClose }: { enrollment: Enrollment | null; 
               <div className="flex items-start justify-between gap-3 mb-6">
                 <div className="min-w-0">
                   <SectionLabel>Enrollment Details</SectionLabel>
-                  <h3 className="text-lg sm:text-xl font-extrabold text-[#1A1A1A] break-words">{enrollment.course}</h3>
+                  <h3 className="font-heading text-lg sm:text-xl font-extrabold text-[#1A1A1A] break-words">{enrollment.course}</h3>
                 </div>
                 <button
                   onClick={onClose}
@@ -700,7 +700,7 @@ export default function StudentDashboard() {
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.1, ease: EASE }}
-                className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight break-words"
+                 className="font-heading text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight break-words"
               >
                 Welcome Back,{' '}
                 <span className="text-white/90">{displayName}</span> 👋
@@ -709,7 +709,7 @@ export default function StudentDashboard() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.6, delay: 0.25 }}
-                className="text-white/65 text-sm mt-1"
+                className="text-white/65 text-sm mt-1 italic"
               >
                 Track and manage your course applications from here
               </motion.p>
@@ -765,7 +765,7 @@ export default function StudentDashboard() {
           <div>
             <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="mb-4">
               <SectionLabel>Overview</SectionLabel>
-              <h2 className="text-xl sm:text-2xl font-extrabold text-[#1A1A1A]">Statistics</h2>
+              <h2 className="font-heading text-xl sm:text-2xl font-extrabold text-[#1A1A1A]">Statistics</h2>
             </motion.div>
 
             <motion.div
@@ -785,7 +785,7 @@ export default function StudentDashboard() {
           <div>
             <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="mb-5">
               <SectionLabel>Applications</SectionLabel>
-              <h2 className="text-xl sm:text-2xl font-extrabold text-[#1A1A1A] mb-1">My Enrollments</h2>
+              <h2 className="font-heading text-xl sm:text-2xl font-extrabold text-[#1A1A1A] mb-1">My Enrollments</h2>
               <motion.div
                 className="h-[3px] bg-[#8C1B2E] rounded-full"
                 initial={{ width: 0 }}

@@ -93,9 +93,8 @@ function SectionLabel({ children, light = false }: { children: React.ReactNode; 
       whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, ease: EASE }}
-      className={`inline-flex items-center gap-2 text-xs font-bold tracking-[0.22em] uppercase mb-3 ${
-        light ? 'text-white/60' : 'text-[#8C1B2E]'
-      }`}
+      className={`inline-flex items-center gap-2 text-xs font-bold tracking-[0.22em] uppercase mb-3 ${light ? 'text-white/60' : 'text-[#8C1B2E]'
+        }`}
     >
       <span className={`block w-5 h-[2px] rounded-full ${light ? 'bg-white/40' : 'bg-[#8C1B2E]'}`} />
       {children}
@@ -374,7 +373,7 @@ export default function ProgramDetailPage({ params }: PageProps) {
           <div className="p-4 bg-[#8C1B2E]/10 rounded-full mb-4">
             <AlertCircle className="w-12 h-12 text-[#8C1B2E]" />
           </div>
-          <h1 className="text-2xl font-extrabold text-[#1A1A1A] mb-2">Program Not Found</h1>
+          <h1 className="font-heading text-2xl font-extrabold text-[#1A1A1A] mb-2">Program Not Found</h1>
           <p className="text-sm text-[#1A1A1A]/60 mb-6 max-w-sm">
             The program you're looking for doesn't exist or may have been renamed. Browse the full catalog instead.
           </p>
@@ -453,15 +452,15 @@ export default function ProgramDetailPage({ params }: PageProps) {
 
             <div className="max-w-4xl space-y-4">
               {/* <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-3 py-1 text-[11px] font-bold tracking-widest uppercase text-white backdrop-blur-sm"> */}
-                {/* <IconComponent className="w-3.5 h-3.5 text-white shrink-0" /> */}
-                {/* <span>{program.motifLabel} &middot; Official Academy Syllabus</span> */}
+              {/* <IconComponent className="w-3.5 h-3.5 text-white shrink-0" /> */}
+              {/* <span>{program.motifLabel} &middot; Official Academy Syllabus</span> */}
               {/* </div> */}
 
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-tight">
+              <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-tight">
                 <AnimatedTitle text={program.title} />
               </h1>
 
-              <p className="text-sm sm:text-base md:text-lg text-white/90 font-light max-w-2xl leading-relaxed">
+              <p className="text-sm sm:text-base md:text-lg text-white/90 font-light italic max-w-2xl leading-relaxed">
                 {program.tagline}
               </p>
             </div>
@@ -599,7 +598,7 @@ export default function ProgramDetailPage({ params }: PageProps) {
                       <div className="absolute left-0 top-0 w-8 h-8 rounded-full bg-[#8C1B2E]/10 border-2 border-[#8C1B2E]/20 flex items-center justify-center text-[11px] font-extrabold text-[#8C1B2E] group-hover:bg-[#8C1B2E] group-hover:text-white group-hover:border-[#8C1B2E] transition-colors">
                         {idx + 1}
                       </div>
-                      <h4 className="font-extrabold text-sm sm:text-base text-[#1A1A1A] group-hover:text-[#8C1B2E] transition-colors pt-1">{block.phase}</h4>
+                      <h4 className="font-heading font-extrabold text-sm sm:text-base text-[#1A1A1A] group-hover:text-[#8C1B2E] transition-colors pt-1">{block.phase}</h4>
                       <p className="text-xs sm:text-sm text-[#1A1A1A]/70 mt-1 leading-relaxed">{block.focus}</p>
                     </div>
                   ))}
@@ -627,7 +626,7 @@ export default function ProgramDetailPage({ params }: PageProps) {
                   </div>
                   <div>
                     <p className="text-[10px] uppercase tracking-widest text-white/60 font-bold mb-1">Faculty Spotlight</p>
-                    <h4 className="text-lg font-extrabold">{program.instructor.name}</h4>
+                    <h4 className="font-heading text-lg font-extrabold">{program.instructor.name}</h4>
                     <p className="text-xs text-white/70 mb-2">{program.instructor.role}</p>
                     <p className="text-sm text-white/90 leading-relaxed italic">&ldquo;{program.instructor.note}&rdquo;</p>
                   </div>
@@ -711,8 +710,7 @@ export default function ProgramDetailPage({ params }: PageProps) {
 
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-lg font-extrabold text-[#1A1A1A]">Curricular Blueprint</h3>
-                    <p className="text-[10px] uppercase tracking-widest font-bold text-[#8C1B2E] mt-0.5 flex items-center gap-1.5">
+                    <h3 className="font-heading text-lg font-extrabold text-[#1A1A1A]">Curricular Blueprint</h3>                    <p className="text-[10px] uppercase tracking-widest font-bold text-[#8C1B2E] mt-0.5 flex items-center gap-1.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#8C1B2E] animate-pulse" />
                       Live Seats Active
                     </p>
@@ -812,7 +810,7 @@ export default function ProgramDetailPage({ params }: PageProps) {
               className="mb-10"
             >
               <SectionLabel>Keep Exploring</SectionLabel>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-[#1A1A1A]">Other Programs You Might Consider</h2>
+              <h2 className="font-heading text-2xl sm:text-3xl font-extrabold text-[#1A1A1A]">Other Programs You Might Consider</h2>
             </motion.div>
 
             <motion.div
@@ -831,7 +829,7 @@ export default function ProgramDetailPage({ params }: PageProps) {
                         <div className="w-11 h-11 rounded-xl bg-[#8C1B2E]/10 group-hover:bg-[#8C1B2E] flex items-center justify-center mb-4 transition-colors duration-300">
                           <Icon className="w-5 h-5 text-[#8C1B2E] group-hover:text-white transition-colors duration-300" />
                         </div>
-                        <h3 className="font-bold text-[#1A1A1A] text-sm mb-1.5 group-hover:text-[#8C1B2E] transition-colors">{p.shortTitle}</h3>
+                        <h3 className="font-heading font-bold text-[#1A1A1A] text-sm mb-1.5 group-hover:text-[#8C1B2E] transition-colors">{p.shortTitle}</h3>
                         <p className="text-xs text-[#1A1A1A]/60 leading-relaxed mb-4 line-clamp-2">{p.tagline}</p>
                         <span className="inline-flex items-center gap-1.5 text-xs font-bold text-[#8C1B2E]">
                           View Program <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />

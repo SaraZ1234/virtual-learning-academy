@@ -1037,6 +1037,7 @@ const programs = [
     grades: 'Early Years to Secondary',
     color: 'from-blue-500 to-blue-600',
     features: ['English Language', 'Mathematics', 'Science', 'Social Studies', 'Computer Science'],
+    image: 'https://static.prod-images.emergentagent.com/jobs/5028b42b-c9d7-4a45-8ba0-1e5ceab649b3/images/929e70edb23f6a2f7d02e0ddd49602edc285af561840704a355dcf7c98c3fd80.jpeg',
   },
   {
     title: 'IGCSE & O Level Preparation',
@@ -1044,6 +1045,7 @@ const programs = [
     grades: 'International Programs',
     color: 'from-purple-500 to-purple-600',
     features: ['Expert Subject Specialists', 'Past Paper Practice', 'Exam Strategies', 'Performance Evaluations'],
+    image: 'https://static.prod-images.emergentagent.com/jobs/5028b42b-c9d7-4a45-8ba0-1e5ceab649b3/images/b8499776e69e646ee66d140fbe015d9dc985094158784412eb9687e62ec05504.jpeg',
   },
   {
     title: 'A Level Coaching',
@@ -1051,6 +1053,7 @@ const programs = [
     grades: 'Advanced Academic Programs',
     color: 'from-green-500 to-green-600',
     features: ['University Preparation', 'Complex Concepts', 'Problem-Solving Skills', 'Career Guidance'],
+    image: 'https://static.prod-images.emergentagent.com/jobs/5028b42b-c9d7-4a45-8ba0-1e5ceab649b3/images/7f1c2c451cc4532ac179f81dff1a07b902ab5e7dff75c7fdb4ecc4d200a7b7f3.jpeg',
   },
   {
     title: 'One-to-One Tutoring',
@@ -1058,6 +1061,7 @@ const programs = [
     grades: 'Personalized Support',
     color: 'from-orange-500 to-orange-600',
     features: ['Individual Attention', 'Customized Plans', 'Flexible Scheduling', 'Exam Preparation'],
+    image: 'https://static.prod-images.emergentagent.com/jobs/5028b42b-c9d7-4a45-8ba0-1e5ceab649b3/images/11a28f33a57815700ca8f1ddc7914e1c58cf687c0dc296da7e6906ceb20a8e0c.jpeg',
   },
   {
     title: 'Quran & Islamic Studies',
@@ -1065,6 +1069,7 @@ const programs = [
     grades: 'Children & Adults',
     color: 'from-pink-500 to-pink-600',
     features: ['Noorani Qaida', 'Quran Reading', 'Tajweed', 'Quran Memorization'],
+    image: 'https://static.prod-images.emergentagent.com/jobs/5028b42b-c9d7-4a45-8ba0-1e5ceab649b3/images/2aff24e71802e5be5d1e7da9fdebf6fe55c4d95b0ad08fd18a68f5ae983b85ad.jpeg',
   },
 ];
 
@@ -1253,65 +1258,135 @@ const researchServices = [
 function ProgramCard({ program, index }: { program: typeof programs[0]; index: number }) {
   const Icon = program.icon;
   const [hovered, setHovered] = useState(false);
+
   return (
     <motion.div
       variants={fadeUp}
       custom={index}
       onHoverStart={() => setHovered(true)}
       onHoverEnd={() => setHovered(false)}
-      whileHover={{ y: -10, boxShadow: '0 24px 48px rgba(140,27,46,0.13)' }}
-      transition={{ duration: 0.28 }}
-      className="group relative bg-gradient-to-b from-[#FBFBFC] to-[#E9EAED] rounded-2xl border-2 border-[#C0C5CE]/70 hover:border-[#8C1B2E]/40 transition-colors duration-300 overflow-hidden flex flex-col shadow-sm"
+      whileHover={{ 
+        y: -12, 
+        scale: 1.02,
+        boxShadow: '0 25px 50px -12px rgba(140, 27, 46, 0.25)' 
+      }}
+      transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+      className="group relative bg-white rounded-3xl border border-gray-200/60 hover:border-[#8C1B2E]/30 transition-all duration-500 overflow-hidden flex flex-col shadow-lg hover:shadow-2xl"
     >
+      {/* Top Accent Bar */}
       <motion.div
-        className="absolute top-0 left-0 right-0 h-[3px] bg-[#8C1B2E] origin-left"
+        className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#8C1B2E] via-[#B43A4E] to-[#8C1B2E] origin-left"
         initial={{ scaleX: 0 }}
         whileInView={{ scaleX: 1 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.6, delay: index * 0.08, ease: EASE }}
+        transition={{ duration: 0.8, delay: index * 0.1, ease: [0.23, 1, 0.32, 1] }}
       />
-      <div className="bg-gradient-to-br from-[#8C1B2E] to-[#B43A4E] p-6 text-white">
+
+      {/* Image Section with Overlay */}
+      <div className="relative w-full h-48 sm:h-56 md:h-52 lg:h-56 overflow-hidden">
+        <motion.img
+          src={program.image}
+          alt={program.title}
+          className="w-full h-full object-cover transition-transform duration-700 ease-out"
+          whileHover={{ scale: 1.08 }}
+        />
+        <motion.div 
+          className="absolute inset-0 bg-gradient-to-t from-[#8C1B2E]/80 via-[#8C1B2E]/30 to-transparent"
+          animate={hovered ? { opacity: 0.9 } : { opacity: 1 }}
+          transition={{ duration: 0.4 }}
+        />
+        
+        {/* Icon Badge on Image */}
         <motion.div
-          animate={hovered ? { rotate: 10, scale: 1.1 } : { rotate: 0, scale: 1 }}
-          transition={{ duration: 0.3 }}
+          className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm p-3 rounded-2xl shadow-xl"
+          animate={hovered ? { rotate: 360, scale: 1.1 } : { rotate: 0, scale: 1 }}
+          transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
         >
-          <Icon className="w-7 h-7 mb-3" />
+          <Icon className="w-6 h-6 text-[#8C1B2E]" />
         </motion.div>
-        {/* <h3 className="text-lg font-bold">{program.title}</h3> */}
-        <h3 className="font-heading text-lg font-bold">{program.title}</h3>
-        <p className="text-xs text-white/85 mt-1">{program.grades}</p>
       </div>
-      <div className="p-6 flex-1 flex flex-col">
-        <div className="space-y-2 mb-5 flex-1">
+
+      {/* Title Section - Overlapping Image */}
+      <motion.div 
+        className="relative -mt-8 mx-4 sm:mx-5 bg-gradient-to-br from-[#8C1B2E] via-[#A02840] to-[#B43A4E] p-5 rounded-2xl shadow-xl z-10"
+        animate={hovered ? { y: -4 } : { y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        <h3 className="font-heading text-xl font-bold text-white leading-tight">
+          {program.title}
+        </h3>
+        <p className="text-sm text-white/90 mt-1.5 font-medium">{program.grades}</p>
+      </motion.div>
+
+      {/* Content Section */}
+      <div className="p-5 sm:p-6 pt-6 flex-1 flex flex-col">
+        <div className="space-y-3 mb-6 flex-1">
           {program.features.slice(0, 4).map((feature, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, x: -10 }}
+              initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="flex items-center gap-2"
+              transition={{ 
+                delay: i * 0.1 + index * 0.05, 
+                duration: 0.5,
+                ease: [0.23, 1, 0.32, 1]
+              }}
+              className="flex items-start gap-3 group/item"
             >
-              <CheckCircle className="w-4 h-4 text-[#8C1B2E] flex-shrink-0" />
-              <span className="text-sm text-[#1A1A1A]/80">{feature}</span>
+              <motion.div
+                whileHover={{ scale: 1.2, rotate: 360 }}
+                transition={{ duration: 0.5 }}
+              >
+                <CheckCircle className="w-5 h-5 text-[#8C1B2E] flex-shrink-0 mt-0.5" />
+              </motion.div>
+              <span className="text-sm text-gray-700 leading-relaxed group-hover/item:text-gray-900 transition-colors">
+                {feature}
+              </span>
             </motion.div>
           ))}
         </div>
+
+        {/* CTA Button */}
         <Link href="/programs" className="block w-full">
           <motion.button
-            whileHover={{ scale: 1.04 }}
-            whileTap={{ scale: 0.96 }}
-            className="w-full bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E] text-white py-2.5 rounded-xl font-bold hover:shadow-lg transition-all text-sm"
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            className="relative w-full bg-gradient-to-r from-[#8C1B2E] via-[#A02840] to-[#B43A4E] text-white py-3.5 rounded-xl font-bold text-sm shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group/btn"
           >
-            Learn More
+            <motion.span
+              className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0"
+              initial={{ x: '-100%' }}
+              whileHover={{ x: '100%' }}
+              transition={{ duration: 0.6, ease: 'easeInOut' }}
+            />
+            <span className="relative flex items-center justify-center gap-2">
+              Learn More
+              <motion.span
+                animate={hovered ? { x: 4 } : { x: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                →
+              </motion.span>
+            </span>
           </motion.button>
         </Link>
       </div>
+
+      {/* Decorative Corner Element */}
       <motion.div
-        className="absolute bottom-0 right-0 w-20 h-20 bg-[#8C1B2E]/5 rounded-tl-full pointer-events-none"
+        className="absolute bottom-0 right-0 w-32 h-32 bg-gradient-to-tl from-[#8C1B2E]/8 to-transparent rounded-tl-full pointer-events-none"
         initial={{ scale: 0, opacity: 0 }}
         animate={hovered ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
-        transition={{ duration: 0.35 }}
+        transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+      />
+
+      {/* Shine Effect */}
+      <motion.div
+        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none"
+        initial={{ x: '-100%', opacity: 0 }}
+        animate={hovered ? { x: '100%', opacity: 1 } : { x: '-100%', opacity: 0 }}
+        transition={{ duration: 0.8, ease: 'easeInOut' }}
       />
     </motion.div>
   );
@@ -1696,7 +1771,7 @@ export default function Page() {
           className="relative overflow-hidden bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E] text-white"
           style={{ minHeight: '620px' }}
         >
-          {/* Background image layer */}
+          {/* Background video layer */}
           <motion.div
             aria-hidden
             className="absolute inset-0 z-0"
@@ -1705,22 +1780,29 @@ export default function Page() {
             transition={{ duration: 1.6, ease: EASE }}
           >
             <motion.div
-              className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-              style={{
-                backgroundImage:
-                  "url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1920&q=80')",
-              }}
-              animate={{ scale: [1, 1.06, 1] }}
-              transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
-            />
-            {/* Deep red/maroon tint - matches reference: photo visible but strongly warmed by brand color */}
+              className="absolute inset-0 w-full h-full"
+              animate={{ scale: [1, 1.08, 1] }}
+              transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
+            >
+              <video
+                autoPlay
+                loop
+                muted
+                playsInline
+                preload="auto"
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 min-w-full min-h-full w-auto h-auto max-w-none object-cover"
+              >
+                <source src="https://static.prod-images.emergentagent.com/jobs/3835f067-a883-4dde-9536-62931b0596a1/videos/b24f6f2aac95e8ee13c47d3ec8d44cdca0350f642759765718d03c92ee668c06.mp4" type="video/mp4" />
+              </video>
+            </motion.div>
+            {/* Deep red/maroon tint - matches reference: video visible but strongly warmed by brand color */}
             <div className="absolute inset-0 bg-gradient-to-r from-[#8C1B2E]/75 to-[#B43A4E]/65" />
             <div className="absolute inset-0 bg-black/30" />
             {/* Bottom darken for CTA/scroll legibility */}
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/25" />
           </motion.div>
 
-          {/* Grid overlay */}
+          {/* Grid overlay - enhanced animation */}
           <motion.div
             aria-hidden
             className="pointer-events-none absolute inset-0 z-[1]"
@@ -1729,22 +1811,62 @@ export default function Page() {
                 'linear-gradient(rgba(255,255,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.04) 1px,transparent 1px)',
               backgroundSize: '56px 56px',
             }}
-            animate={{ backgroundPosition: ['0px 0px', '56px 56px'] }}
-            transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+            animate={{
+              backgroundPosition: ['0px 0px', '56px 56px'],
+              opacity: [0.5, 0.8, 0.5]
+            }}
+            transition={{
+              backgroundPosition: { duration: 20, repeat: Infinity, ease: 'linear' },
+              opacity: { duration: 4, repeat: Infinity, ease: 'easeInOut' }
+            }}
           />
 
-          {/* Orbs */}
+          {/* Orbs - enhanced with more movement */}
           {[
-            { cls: '-top-20 -right-20 w-[400px] h-[400px]', dur: 14, delay: 0 },
-            { cls: '-bottom-14 -left-14 w-64 h-64', dur: 11, delay: 1.5 },
-            { cls: 'top-1/2 left-1/4 w-44 h-44', dur: 9, delay: 3 },
+            { cls: '-top-20 -right-20 w-[400px] h-[400px]', dur: 12, delay: 0, x: [-20, 20, -20] },
+            { cls: '-bottom-14 -left-14 w-64 h-64', dur: 10, delay: 1.5, x: [20, -20, 20] },
+            { cls: 'top-1/2 left-1/4 w-44 h-44', dur: 8, delay: 3, x: [-15, 15, -15] },
           ].map((orb, i) => (
             <motion.div
               key={i}
               aria-hidden
               className={`absolute rounded-full bg-white/5 ${orb.cls} z-[1]`}
-              animate={{ scale: [1, 1.1, 1], rotate: [0, 8, 0], y: [0, -14, 0] }}
-              transition={{ duration: orb.dur, repeat: Infinity, ease: 'easeInOut', delay: orb.delay }}
+              animate={{
+                scale: [1, 1.15, 1],
+                rotate: [0, 12, 0],
+                y: [0, -20, 0],
+                x: orb.x
+              }}
+              transition={{
+                duration: orb.dur,
+                repeat: Infinity,
+                ease: 'easeInOut',
+                delay: orb.delay
+              }}
+            />
+          ))}
+
+          {/* Additional floating elements */}
+          {[
+            { cls: 'top-1/4 right-1/3 w-32 h-32', dur: 15, delay: 2 },
+            { cls: 'bottom-1/3 right-1/4 w-24 h-24', dur: 13, delay: 4 },
+          ].map((elem, i) => (
+            <motion.div
+              key={`extra-${i}`}
+              aria-hidden
+              className={`absolute rounded-full bg-white/3 blur-xl ${elem.cls} z-[1]`}
+              animate={{
+                scale: [1, 1.2, 1],
+                opacity: [0.3, 0.6, 0.3],
+                y: [0, -30, 0],
+                x: [0, 20, 0]
+              }}
+              transition={{
+                duration: elem.dur,
+                repeat: Infinity,
+                ease: 'easeInOut',
+                delay: elem.delay
+              }}
             />
           ))}
 
@@ -1844,13 +1966,13 @@ export default function Page() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 1.0, ease: EASE }}
-              className="flex flex-col sm:flex-row gap-4 justify-center w-full sm:w-auto px-4 sm:px-0"
+              className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 justify-center w-full sm:w-auto px-4 sm:px-0"
             >
               <Link href="/programs" className="w-full sm:w-auto">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.96 }}
-                  className="group inline-flex items-center justify-center gap-2 bg-white text-[#8C1B2E] px-8 py-4 rounded-full font-bold text-base shadow-2xl w-full sm:w-auto"
+                  className="group inline-flex items-center justify-center gap-2 bg-white text-[#8C1B2E] px-5 py-3 sm:px-7 sm:py-3.5 lg:px-8 lg:py-4 rounded-full font-semibold text-sm sm:text-base shadow-xl hover:shadow-2xl transition-all duration-300 w-full sm:w-auto min-h-[48px] sm:min-h-[54px]"
                 >
                   <Play className="w-4 h-4" />
                   Start Learning
@@ -1861,7 +1983,7 @@ export default function Page() {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.96 }}
-                  className="inline-flex items-center justify-center gap-2 border-2 border-white/60 text-white px-8 py-4 rounded-full font-bold text-base hover:bg-white/10 transition-all backdrop-blur-sm w-full sm:w-auto"
+                  className="inline-flex items-center justify-center gap-2 border border-white/60 text-white px-5 py-3 sm:px-7 sm:py-3.5 lg:px-8 lg:py-4 rounded-full font-semibold text-sm sm:text-base hover:bg-white/10 hover:border-white transition-all duration-300 backdrop-blur-sm w-full sm:w-auto min-h-[48px] sm:min-h-[54px]"
                 >
                   Free Trial Class
                 </motion.button>
@@ -1886,6 +2008,7 @@ export default function Page() {
             </motion.div>
           </motion.div>
         </motion.section>
+
 
         {/* ╔══════════════════════════════════════════════════╗
             ║  ABOUT US                                       ║
@@ -2002,32 +2125,31 @@ export default function Page() {
             </motion.div>
           </div>
         </section>
-        {/* ╔══════════════════════════════════════════════════╗
-            ║  PROGRAMS                                       ║
-            ╚══════════════════════════════════════════════════╝ */}
-        <section
-          id="programs"
-          className="py-16 md:py-24 bg-[#F5F7FA]"
-        >
-          <div className="max-w-6xl mx-auto px-4 sm:px-6">
-            <SectionHeading
-              label="What We Offer"
-              title="Our Programs"
-              subtitle="Comprehensive education for every stage of learning"
-            />
-            <motion.div
-              variants={stagger}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-            >
-              {programs.map((program, index) => (
-                <ProgramCard key={index} program={program} index={index} />
-              ))}
-            </motion.div>
-          </div>
-        </section>
+        {/* PROGRAMS SECTION */}
+<section
+  id="programs"
+  className="py-12 md:py-16 bg-[#F5F7FA]"
+>
+  <div className="max-w-6xl mx-auto px-4 sm:px-6">
+    <SectionHeading
+      label="What We Offer"
+      title="Our Programs"
+      subtitle="Comprehensive education for every stage of learning"
+    />
+    <motion.div
+      variants={stagger}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3"
+    >
+      {programs.map((program, index) => (
+        <ProgramCard key={program.id || index} program={program} index={index} />
+      ))}
+    </motion.div>
+  </div>
+</section>
+
 
         {/* ╔══════════════════════════════════════════════════╗
             ║  SOFT SKILLS / TRAINING                         ║

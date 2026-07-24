@@ -1271,7 +1271,7 @@ function ProgramCard({ program, index }: { program: typeof programs[0]; index: n
         boxShadow: '0 25px 50px -12px rgba(140, 27, 46, 0.25)' 
       }}
       transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
-      className="group relative bg-white rounded-3xl border border-gray-200/60 hover:border-[#8C1B2E]/30 transition-all duration-500 overflow-hidden flex flex-col shadow-lg hover:shadow-2xl"
+      className="group relative bg-white rounded-2xl sm:rounded-3xl border border-gray-200/60 hover:border-[#8C1B2E]/30 transition-all duration-500 overflow-hidden flex flex-col shadow-lg hover:shadow-2xl"
     >
       {/* Top Accent Bar */}
       <motion.div
@@ -1283,7 +1283,7 @@ function ProgramCard({ program, index }: { program: typeof programs[0]; index: n
       />
 
       {/* Image Section with Overlay */}
-      <div className="relative w-full h-48 sm:h-56 md:h-52 lg:h-56 overflow-hidden">
+      <div className="relative w-full h-44 sm:h-52 md:h-48 lg:h-56 overflow-hidden">
         <motion.img
           src={program.image}
           alt={program.title}
@@ -1296,31 +1296,33 @@ function ProgramCard({ program, index }: { program: typeof programs[0]; index: n
           transition={{ duration: 0.4 }}
         />
         
-        {/* Icon Badge on Image */}
+        {/* Icon Badge on Image - Responsive */}
         <motion.div
-          className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm p-3 rounded-2xl shadow-xl"
+          className="absolute top-3 right-3 sm:top-4 sm:right-4 bg-white/95 backdrop-blur-sm p-2 sm:p-2.5 md:p-3 rounded-xl sm:rounded-2xl shadow-xl"
           animate={hovered ? { rotate: 360, scale: 1.1 } : { rotate: 0, scale: 1 }}
           transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
         >
-          <Icon className="w-6 h-6 text-[#8C1B2E]" />
+          <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-[#8C1B2E]" />
         </motion.div>
       </div>
 
-      {/* Title Section - Overlapping Image */}
+      {/* Title Section - Responsive Font Sizes */}
       <motion.div 
-        className="relative -mt-8 mx-4 sm:mx-5 bg-gradient-to-br from-[#8C1B2E] via-[#A02840] to-[#B43A4E] p-5 rounded-2xl shadow-xl z-10"
+        className="relative -mt-6 sm:-mt-7 md:-mt-8 mx-3 sm:mx-4 md:mx-5 bg-gradient-to-br from-[#8C1B2E] via-[#A02840] to-[#B43A4E] p-3.5 sm:p-4 md:p-5 rounded-xl sm:rounded-2xl shadow-xl z-10"
         animate={hovered ? { y: -4 } : { y: 0 }}
         transition={{ duration: 0.3 }}
       >
-        <h3 className="font-heading text-xl font-bold text-white leading-tight">
+        <h3 className="font-heading text-base sm:text-lg md:text-xl lg:text-xl font-bold text-white leading-tight">
           {program.title}
         </h3>
-        <p className="text-sm text-white/90 mt-1.5 font-medium">{program.grades}</p>
+        <p className="text-xs sm:text-sm md:text-sm text-white/90 mt-1 sm:mt-1.5 font-medium">
+          {program.grades}
+        </p>
       </motion.div>
 
-      {/* Content Section */}
-      <div className="p-5 sm:p-6 pt-6 flex-1 flex flex-col">
-        <div className="space-y-3 mb-6 flex-1">
+      {/* Content Section - Responsive Spacing & Fonts */}
+      <div className="p-4 sm:p-5 md:p-6 pt-5 sm:pt-6 flex-1 flex flex-col">
+        <div className="space-y-2 sm:space-y-2.5 md:space-y-3 mb-5 sm:mb-6 flex-1">
           {program.features.slice(0, 4).map((feature, i) => (
             <motion.div
               key={i}
@@ -1332,27 +1334,27 @@ function ProgramCard({ program, index }: { program: typeof programs[0]; index: n
                 duration: 0.5,
                 ease: [0.23, 1, 0.32, 1]
               }}
-              className="flex items-start gap-3 group/item"
+              className="flex items-start gap-2 sm:gap-2.5 md:gap-3 group/item"
             >
               <motion.div
                 whileHover={{ scale: 1.2, rotate: 360 }}
                 transition={{ duration: 0.5 }}
               >
-                <CheckCircle className="w-5 h-5 text-[#8C1B2E] flex-shrink-0 mt-0.5" />
+                <CheckCircle className="w-4 h-4 sm:w-4.5 sm:h-4.5 md:w-5 md:h-5 text-[#8C1B2E] flex-shrink-0 mt-0.5" />
               </motion.div>
-              <span className="text-sm text-gray-700 leading-relaxed group-hover/item:text-gray-900 transition-colors">
+              <span className="text-xs sm:text-sm md:text-sm text-gray-700 leading-relaxed group-hover/item:text-gray-900 transition-colors">
                 {feature}
               </span>
             </motion.div>
           ))}
         </div>
 
-        {/* CTA Button */}
+        {/* CTA Button - Responsive */}
         <Link href="/programs" className="block w-full">
           <motion.button
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
-            className="relative w-full bg-gradient-to-r from-[#8C1B2E] via-[#A02840] to-[#B43A4E] text-white py-3.5 rounded-xl font-bold text-sm shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group/btn"
+            className="relative w-full bg-gradient-to-r from-[#8C1B2E] via-[#A02840] to-[#B43A4E] text-white py-2.5 sm:py-3 md:py-3.5 rounded-lg sm:rounded-xl font-bold text-xs sm:text-sm md:text-sm shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group/btn"
           >
             <motion.span
               className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0"
@@ -1360,11 +1362,12 @@ function ProgramCard({ program, index }: { program: typeof programs[0]; index: n
               whileHover={{ x: '100%' }}
               transition={{ duration: 0.6, ease: 'easeInOut' }}
             />
-            <span className="relative flex items-center justify-center gap-2">
+            <span className="relative flex items-center justify-center gap-1.5 sm:gap-2">
               Learn More
               <motion.span
                 animate={hovered ? { x: 4 } : { x: 0 }}
                 transition={{ duration: 0.3 }}
+                className="text-sm sm:text-base"
               >
                 →
               </motion.span>
@@ -1373,9 +1376,9 @@ function ProgramCard({ program, index }: { program: typeof programs[0]; index: n
         </Link>
       </div>
 
-      {/* Decorative Corner Element */}
+      {/* Decorative Corner Element - Responsive */}
       <motion.div
-        className="absolute bottom-0 right-0 w-32 h-32 bg-gradient-to-tl from-[#8C1B2E]/8 to-transparent rounded-tl-full pointer-events-none"
+        className="absolute bottom-0 right-0 w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 bg-gradient-to-tl from-[#8C1B2E]/8 to-transparent rounded-tl-full pointer-events-none"
         initial={{ scale: 0, opacity: 0 }}
         animate={hovered ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
         transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}

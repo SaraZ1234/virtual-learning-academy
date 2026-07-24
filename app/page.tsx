@@ -1,5 +1,4 @@
 'use client';
-
 import {
   motion,
   useScroll,
@@ -1690,17 +1689,41 @@ export default function Page() {
 
 
         {/* ╔══════════════════════════════════════════════════╗
-            ║  HERO                                           ║
+            ║  HERO                                            ║
             ╚══════════════════════════════════════════════════╝ */}
         <motion.section
           ref={heroRef}
           className="relative overflow-hidden bg-gradient-to-r from-[#8C1B2E] to-[#B43A4E] text-white"
           style={{ minHeight: '620px' }}
         >
+          {/* Background image layer */}
+          <motion.div
+            aria-hidden
+            className="absolute inset-0 z-0"
+            initial={{ scale: 1.15, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 1.6, ease: EASE }}
+          >
+            <motion.div
+              className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+              style={{
+                backgroundImage:
+                  "url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1920&q=80')",
+              }}
+              animate={{ scale: [1, 1.06, 1] }}
+              transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
+            />
+            {/* Deep red/maroon tint - matches reference: photo visible but strongly warmed by brand color */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#8C1B2E]/75 to-[#B43A4E]/65" />
+            <div className="absolute inset-0 bg-black/30" />
+            {/* Bottom darken for CTA/scroll legibility */}
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/25" />
+          </motion.div>
+
           {/* Grid overlay */}
           <motion.div
             aria-hidden
-            className="pointer-events-none absolute inset-0"
+            className="pointer-events-none absolute inset-0 z-[1]"
             style={{
               backgroundImage:
                 'linear-gradient(rgba(255,255,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.04) 1px,transparent 1px)',
@@ -1719,7 +1742,7 @@ export default function Page() {
             <motion.div
               key={i}
               aria-hidden
-              className={`absolute rounded-full bg-white/5 ${orb.cls}`}
+              className={`absolute rounded-full bg-white/5 ${orb.cls} z-[1]`}
               animate={{ scale: [1, 1.1, 1], rotate: [0, 8, 0], y: [0, -14, 0] }}
               transition={{ duration: orb.dur, repeat: Infinity, ease: 'easeInOut', delay: orb.delay }}
             />
@@ -1736,6 +1759,7 @@ export default function Page() {
               initial={{ opacity: 0, y: -16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1, ease: EASE }}
+              whileHover={{ scale: 1.04 }}
               className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 sm:px-5 py-2 text-xs sm:text-sm font-medium mb-8 sm:mb-10 text-center"
             >
               <motion.span
@@ -1748,10 +1772,6 @@ export default function Page() {
 
             {/* Main Heading */}
             <div className="perspective-[800px] mb-6">
-              {/* <AnimatedTitle
-                text="Transforming Education Through Virtual Learning"
-                className="text-4xl sm:text-5xl md:text-7xl font-extrabold leading-[1.1] sm:leading-[1.05] tracking-tight block"
-              /> */}
               <AnimatedTitle
                 text="Transforming Education Through Virtual Learning"
                 className="font-heading text-4xl sm:text-5xl md:text-7xl font-bold leading-[1.15] tracking-[-0.02em] block"
@@ -1780,16 +1800,29 @@ export default function Page() {
 
             {/* Key Features */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.75, ease: EASE }}
+              initial="hidden"
+              animate="show"
+              variants={{
+                hidden: {},
+                show: {
+                  transition: { staggerChildren: 0.12, delayChildren: 0.75 },
+                },
+              }}
               className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-lg mx-auto mb-12 text-left"
             >
               {['Live Interactive Classes', 'Qualified Teachers', 'Small Class Sizes', 'Flexible Schedules'].map((f, i) => (
-                <div key={i} className="flex items-center gap-2">
+                <motion.div
+                  key={i}
+                  variants={{
+                    hidden: { opacity: 0, y: 16 },
+                    show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: EASE } },
+                  }}
+                  whileHover={{ x: 4 }}
+                  className="flex items-center gap-2"
+                >
                   <CheckCircle className="w-4 h-4 text-white/70 flex-shrink-0" />
                   <span className="text-sm text-white/85">{f}</span>
-                </div>
+                </motion.div>
               ))}
             </motion.div>
 
@@ -1813,7 +1846,7 @@ export default function Page() {
               transition={{ duration: 0.7, delay: 1.0, ease: EASE }}
               className="flex flex-col sm:flex-row gap-4 justify-center w-full sm:w-auto px-4 sm:px-0"
             >
-              <Link href="/programs">
+              <Link href="/programs" className="w-full sm:w-auto">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.96 }}
@@ -1824,7 +1857,7 @@ export default function Page() {
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </motion.button>
               </Link>
-              <Link href="/contact">
+              <Link href="/contact" className="w-full sm:w-auto">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.96 }}
@@ -1859,10 +1892,17 @@ export default function Page() {
             ╚══════════════════════════════════════════════════╝ */}
         <section className="py-16 md:py-24 bg-white">
           <div className="max-w-6xl mx-auto px-4 sm:px-6">
-            <SectionHeading
-              label="Quality Online Education"
-              title="About Us"
-            />
+            <motion.div
+              initial={{ opacity: 0, y: -12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, ease: EASE }}
+            >
+              <SectionHeading
+                label="Quality Online Education"
+                title="About Us"
+              />
+            </motion.div>
             <motion.div
               variants={stagger}
               initial="hidden"
@@ -1885,6 +1925,7 @@ export default function Page() {
                     onHoverStart={() => setHovered(true)}
                     onHoverEnd={() => setHovered(false)}
                     whileHover={{ y: -10, boxShadow: '0 24px 48px rgba(140,27,46,0.13)' }}
+                    whileTap={{ scale: 0.97 }}
                     transition={{ duration: 0.28 }}
                     className="group relative bg-gradient-to-b from-[#FBFBFC] to-[#E9EAED] rounded-2xl border-2 border-[#C0C5CE]/70 hover:border-[#8C1B2E]/40 transition-colors duration-300 overflow-hidden p-8 shadow-sm"
                   >
@@ -1895,21 +1936,65 @@ export default function Page() {
                       viewport={{ once: true }}
                       transition={{ duration: 0.6, delay: index * 0.1, ease: EASE }}
                     />
+
                     <motion.div
-                      animate={hovered ? { rotate: 10, scale: 1.1 } : { rotate: 0, scale: 1 }}
-                      transition={{ duration: 0.3 }}
+                      animate={
+                        hovered
+                          ? { rotate: 10, scale: 1.1 }
+                          : { rotate: 0, scale: 1, y: [0, -4, 0] }
+                      }
+                      transition={
+                        hovered
+                          ? { duration: 0.3 }
+                          : { duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: index * 0.3 }
+                      }
                       className="w-12 h-12 bg-gradient-to-br from-[#8C1B2E] to-[#B43A4E] rounded-xl flex items-center justify-center mb-4 shadow-md"
                     >
-                      <Icon className="w-6 h-6 text-white" />
+                      <motion.div
+                        animate={hovered ? { scale: [1, 1.15, 1] } : {}}
+                        transition={{ duration: 0.5, ease: EASE }}
+                      >
+                        <Icon className="w-6 h-6 text-white" />
+                      </motion.div>
                     </motion.div>
-                    {/* <h3 className="text-lg font-bold text-[#8C1B2E] mb-3">{item.title}</h3> */}
-                    <h3 className="font-heading text-lg font-bold text-[#8C1B2E] mb-3">{item.title}</h3>
-                    <p className="text-[#1A1A1A]/75 text-sm leading-relaxed">{item.text}</p>
+
+                    <motion.h3
+                      initial={{ opacity: 0, x: -12 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5, delay: index * 0.1 + 0.15, ease: EASE }}
+                      className="font-heading text-lg font-bold text-[#8C1B2E] mb-3"
+                    >
+                      {item.title}
+                    </motion.h3>
+
+                    <motion.p
+                      initial={{ opacity: 0, y: 8 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5, delay: index * 0.1 + 0.25, ease: EASE }}
+                      className="text-[#1A1A1A]/75 text-sm leading-relaxed"
+                    >
+                      {item.text}
+                    </motion.p>
+
                     <motion.div
                       className="absolute bottom-0 right-0 w-20 h-20 bg-[#8C1B2E]/5 rounded-tl-full pointer-events-none"
                       initial={{ scale: 0, opacity: 0 }}
-                      animate={hovered ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
+                      animate={hovered ? { scale: 1, opacity: 1, rotate: 12 } : { scale: 0, opacity: 0, rotate: 0 }}
                       transition={{ duration: 0.35 }}
+                    />
+
+                    <motion.div
+                      aria-hidden
+                      className="absolute inset-0 rounded-2xl pointer-events-none"
+                      style={{
+                        background:
+                          'linear-gradient(120deg, transparent 30%, rgba(140,27,46,0.06) 50%, transparent 70%)',
+                        backgroundSize: '200% 200%',
+                      }}
+                      animate={hovered ? { backgroundPosition: ['0% 0%', '100% 100%'] } : {}}
+                      transition={{ duration: 0.8, ease: 'easeInOut' }}
                     />
                   </motion.div>
                 );
@@ -1917,7 +2002,6 @@ export default function Page() {
             </motion.div>
           </div>
         </section>
-
         {/* ╔══════════════════════════════════════════════════╗
             ║  PROGRAMS                                       ║
             ╚══════════════════════════════════════════════════╝ */}

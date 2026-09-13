@@ -298,7 +298,7 @@ function EnrollmentModal({ isOpen, onClose, courseName }: EnrollmentModalProps) 
       // Then replace 'YOUR_FORM_ID' below with your form ID (e.g. 'xpwzgkqb')
       const FORMSPREE_FORM_ID = 'YOUR_FORM_ID';
 
-      const response = await fetch("https://terrific-light-production-94ae.up.railway.app/api/enroll", {
+      const response = await fetch("https://hafsa-institute-backend-production.up.railway.app/api/enroll", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

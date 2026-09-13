@@ -116,7 +116,7 @@ interface StudentUser {
 
 type FilterTab = 'all' | EnrollmentStatus;
 
-const API_BASE = 'https://terrific-light-production-94ae.up.railway.app/api';
+const API_BASE = 'https://hafsa-institute-backend-production.up.railway.app/api';
 
 /* ═══════════════════════════════════════════════════════════════
    SHARED UI BITS

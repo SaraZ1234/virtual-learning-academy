@@ -183,8 +183,8 @@ interface ZoomMeeting {
 
 type DashboardView = 'enrollments' | 'research-orders' | 'zoom-meetings';
 
-const API_BASE = 'https://terrific-light-production-94ae.up.railway.app/api';
-
+// const API_BASE = 'https://terrific-light-production-94ae.up.railway.app/api';
+const API_BASE = 'https://hafsa-institute-backend-production.up.railway.app/api';
 /* ═══════════════════════════════════════════════════════════════
    SHARED UI BITS
 ═══════════════════════════════════════════════════════════════ */
@@ -1053,7 +1053,7 @@ function ZoomMeetingRow({
               e.stopPropagation();
               try {
                 const response = await fetch(
-                  `https://terrific-light-production-94ae.up.railway.app/api/zoom/approve/${meeting.id}`,
+                  `https://hafsa-institute-backend-production.up.railway.app/api/zoom/approve/${meeting.id}`,
                   {
                     method: "PUT",
                     headers: {

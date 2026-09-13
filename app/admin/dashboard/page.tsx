@@ -1489,7 +1489,7 @@ export default function AdminDashboard() {
       const res = await fetch(`${API_BASE}/enrollments`);
       if (!res.ok) throw new Error('Failed to load enrollments');
       const data = await res.json();
-      const list: Enrollment[] = Array.isArray(data) ? data : data.enrollments || [];
+      const list: Enrollment[] = Array.isArray(data) ? data : (data.rows || data.enrollments || data.data || []);
       setEnrollments(
         list.map((e: any) => ({
           ...e,
@@ -1512,7 +1512,7 @@ export default function AdminDashboard() {
       const res = await fetch(`${API_BASE}/research-orders`);
       if (!res.ok) throw new Error('Failed to load research orders');
       const data = await res.json();
-      const list: ResearchOrder[] = Array.isArray(data) ? data : data.researchOrders || data.orders || [];
+      const list: ResearchOrder[] = Array.isArray(data) ? data : (data.rows || data.researchOrders || data.orders || data.data || []);
       setResearchOrders(list);
     } catch (err: unknown) {
       setRoError(err instanceof Error ? err.message : 'Something went wrong while loading research orders.');
@@ -1530,7 +1530,8 @@ export default function AdminDashboard() {
       const res = await fetch(`${API_BASE}/zoom/all`);
       if (!res.ok) throw new Error('Failed to load Zoom meetings');
       const data = await res.json();
-      const list: ZoomMeeting[] = data.data || [];
+      const raw = data?.data?.rows ?? data?.rows ?? data?.data ?? data;
+      const list: ZoomMeeting[] = Array.isArray(raw) ? raw : [];
       setZoomMeetings(list);
     } catch (err: unknown) {
       setZoomError(err instanceof Error ? err.message : 'Something went wrong while loading Zoom meetings.');
